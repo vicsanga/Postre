@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <script>
+    
+    function reSize(){
+      var myImg = document.getElementById("nccModelling");
+      var currWidth = myImg.clientWidth;
+      
+      if(currWidth == 900){
+        <!--Max widht so we make it smaller-->
+        myImg.style.width = 333 + "px";
+        myImg.style.height = 500 + "px";
+      } else{
+        <!--Hence the other possible width is the smaller (width = 333), so we make it bigger-->
+        myImg.style.width = 900 + "px";
+        myImg.style.height = 1500 + "px";
+      } 
+    }
+  </script>
+  
+  <style>
+    .helpContent{
+      background-color:white;
+    }
+    
+  #nccModelling{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  }
+  </style>
+  
+    </head>
+    
+    <body>
+     <div class="helpContent">
+       <h3>Did you find a relevant result?</h3>
+       <h4 style='color:darkblue'>Experimental Validation Options</h4>
+       <p style="text-align: justify;">Different approaches can be followed to further investigate and confirm the molecular mechanisms behind the patient disease. For more information on the topic, we invite you to read the following review <a href="https://doi.org/10.3389/fgene.2020.00688" target="_blank"> Rare or Overlooked? Structural Disruption of Regulatory Domains in Human Neurocristopathies</a>, focused on the modelling of Neurocristopathies, but including general guidelines for a broader spectrum of diseases.</p>
+       
+     <img  src="https://www.frontiersin.org/files/Articles/530421/fgene-11-00688-HTML-r1/image_m/fgene-11-00688-g003.jpg" id="nccModelling" width="333" height="500" alt="Image Server Connection Lost: Modelling Neurocristopathies Image Could Not Be Loaded. See Fig3 Review." onclick="reSize()">
+     <p>If you have any question or need consulting advice please contact: SV_radalab@gmail.com</p>
+     </div>
+    
+    </body>
+          
+</html>

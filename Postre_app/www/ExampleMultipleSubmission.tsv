@@ -1,0 +1,12 @@
+chr6	10355280,	chr6	99103873,	Inversion	head_neck,hearing_ear,vision_eye	TFAP2A_patient
+chr17	68663405	chr17	68738405	Deletion	head_neck	SOX9_patient_F1
+chr17	68020547,	chr17	70038208,	Duplication	limbs	KCNJ2_patient
+chr2	221278232,	chr2	223014332,	Deletion	limbs	PAX3_patient
+chr2	219907598,	chr2	220954793,	Duplication	limbs	IHH_patient
+chr7	156437229	chr7	156692706	Duplication	limbs	SHH_patient
+chr4	24332309,24332315	chr14	98758657,98758653	Translocation	neurodevelopmental	BCL11B_patient1_paper_PMID_29985992
+chr4	148252852,148252854	chr14	99097976,99097980	Translocation	neurodevelopmental	BCL11B_patient2_paper_PMID_29985992
+chr7	95615187	chr7	95783313	Deletion	limbs	DLX5&6_Family1_Table1_PMID:25231166
+chr7	95624825	chr7	96135521	Deletion	limbs	DLX5&6_Family2_Table1_PMID:25231166
+chr7	95667046	chr7	95872044	Deletion	limbs	DLX5&6_Family3_Table1_PMID:25231166
+chr7	95693341	chr7	95862369	Deletion	limbs	DLX5&6_Family4_Table1_PMID:25231166

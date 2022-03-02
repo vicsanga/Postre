@@ -1,0 +1,5 @@
+head_neck	NeuralCrestEarly	SV_app_head_neck_NeuralCrestEarly	https://genome.ucsc.edu/s/sgvic/SV_app_head_neck_NeuralCrestEarly
+head_neck	NeuralCrestLate	SV_app_head_neck_NeuralCrestLate	https://genome.ucsc.edu/s/sgvic/SV_app_head_neck_NeuralCrestLate
+head_neck	PalateCS20	SV_app_head_neck_PalateCS20	https://genome.ucsc.edu/s/sgvic/SV_app_head_neck_PalateCS20
+head_neck	PalateCSMix	SV_app_head_neck_PalateCSMix	https://genome.ucsc.edu/s/sgvic/SV_app_head_neck_PalateCSMix
+head_neck	phaseFree	SV_app_head_neck_phaseFree	https://genome.ucsc.edu/s/sgvic/SV_app_head_neck_phaseFree

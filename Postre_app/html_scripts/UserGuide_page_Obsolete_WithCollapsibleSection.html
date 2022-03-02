@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <style>
+  </style>
+
+    <main>
+      <h1 id="usrGuide">User Guide</h1>
+      <!-- VOY A PROBAR A METER AQUI EL CODIGO HTML DE LA TABLA -->
+      <!-- Metemos unicamente la info de la Tabla-->
+      <div class='phenoRecurrencyStats'>
+        <button type='button' class='collapsibleUserGuide'>
+          <h1 style='color:#FFFFFF;font-size: 60px; font-weight: bold'> Developmental Stages Information </h1>
+        </button>
+        <div class='content_primary'>
+        <a href="DevStages_Metadata.html" target="_blank"> Developmental Stages File </a>
+      
+</div> <!-- Closing section where table is located -->
+</div>
+<!--Adding function to collapse sections of the UserGuide -->
+<script> 
+    var coll = document.getElementsByClassName('collapsibleUserGuide');
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener('click', function() {
+    this.classList.toggle('active');
+    var content = this.nextElementSibling;
+    if (content.style.display === 'block') {
+    content.style.display = 'none';
+    } else {
+    content.style.display = 'block';
+    }
+    });
+    }   
+ </script>
+<!-- AQUI ACABA EL CODIGO DE LA TABLA HTML  --> 
+    </main>
+    
+</html>

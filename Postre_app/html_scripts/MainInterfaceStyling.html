@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+  <html lang="en">
+      
+<head>
+  
+  <link rel="icon" href="roundedLogo.png">
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+  <meta charset="utf-8">
+    
+    <style>
+    
+    .container{
+      font-size: 40px;
+      min-height: 300px;
+      width: 100%;
+      background: transparent;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      grid-gap: 0px;
+      grid-template-areas:
+        /* Only change code below this line */
+        "mainPanel";
+        padding: 0px;
+      min-height: 100vh !important;
+      font-family: 'Raleway', serif !important;
+    }
+
+.mainPanel{
+  grid-area: mainPanel;
+  font-size: 20px;
+  background-color: transparent;
+  height: 100%;
+  width: 100%;
+  margin-top: 0%;
+}
+
+#inTabset{
+  background-color: #1D3354;
+  width: 100%;
+  /*margin-top: -50px;*/
+  height: 100px;
+  position: absolute;
+}
+
+nav.navbar {
+   background-color: #1D3354;
+   width: 80%;
+   color: hsl(180, 100%, 70%);
+   font-weight: normal;
+   padding: 0px;
+   margin: 0px;
+   margin-right: 1%;/*Apparently the bootstrap navbar has some hidden margin that creates horizontal scroll bar, these fixes the issue*/
+   font-size: 20px;
+   float: right;
+   height: 100px;
+   border-bottom:none;
+   border-left:none;
+}
+
+.navbar-default.navbar-static-top li a {
+    color: #e9fff9 ;
+    margin-top: 0px;
+}
+
+.navbar-default.navbar-static-top li a:hover {
+    color: hsl(358, 65%, 75%) ;
+}
+
+.navbar-default.navbar-static-top .dropdown-menu>li>a {
+    color: black ;
+}
+
+html, body{
+    margin:0px;
+    padding:0px;
+    font-family: 'Raleway', serif !important;
+}
+
+#logoLab {
+      width: 90%;
+      height: 100px;
+      padding-top: 0px;
+      margin-top: 0px;
+    }
+    
+.logoArea{
+  height:100px;
+  width:20%;
+  padding-top: 0px;
+  margin-top: 0px;
+  position: absolute;
+  top: 0px;
+  background-color:#1D3354;
+}
+
+
+.barBelowHeader{
+  position: absolute;
+  top: 100px;
+  height: 4px;
+  width:100%;
+  min-width:100%;
+  background-color: #467599;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  padding: 0;
+  margin: 0px;
+}   
+
+
+/*This class associated to a div to paint the backgroun of the header, so that no white gap*/
+.regionHeader{
+  position: absolute;
+  top: 0px;
+  height:100px;
+  width:100%;
+  background-color: #1D3354;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  margin:0px;
+}
+
+
+.resPerPhase, .GraphSummaryPage, .heatmapPage, .genesReportPage, .numbersHeatmapPage, .geneEvMatrixPage, .patInfo, .predictionMethodPage, .userGuidePage, .helpPage, .previousPatientsPage{
+  margin-top: 150px;
+  padding-left: 80px;
+  padding-right: 80px;
+}    
+
+.titleBrowser{
+  display:none;
+}
+
+.geneEvMatrixPage, .resPerPhase{
+  width: 85vw;
+}
+
+#mainGraphicalAbstract{
+  /*height: 768px;*/
+  /*width: 1152px;*/
+  width: 1400px; /*To make the x axis a little big widder, and readjust the height accordingly*/
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  
+  /*width: 85%;*/
+}
+
+/*
+Explanation of why the dimensions:
+  ##with inches, no image appears,
+  ##Regarding https://www.w3schools.com/cssref/css_units.asp
+  ## 1 in corresponds with 96px (approx), hence as we have created the images with height = 8in and width = 12in
+  ## The conversion is " height=768px, width=1152px >")
+*/
+
+
+.gene_FullReport_SectionEntry{
+  color: #467599;
+  padding-left: 5%;
+  font-weight: bold;
+  text-align: justify;
+}
+
+.gene_FullReport_SectionContent{
+  padding-left: 10%;
+  padding-top: 1%;
+  text-align: justify;
+}
+
+/*For margins same criteria as .gene_FullReport_SectionContent*/
+.warning_gof_genePheno{
+  padding-left: 10%;
+  padding-top: 1%;
+  text-align: justify;
+  font-weight: bold;
+  color:#D64045;
+}
+
+
+.ucsc_infoSection{
+  display: grid;
+  grid-template-columns: 100%;
+  /*grid-template-rows: 1fr 1fr;*/
+  grid-gap: 20px;
+  grid-template-areas:
+      "infoLogoLink"
+      "colorLegend";
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
+  background: transparent;
+  position: relative;      
+}
+
+.infoLogoLink{
+  display: grid;
+  grid-template-columns: 10% 90%;
+  grid-template-rows: 1fr;
+  grid-gap: 20px;
+  grid-template-areas:
+      "logoUCSC linksUCSC";
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  margin: 0px;
+  background: transparent;
+  position: relative;   
+}
+
+
+.logoUCSC_location{
+  grid-area: logoUCSC;
+  background-color: transparent;
+  margin-bottom:0%;
+}
+
+.linksUCSC_location{
+  grid-area: linksUCSC;
+  background-color: transparent;
+  padding-top: 0px;
+}
+
+
+.wrapperColorLegend{
+  grid-area: colorLegend;
+  background-color: red;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 20% 80%;
+  grid-gap: 10px;
+  grid-template-areas:
+      "titleLegend"
+      "contentLegend";
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  /*margin-right:50%;
+  margin-bottom:10%;*/
+  margin: 0px;
+  background: transparent;
+  position: relative;
+  border-color:none; /*#E0E0E0;*/
+  /*border-style:solid;*/
+}
+
+.legendHeader{
+  grid-area:titleLegend;
+}
+
+/*With legend in horizontal stile*/
+
+.colorCodeSection{
+  grid-area: contentLegend;
+  background-color: none;
+  display: grid;
+  grid-template-columns: repeat(4, 2.5% 22.5%) ;
+  grid-template-rows: 1fr;
+  grid-gap: 10px;
+  grid-template-areas:
+      "colorRegDom textRegDom colorBreak textBreak colorGene textGene colorEnh textEnh";
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 10px;
+  margin: 0px;
+  margin-top: 10px;
+  background: transparent;
+  position: relative;     
+}
+
+.cs_colorRegDom{
+  grid-area:colorRegDom;
+  background-color:#000000; /*#877878;*/
+  margin-bottom: 50px;
+}
+
+.cs_colorBreak{
+  grid-area:colorBreak;
+  background-color: #ff3300;
+  margin-bottom: 50px;
+}
+
+.cs_colorGene{
+  grid-area: colorGene;
+  background-color: #3399ff;
+  margin-bottom: 50px;
+}
+
+.cs_colorEnh{
+  grid-area: colorEnh;
+  background-color: #85e085;
+  margin-bottom: 50px;
+}
+
+.cs_textRegDom{
+  grid-area:textRegDom;
+}
+
+.cs_textBreak{
+  grid-area:textBreak;
+}
+
+.cs_textGene{
+  grid-area:textGene;
+}
+
+.cs_textEnh{
+  grid-area:textEnh;
+}
+
+/*Working on regulatory landscape changes Format*/
+.regulatoryLandscapeChangesSection{
+  display: grid;
+  grid-template-columns: 45% 55%;
+  grid-template-rows: 1fr;
+  grid-gap: 0px;
+  grid-template-areas:
+      "explanationEnh barplotEnh";
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 10px;
+  margin: 0px;
+  background: transparent;
+  position: relative;    
+}
+
+.barplotEnh{
+  grid-area: barplotEnh;
+  margin-left:0;
+  padding-left:0;
+  background-color: transparent;
+  /*height: 100%;*/
+  width: 100%;
+  /*max-height: 500px;*/ /*On the contrary sometimes too big, when a lot of text*/
+}
+
+.directImpactPlot{
+  grid-area: barplotEnh;
+  margin-left:0;
+  padding-left:0;
+  background-color: transparent;
+  /*height: 100%;*/
+  /*width: 100%;*/
+  /*height: 500px;*/
+  /*width: 100%;*/
+  width: 100%;
+  max-width: 100%;
+  /*max-height: 500px;*/ /*On the contrary sometimes too big, when a lot of text*/
+  
+}
+
+#barplotEnhImage{
+  max-width: 100%;
+  width: 100%;
+  /*height: 100%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
+  background-color: transparent;
+}  
+
+#directplotEnhImage{
+  max-width: 100%;
+  width: 100%;
+  /*height: 25%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
+  background-color: transparent;
+}
+
+.explanationEnh{
+  grid-area: explanationEnh;
+  margin-left: 0px;
+  padding-left: 0px;
+  margin-right: 50px; /*to avoid being the text to close to plot. Apply same for text gene susceptibility*/
+}
+
+/*Working on geneSusceptibility  Format*/
+.geneSusceptibilityToConditionSection{
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.3%;
+  grid-template-rows: 1fr;/*1fr*/
+  grid-gap: 0px;
+  grid-template-areas:
+      "expressionLevel dosageSensitivePlot polyCombPlot"
+      "explanationGeneSuscept explanationGeneSuscept explanationGeneSuscept";
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
+  background: transparent;
+  position: relative;    
+}
+
+.expressionLevel{
+  grid-area: expressionLevel;
+  margin-left:0;
+  padding-left:0;
+  /*padding:0;*/
+  /*margin: 0;*/
+  background-color: transparent;
+  /*max-height: 500px;*/ /*On the contrary sometimes too big, when a lot of text*/
+  
+}
+
+.dosageSensitivePlot{
+  grid-area: dosageSensitivePlot;
+  margin-left:0;
+  padding-left:0;
+  padding:0;
+  margin: 0;
+  background-color: transparent;
+  /*max-height: 500px;*/ /*On the contrary sometimes too big, when a lot of text*/
+}
+
+.polyCombPlot{
+  grid-area: polyCombPlot;
+  margin-left:0;
+  padding-left:0;
+  padding:0;
+  margin: 0;
+  background-color: transparent;
+  /*max-height: 500px;*/ /*On the contrary sometimes too big, when a lot of text*/
+}
+
+.dosageSensitivePlot_whenPrimaryPlotNotPresent{
+  grid-area: expressionLevel;
+  margin-left:0;
+  padding-left:0;
+  padding:0;
+  margin: 0;
+  background-color: transparent;
+  /*width:100%;*/
+  /*height:80%;*/
+  /*max-height: 500px;*/ /*On the contrary sometimes too big, when a lot of text*/
+}
+
+.explanationGeneSuscept{
+  grid-area: explanationGeneSuscept;
+  margin-left: 0px;
+  padding-left: 0px;
+  margin-right: 50px; /*to avoid being the text to close to plot. Apply same for text gene susceptibility*/
+}
+.geneSusceptImgs{
+  max-width: 100%;
+  width:100%;
+  /*height: 400px;*/
+  /*height: 4in; 400px 100% they get to big */
+  /*width:6in;*/
+  background-color: transparent;
+  padding-right: 10%;
+}
+
+#polycGene_Image{
+  max-width: 100%;
+  width: 100%;
+  /*height: 400px;*/
+  /*height: 25%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
+  background-color: transparent;
+}
+
+.genePhenoImgs{
+  height: 200px;
+}
+
+#hiPlotImg, #polyCplotImg{
+  max-width: 100%;
+  width: 100%;
+  /*height: 25%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
+  background-color: transparent; 
+}
+
+/*The following lines added to avoid images to extend beyond their container//cell-grid space*/
+/*
+img {
+  box-sizing: border-box;
+  display: block;
+  object-fit: contain;
+  max-width: 100%;
+  margin: 0;
+  border: 0;
+  padding: 3px;
+}*/
+
+
+.reportHr{
+  margin-left:10%;
+  margin-right: 10%;
+  margin-top:0%;
+  margin-bottom: 0%;
+  border-top: 1px solid #D3D3D3; 
+}
+
+/*6% to put the dots on the line of the following titles*/
+#reportIndex{
+  padding-left: 6%;
+  color:#467599;
+}
+
+/*To hold the info of gene-phenotype relationships*/
+.genePhenotype_section{
+  display: grid;
+  grid-template-columns: 10% 40% 10% 40%;
+  grid-template-rows: 1fr;
+  grid-gap: 20px;
+  grid-template-areas:
+      "logoHuman infoPhenoHuman logoMice infoPhenoMice";
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 10px;
+  margin: 0px;
+  background: transparent;
+  position: relative; 
+}
+
+.geneHumanPhenotype_content{
+  grid-area: infoPhenoHuman;
+}
+
+.geneMicePhenotype_content{
+  grid-area: infoPhenoMice;
+}
+
+.logoHuman_location{
+  grid-area: logoHuman;
+  background-color: none;
+}
+
+.logoMice_location{
+  grid-area: logoMice;
+}
+
+
+/*To indent links*/
+
+.linkEntry{
+  padding-left:10%;
+}
+
+
+/*To relocate the progress bar for the multiple patient analysis*/
+.shiny-notification {
+              height: 150px;
+              width: 800px;
+              position:fixed;
+              top:calc(65% - 50px);
+              left:calc(50% - 400px);
+              /*top: calc(85% - 50px);;*/ /*Para centrarlo era 50%*/
+              /*left: calc(50% - 400px);;*/
+              /*right:0%;*/
+              font-size: 20px;
+              opacity:1;/*So that spinner in the back is not seen*/
+}
+
+/*For the pathomechanism Tables*/
+/*Playing to paint vertical lines on header columns*/
+/*https://stackoverflow.com/questions/50361698/border-style-do-not-work-with-sticky-position-element */
+.tablePathomech {
+    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    border-collapse: separate; /* Do not collapse*/
+    border-spacing: 0;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x:scroll;
+    max-height: 500px;
+    
+}
+
+
+
+.divTablePathoMech{
+    width: 80em;
+    max-height: 500px;
+    overflow-x: scroll;
+    overflow-y: scroll; /*Overflow y only the table body*/
+    /*white-space: nowrap;*/
+}
+
+
+.tablePathomech td, .tablePathomech th {
+               border-bottom: 2px solid #e6e6e6;
+               border-right: 2px solid #e6e6e6;  
+               padding: 8px;
+}
+               
+.tablePathomech tr:nth-child(even){background-color: #f2f2f2;}
+               
+.tablePathomech tr:hover {background-color: #d9d9d9;}
+               
+.tablePathomech th {
+               /*padding-top: 12px;*/
+               padding-bottom: 12px;
+               text-align: left;
+               background-color: #0066cc;
+               color: white;
+               position: sticky;
+               top:0;
+               border-top: 2px solid;
+               border-bottom: 2px solid #e6e6e6;
+               border-right: 2px solid #e6e6e6;
+               
+}
+.tablePathomech th:first-child,
+.tablePathomech td:first-child {
+  /* Apply a left border on the first <td> or <th> in a row */
+  border-left: 2px solid #e6e6e6;
+}
+
+
+
+
+
+
+/*Adjusting explore previous patients Style*/
+.DirectEffectLOF,.DirectEffectGOF,.LongRangeLOF,.LongRangeGOF{
+  margin-left: 50px;
+}
+
+/*
+.hzScroll{
+    width: 70em;
+    height: 700px;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+}*/
+
+/*
+table tbody {
+  display: block;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+table thead, table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}*/
+
+.explanationExplorePreviousPat{
+  margin-left: 10px;
+  
+}
+
+.videotutorialExplPreviousPat{
+  margin-left:  20px;
+}
+
+.phenoRecurrencyStats{
+  background-color: transparent;
+}
+
+.content_subsectionMainResults {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: none;
+  overflow-x:scroll;
+  overflow-y:scroll;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+/*Let's style the button collapsible_subsectionMainResults*/
+.collapsible_subsectionMainResults{
+  border:none;
+  background-color: #FFFFFF;
+  color:#467599;
+  text-decoration: underline;
+}
+
+.collapsible_subsectionMainResults:hover{
+  text-decoration: underline;
+  color:#1D3354;
+}
+
+/*Styling header report sections*/
+.collapsibleReportSections{
+  border:none;
+  background-color: #FFFFFF;
+}
+
+.collapsibleReportSections:hover{
+  text-decoration: underline;
+  color:#1D3354;
+}
+
+/**********************************************************************/
+/*Information to style Multiple Results section (user & explPreviousPat section)*/
+/**********************************************************************/
+
+  .collapsibleExplorePrev, .collapsible {
+  background-color:#9ED8DB ;/*rgb(179, 217, 255);*/
+  color: black;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: black;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  }
+  
+  .active: hover {
+  background-color:white;
+  }
+  
+  .collapsibleExplorePrev:hover, .collapsible:hover {
+  background-color:#33adff; /*rgb(77, 77, 255);*/
+  }
+  
+  .collapsibleExplorePrev_mainSection, .collapsibleMainSection{
+    /*background-color:#467599 ;rgb(179, 217, 255);*/
+    color: black;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: black;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+  }
+  
+  .collapsibleExplorePrev_mainSection:hover, .collapsibleMainSection:hover {
+    background-color:#33adff !important; /*rgb(77, 77, 255);*/
+  }
+  
+  .content {
+  padding: 18px;
+  padding-right:0px;
+  margin-right:0px;
+  margin-bottom: 20px;
+  display: none;
+  overflow-x:scroll;
+  overflow-y:scroll;
+  background-color: #ffffff;
+  width: 100%;
+  }
+  
+  .content_primary{
+    margin-left: 50px;
+    margin-bottom: 20px;
+    display: none;
+    overflow: auto;
+    background-color: #ffffff;
+  }
+
+
+/**********************************/
+/*Styling heatmap subnested table*/
+/*********************************/
+/*Same styling as for main heatmap*/
+#nestedHeatmap {
+font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+width: 100%;
+height: 100%;
+}
+
+#nestedHeatmap td, #nestedHeatmap th {
+border: 1px solid #ddd;
+padding: 8px;
+}
+
+#nestedHeatmap tr:nth-child(even){background-color: #f2f2f2;}
+
+#nestedHeatmap tr:hover {background-color: #ddd;}
+
+/**Styling UserGuide**/
+.UsrGuideGlobalDiv{
+  text-align: justify;
+}
+
+.tableUsrGuide th {  
+  background-color: #9ED8DB;
+  border: 1px solid #ffffff;
+  
+}
+
+.tableUsrGuide th, .tableUsrGuide td {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.tableUsrGuide tr:nth-child(even)  {
+  background-color: #f2f2f2;
+}
+
+/**.tableUsrGuide tr:hover {background-color: #ddd;}**/
+
+#click_SingleSubmissionUserGuide:hover {
+  color: yellow;
+}
+
+.btn btn-default action-button:hover {
+  color: yellow;
+}
+
+/***Adjust padding for input forms, reduce***/
+.well{
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+
+/**STYLE INFORMATION FOR USER SINGLE SV SUBMISSION INPUT **/
+    <!--Well, are the input boxes-->
+    .well{
+      font-size:20px;
+      border-radius: 10px;
+    }
+  
+  /*User Guide Red Button */
+    #done, #doneMultiple {
+    background: #d64045;
+    border: none;
+  color: white !important;
+  padding: 10px;
+  /*optional*/
+    font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+    cursor: pointer;
+  font-size:20px;
+  border-radius: 20px;
+  font-weight: bold;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+
+.patientInputPanel{
+  font-size: 40px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 25% 55% 20%;
+  grid-template-rows: 1fr;
+  grid-gap: 0px;
+  grid-template-areas:
+    "sideText patientForm imgFrontPage";
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 10px;
+  margin: 0px;
+  background: transparent;
+  position: relative;
+}
+
+/*Si quiero pillar config previa de esto. Previo al 29 Oct 2021. Tanto como para inputSlideSideText como imagePatientInput*/
+  .inputSlideSideText{
+    grid-area: sideText;
+    align-self: center;
+    padding-top: 45%;
+    padding-left: 80px;
+    background-color: transparent;
+  }
+
+.imagePatientInput{
+  grid-area: imgFrontPage;
+  align-self: center;
+  /*height: 900px;*/
+  background-color: transparent;
+  padding-top: 5%;
+  /*padding-bottom: 200px;*/
+  padding-left: 0px;
+}
+
+#imageInpPat{
+padding-top: 30%;
+padding-left: 0px;
+padding-right: 0px;
+padding-bottom: 0px;
+width:100%;
+height:600px;
+}
+  
+.sideBarClass{
+  grid-area: patientForm;
+  width:100% !important;
+  background-color: transparent;
+  font-size:20px;
+  border-color: coral;
+  padding: 10px;
+}
+
+.sideBarClassMultiple{
+  grid-area: patientForm;
+  width:100% !important;
+  background-color: transparent;
+  font-size:20px;
+  border-color: coral;
+  padding-top: 15%;
+}
+
+
+.patientFormulary{
+  width: 65%;
+  margin: auto;
+  padding: 10px;
+  background-color: #9ed8db;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 5px;
+  grid-template-areas:
+    "i1 i2"
+  "i3 i4"
+  "i6 i6"
+  "i5 i5"
+  "subm subm";
+}
+
+.inp1{
+  grid-area:i1;
+}
+
+.inp2{
+  grid-area:i2;
+}
+
+.inp3{
+  grid-area:i3;
+}
+
+.inp4{
+  grid-area:i4;
+}
+
+.inp5{
+  grid-area:i5;
+}
+
+.inp6{
+  grid-area:i6;
+}
+
+.submsission{
+  grid-area: subm;
+}
+
+#titleSideBarPannel{
+text-align: center;
+color:#1D3354;
+  font-weight: bold;
+}
+
+
+/*For the multiple patients or SV section*/
+  .patientMultipleFormulary{
+    width: 65%;
+    margin: auto;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #9ed8db;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows:1fr 0.05fr 0.05fr;
+    grid-gap: 5px;
+    grid-template-areas:
+      "uploadBox"
+    "enterMail"
+    "submMultiple";
+  }
+
+.multipleSubmission{
+  grid-area:uploadBox;
+}
+
+.enterMail{
+  grid-area:enterMail;
+}
+
+#multipleSubm{
+grid-area:submMultiple;
+}
+
+/**Mover luego fuera de aqui la info para hacer el menu del panel de submission**/
+.panelSubmAggregatedRes{
+  width: 65%;
+  margin: auto;
+  padding: 10px;
+  background-color: #9ed8db;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 5px;
+  grid-template-areas:
+    "i1ag i2ag runModeAg"
+  "submag submag submag";
+}
+
+.svID{
+  grid-area:i1ag;
+}
+
+.phenoID{
+  grid-area:i2ag ;
+}
+
+.submissionAggregated{
+  grid-area:submag;
+}
+.runMode_aggregatedRes_SubmBox{
+  grid-area:runModeAg;
+}
+
+/*********/
+
+.panelSubm_UsrGuide_SinglePatient{
+  width: 45%;
+  margin: auto;
+  padding: 10px;
+  background-color: #9ed8db;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 5px;
+  grid-template-areas:
+  "i1UsrGuide i2UsrGuide"
+  "submUsrGuide submUsrGuide";
+}
+.usrGuideSelectedPatient{
+  grid-area:i1UsrGuide;
+}
+
+.runMode_UserGuide_SubmBox{
+  grid-area:i2UsrGuide;
+}
+
+.usrGuideSinglePatient_SubmissionButton{
+  grid-area: submUsrGuide;
+}
+
+.titleSubmissionBoxUserGuideSinglePatient{
+  margin: auto;
+}
+
+/**STYLING INFORMATION FOR THE FOOTER **/
+footer {
+    background-color:transparent;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    color: gray;
+    padding-top: 0px;
+    margin-top: 0px;
+    font-size:15px;
+}
+
+#do{
+  background: none !important;
+  border: none;
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#goSinglePage {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	margin:0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+	color: #069;
+}
+
+#goSinglePage:hover{
+  	text-decoration: underline;
+}
+
+
+#footerHr{
+  padding-top:0px;
+  margin-top: 0px;
+}
+
+/*Color buttons on hover*/
+
+#click:hover, #clickMultiple:hover, #click_SingleSubmissionUserGuide:hover, 
+#click_AggregatedRes_ExplorePreviousPat:hover, #click_AggregatedRes_MultipleSVSubmission:hover{
+  background: #467599 !important;
+}
+
+#click:active, #clickMultiple:active, #click_SingleSubmissionUserGuide:active, 
+#click_AggregatedRes_ExplorePreviousPat:active, #click_AggregatedRes_MultipleSVSubmission:active{
+  /*border: 1.5px solid #E9FFF9 !important;*/
+  background: #E9FFF9 !important;
+  color: #000000 !important;
+}
+
+#done:hover, #doneMultiple:hover{
+  background: #ff3333 !important;
+}
+
+#done:active, #doneMultiple:active{
+  /*border: 1px solid #e60000 !important;*/
+  background: #e60000 !important;
+  color: #ffffff !important;
+}
+
+</style>
+
+
+
+</head>
+    <div class="regionHeader">
+      <div class="logoArea">
+        <img id="logoLab" src="encabezado_web_svept_WHITE-01.png" alt="Lab logo">
+      </div>
+    </div>
+    
+    <div class="barBelowHeader">
+    </div>
+  </html>

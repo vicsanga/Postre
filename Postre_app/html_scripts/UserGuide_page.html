@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+  <html lang="en">
+    <head>
+    <style>
+    
+        .zebra-striped thead {
+  background-color: #9ed8db;
+}
+
+.zebra-striped th, td {
+  border: 1px solid #ffffff;
+}
+    
+    .zebra-striped tbody tr:nth-child(odd) td, .zebra-striped tbody tr:nth-child(odd) th {
+  background-color: #f9f9f9;
+}
+.zebra-striped tbody tr:hover td, .zebra-striped tbody tr:hover th {
+  background-color: #f5f5f5;
+}
+    </style>
+    
+    <main>
+      <div class='UsrGuideGlobalDiv'>
+    <h1 id="usrGuide"><b>User Guide</b></h1>
+      <!--Define index with hiperlynks -->
+      <!--Poner algo tipo Single Patient Submission y por otro lado Multiple Patient Submission y un fichero de referencia-->
+      <ul>
+      <li><a href="#ExplanationPostre">What is Postre?</a></li>
+      <li><a href="#SoftUsage">How to use Postre</a></li>
+      <li><a href="#SingleSubm">Single Submission</a></li>
+      <li><a href="#MultipleSubm">Multiple Submission</a></li>
+      <li><a href="#DevStages">Developmental stages considered per phenotype</a></li>
+      <li><a href="#HelpSection">Can we help you?</a></li>
+      </ul> 
+      
+    <h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
+    <div>
+    Postre is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. Postre aims to identify the genes responsible for the disease together with the pathological mechanism. In parallel, it determines the SV associated pathogenic events in space and time. Postre is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and direct pathogenic events</b>.
+    <br> <br>
+     <div>
+       <!--Placing here postre infographic -->
+       <p align="center"><object data="WhatIsPostre.svg" width="1280"> </object></p>
+     </div>
+
+      <br> <br>
+       Most of disease associated variants reside in the non-coding genome. In line with this, 50% of exome sequencing are not able to provide pathogenic interpretations. In this context, the consideration of non-coding regulatory elements, such as enhancers, is fundamental to properly assess the impact of SVs. On top of that, it is also very important to interpret the pathogenicty of SV on its disease relevant context. The reason for that is because SV impact can change depending on the cellular context. Postre takes into account enhnacers and performs context dependent interpretations when interpreting SVs.
+      <br><br>
+      If you want to know more about Postre, check our manuscript <a>here</a>.
+    <br>
+    <br>
+    </div>
+    
+      <h2 id="SoftUsage"> <b>How to use Postre</b> </h2>
+      <p style = 'font-size: 20px;'> A short tutorial explaining software usage is provided in the video below. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualitzation. </p> 
+      <br><br>
+      <div class ='videotutorialExplPreviousPat'> 
+      <p align="center">
+        <iframe width="640" height="360" src="https://www.youtube.com/embed/PqPbzfC-Qz4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </p>
+      </div>
+    <br>
+    <br>
+    
+    <h2 id="SingleSubm"> <b>Single Submission</b> </h2>
+      By default Postre presents in the Single Submission box the information for the BOFS patient described in <a target="_blank" href="https://www.sciencedirect.com/science/article/pii/S1934590919301031">Laugsch et al. 2019</a>. Briefly, an inversion in the chromosome 6 disconnects TFAP2A with some of its Neural Crest enhancers. This enhancer disconnection pathogenically downregulates TFAP2A. To see Postre results for this structural variant, click the Submit button in the the <a id="goSinglePage" href="#" role="button" class="btn btn-default action-button">Single SV Submission page</a>.
+      <br><br>
+      
+      In addition, you can find in the table below the description for a set of 10 patients with pathogenic structural variants and a broad variety of responsible mechanisms. You can run the prediction for those genetic rearrangements with the help of the submission box located below the table.
+      <br><br>
+      <div>
+        <!-- Div, test demo single Submission <table class="demo_table zebra-striped">  <table class="tableUsrGuide">-->
+                    <table class="tableUsrGuide"> 
+              <thead>
+                <tr>
+                  <th>SV ID</th>
+                  <th>SV Type</th>
+                  <th>Mechanism</th>
+                  <th>Phenotype</th>
+                  <th>Reference</th>
+                </tr>
+              </thead>
+            
+              <tbody>
+                  <tr>
+                  <td>TFAP2A Patient</td>
+                  <td>Inversion</td>
+                  <td>TFAP2A pathogenic downregulation due to enhancer disconnection</td>
+                  <td>Craniofacial </td>
+                  <td><a target="_blank" href="https://www.sciencedirect.com/science/article/pii/S1934590919301031">Laugsch et al. 2019</a></td>
+                </tr>
+                <tr>
+                  <td>SOX9 Patient</td>
+                  <td>Deletion</td>
+                  <td>SOX9 pathogenic downregulation due to enhancer deletion</td>
+                  <td>Craniofacial </td>
+                  <td><a target="_blank" href="https://www.sciencedirect.com/science/article/pii/S1934590920304471">Long et al. 2020</a></td>
+                </tr>
+                <tr>
+                  <td>KCNJ2 Patient</td>
+                  <td>Duplication</td>
+                  <td>KCNJ2 pathogenic upregulation due to enhancer adoption through NeoTad formation</td>
+                  <td>Limb </td>
+                  <td><a target="_blank" href="https://www.nature.com/articles/nature19800">Franke et al. 2016</a></td>
+                </tr>
+                 <tr>
+                  <td>PAX3 Patient</td>
+                  <td>Deletion</td>
+                  <td>PAX3 pathogenic upregulation due to enhancer adoption through TAD fusion</td>
+                  <td>Limb </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/25959774/">Lupiáñez et al. 2015</a></td>
+                </tr>
+                <tr>
+                  <td>IHH Patient</td>
+                  <td>Duplication</td>
+                  <td>IHH pathogenic upregulation due to enhancer adoption through NeoTad formation</td>
+                  <td>Limb </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/25959774/">Lupiáñez et al. 2015</a></td>
+                </tr>
+                <tr>
+                  <td>SATB2 Del Patient</td>
+                  <td>Deletion</td>
+                  <td>SATB2 deletion responsible of neurodevelopmental alteration</td>
+                  <td>Neurodevelopmental </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/21343628/">Balasubramanian et al. 2011</a></td>
+                </tr>
+                <tr>
+                  <td>SATB2 Trunc Patient</td>
+                  <td>Deletion</td>
+                  <td>SATB2 truncation responsible of neurodevelopmental alteration</td>
+                  <td>Neurodevelopmental </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/24363063/">Rainger et al. 2013</a></td>
+                </tr>
+                <tr>
+                  <td>SATB2 LR Patient</td>
+                  <td>Translocation</td>
+                  <td>SATB2 pathogenic downregulation due to enhancer disconnection</td>
+                  <td>Neurodevelopmental </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/24363063/">Rainger et al. 2013</a></td>
+                </tr>
+                <tr>
+                  <td>FOXG1 Patient</td>
+                  <td>Translocation</td>
+                  <td>FOXG1 pathogenic downregulation due to enhancer disconnection</td>
+                  <td>Neurodevelopmental </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/29289958/">Mehrjouy et al. 2017</a></td>
+                </tr>
+                <tr>
+                  <td>TBX3&5 Patient</td>
+                  <td>Deletion</td>
+                  <td>Cardiovascular deffect triggered by the additive effect of the deletion of TBX3 and TBX5</td>
+                  <td>Cardiovascular </td>
+                  <td><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/23713051/">Alby et al. 2013</a></td>
+                </tr>
+              </tbody>
+            </table>
+            
+<div class="titleSubmissionBoxUserGuideSinglePatient">
+<h3><center><b style="color:#467599;">Run prediction with the structural variant of interest</b></center></h3>
+</div>
+
+<!--Formatting submission box for UserGuide Selected Patient -->
+<div class=panelSubm_UsrGuide_SinglePatient>
+
+<div class="usrGuideSelectedPatient well">
+
+    <div class="form-group shiny-input-container">
+      <label class="control-label" id="SV of interest" for="SV of interest">Choose structural variant</label>
+      <div>
+<select id="singlePatientId">
+<option value="TFAP2A_patient" selected="selected">TFAP2A Patient</option>
+<option value="SOX9_patient_F1">SOX9 Patient</option>
+<option value="KCNJ2_patient">KCNJ2 Patient</option>
+<option value="PAX3_patient">PAX3 Patient</option>
+<option value="IHH_patient">IHH Patient</option>
+<option value="SATB2_Del_pat4_PMID:21343628">SATB2 Del Patient</option>
+<option value="SATB2_Trunc_case2Intrag_PMID:24363063">SATB2 Trunc Patient</option>
+<option value="SATB2_LR_case1_PMID:24363063">SATB2 LR Patient</option>
+<option value="FOXG1_P2_CLINVAR_SCV000576474_PMID:29289958">FOXG1 Patient</option>
+<option value="TBX3&5_case3_PMID:23713051">TBX3&5 Patient</option>
+</select>
+ <!--          <script type="application/json" data-for="typeSV" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script> -->
+      </div>
+    </div>
+</div> 
+   
+   <!-- Putting the RunMode option -->
+   <div class="runMode_UserGuide_SubmBox well">
+    <div class="form-group shiny-input-container">
+      <label class="control-label" id="runMode_UserGuide_SingleSubmPat-label" for="runMode_UserGuide_SingleSubmPat">Running mode</label>
+      <div>
+        <select id="runMode_UserGuide_SingleSubmPat"><option value="Standard" selected>Standard</option>
+<option value="High-Specificity">High-Specificity</option></select>
+        <script type="application/json" data-for="runMode_single" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+      </div>
+    </div>
+  </div>
+   
+   <div class="usrGuideSinglePatient_SubmissionButton">
+    <button id="click_SingleSubmissionUserGuide" type="button" class="btn btn-default action-button" style="color: #fff; background-color: #1D3354; border-color: #467599;">
+  <i class="fa fa-paper-plane" role="presentation" aria-label="paper-plane icon"></i>
+  Submit
+</button>
+   </div>         
+</div> <!--Closing panelSubm_UsrGuide_SinglePatient -->     
+        
+      </div>
+      <br>
+      Currently, the single submission box  only accepts one structural variant, and one phenotype per structural variant. If the impact of the structural variant wants to be assesed in different phenotypes, each of them must be evaluated separately.
+      
+    <br>
+    <br>
+    
+      <h2 id="MultipleSubm"> <b>Multiple Submission</b> </h2>
+      The multiple submission box allows the sequential analysis of multiple structural variants. In addition, multiple phenotypes can be associated with each structural variant.
+      <br><br>
+      The multiple submission box requires from the user to upload the data in a specific format.The file format consists on 1 line and 7 columns per structural variant. Each structural variant must only contain two breakpoints. The information associated with each column is provided below:
+      <br><br>
+      <i>Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplication) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.</i>
+      <br><br>
+      <ul>
+      <li>Column 1: Chromosome for the breakpoint 1  </li>
+      <li>Column 2: Genomic coordinates for the breakpoint 1. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.  </li>
+      <li>Column 3: Chromosome for the breakpoint 2</li>
+      <li>Column 4: Genomic coordinates for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.</li>
+      <li>Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.</li>
+      <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental or cardiovascular. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
+      <li>Column 7: Structural variant unique identifier e.g. (Patient1_SV3)</li>
+      </ul> 
+      
+    The data must be stored in tsv format. Hence, the columns must be separated by tabulations.
+    <br><br>
+    An example file can be downloaded <a href="ExampleMultipleSubmission.tsv" target="_blank">here</a>.
+    
+    <br>
+    <br>
+      
+    <h2 id="DevStages"> <b>Developmental Stages Information</b> </h2>
+      If you want to know more about the different developmental stages considered for each phenotype, check the 
+    <a href="DevStages_Metadata.html" target="_blank"> Developmental Stages File </a>. 
+    <br>
+    <br>
+    Are you missing some data? Do you want us to add some data which might be profitable for your research? Tell us about it through sv_radaLab@gmail.com!
+    <br>
+    <br>
+    
+    <h2 id="HelpSection"> <b>Can we help you?</b> </h2>
+      If you are experiencing some trouble, or you just want to contact us for any reason, please send a mail to sv_radaLab@gmail.com.
+    <br>
+    <br>
+    
+
+</div> <!--Closing: UsrGuideGlobalDiv-->
+</main>
+      
+</html>
