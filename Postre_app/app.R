@@ -24,15 +24,7 @@ library(diagram)##For curve arrows representation
 # library(rtracklayer)
 # library(reticulate)
 
-##For the mails part we need java to be installed
-##rJava required for mailR
-##java installation done with: sudo apt-get install default-jdk. openjdk-11-jdk-headless es la que s'esta instalant 
-# library(shinyAce)
-# library(rJava)
-# library(mailR)
 
-
-##Place here loading library script
 
 ###Setwd in the folder where all the app info is hosted
 # setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/SV_app")
