@@ -19,9 +19,17 @@ IMAGEN
 <h2 id="Installation">How to install and run Postre?</h2>
 
 Postre is build with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
-Thus, tu run Postre you only need to install R & R-Studio. There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/>
+Thus, tu run Postre you only need to install R & R-Studio, and a couple of R libraries.
+
+<h3>Installing R and R-Studio </h3>
+There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/>
+
+<h3>Installing Postre required libraries </h3>      
 
 
+
+      
+      
 Running Postre on the web?
 
 To run it
