@@ -19,16 +19,27 @@ IMAGEN
 
 <h2 id="Installation">How to install and run Postre?</h2>
 
-Postre is build with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
-Thus, tu run Postre you only need to install R & R-Studio, and a couple of R libraries.
+Postre is built with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
+Thus, to run Postre you only need to install R & R-Studio, and a couple of R libraries.
 
-<h3>Installing R and R-Studio </h3>
+<h3>1. Installing R and R-Studio </h3>
 There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/>
 
-<h3>Installing Postre required libraries </h3>      
+<h3>2. Installing and running Postre</h3>      
+It is very straightforward to run Poste. It is only required to execute the 3 instructions provided below. To keep it simple <b>Always run the 3 instructions <b>.
+
+```R
+if (!require("pacman")){install.packages("pacman")} ##Instruction 1
+##Instruction 2
+##Instruction 3
+```
+
+If you want to know more about the different instructions. <b>Instruction 1 </b> checks if a library manager called pacman is installed, if it is not, then pacman will be (if R asks you, confirm the installation of the package). The <b>Instruction 2 </b loads and installs all the required libraries for Postre, taking profit of pacman functionality (the first time that you run Postre this action will take more time, since the different libraries will be installed). The <b>Instruction 3 </b> will run and open Postre in your web browser.
 
 
+You can just copy paste and run those instructions at once in R. You can find me doing that in the video below!
 
+YOUTUBE VIDEO INITIALIZING POSTRE
       
       
 Running Postre on the web?
