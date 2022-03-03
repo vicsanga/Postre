@@ -1,7 +1,7 @@
 # Postre
 Software developed to predict and annotate the impact of Structural Variants affecting both the coding and non-coding genome.
       <li><a href="#ExplanationPostre">What is Postre?</a></li>
-      <li><a href="#SoftUsage">How to install Postre?</a></li>
+      <li><a href="#Installation">How to install and run Postre?</a></li>
 
 <h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
 
@@ -16,6 +16,18 @@ IMAGEN
 
 
 
-<h2>How to install?</h2>
+<h2 id="Installation">How to install and run Postre?</h2>
 
+Postre is build with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
+Thus, tu run Postre you only need to install R & R-Studio. There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/>
+
+
+Running Postre on the web?
+
+To run it
+
+```
+To install Postre
+source(whtvr.R)
+```
 
