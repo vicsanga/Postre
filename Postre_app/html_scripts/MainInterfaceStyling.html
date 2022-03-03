@@ -35,13 +35,17 @@
   margin-top: 0%;
 }
 
+/*Esto tiene la info de todo el menu */
 #inTabset{
   background-color: #1D3354;
   width: 100%;
   /*margin-top: -50px;*/
   height: 100px;
   position: absolute;
+  padding-top: 25px;
 }
+
+
 
 nav.navbar {
    background-color: #1D3354;
@@ -58,18 +62,25 @@ nav.navbar {
    border-left:none;
 }
 
-.navbar-default.navbar-static-top li a {
-    color: #e9fff9 ;
+.navbar-default.navbar-static-top li a:hover {
+    color: #9ED8DB !important;
     margin-top: 0px;
 }
 
-.navbar-default.navbar-static-top li a:hover {
-    color: hsl(358, 65%, 75%) ;
+
+/*Box donde estan los subtabs del menu*/
+.navbar-default.navbar-static-top li a{
+  display: block;
+  background-color: transparent !important;
+  color:white !important; /*With this I eliminate the greyish WITH IMPORTANT*/
 }
 
-.navbar-default.navbar-static-top .dropdown-menu>li>a {
-    color: black ;
+
+/*Para quitar el rojito ese*/
+.navbar-default.navbar-static-top li a:hover {
+    color: #9ed8db ;
 }
+
 
 html, body{
     margin:0px;
