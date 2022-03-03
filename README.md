@@ -19,7 +19,7 @@ IMAGEN
 
 <h2 id="Installation">How to install and run Postre?</h2>
 
-Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!</b> Once you, or the IT colleague, has installed Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
+Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!</b> Once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
 
 Postre is built with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
 Thus, to run Postre you only need to install R & R-Studio, and a couple of R libraries.
@@ -29,6 +29,7 @@ There is plenty of available information in the internet to do this depending on
 
 <h3>2. Running Postre</h3>      
 It is very straightforward to run Postre latest version.  It is only required to execute the 3 instructions provided below in R. First, open R studio, afterwards run the following 3 instructions: 
+<br>
 
 ```R
 ##Instruction 1
