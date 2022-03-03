@@ -29,9 +29,9 @@ There is plenty of available information in the internet to do this depending on
 It is very straightforward to run Poste. It is only required to execute the 3 instructions provided below. To keep it simple <b>Always run the 3 instructions <b>.
 
 ```R
-if (!require("pacman")){install.packages("pacman")} ##Instruction 1
-##Instruction 2
-##Instruction 3
+if (!require("pacman")){install.packages("pacman")} ##Instruction 1: Checking pacman installed or installing
+##Instruction 2: Installing and loading Postre required libraries
+##Instruction 3: Running Postre
 ```
 
 If you want to know more about the different instructions. <b>Instruction 1 </b> checks if a library manager called pacman is installed, if it is not, then pacman will be (if R asks you, confirm the installation of the package). The <b>Instruction 2 </b loads and installs all the required libraries for Postre, taking profit of pacman functionality (the first time that you run Postre this action will take more time, since the different libraries will be installed). The <b>Instruction 3 </b> will run and open Postre in your web browser.
