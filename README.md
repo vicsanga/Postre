@@ -42,6 +42,7 @@ runGitHub("Postre", "vicsanga", subdir = "Postre_app/") ##Instruction 3: Running
 ```
 
 If you want to know more about the different instructions:
+
 <b>Instruction 1 </b>:  Checks if a library manager called pacman is installed, if it is not, then pacman will be installed (if R asks for permission to install it, confirm the installation of the package).
 
 <b>Instruction 2 </b>: loads and installs all the required libraries for Postre, taking profit of pacman functionality (the first time that you run Postre this action will take more time, since the different libraries will be installed). 
