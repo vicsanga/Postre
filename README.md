@@ -7,7 +7,8 @@ Software developed to predict and annotate the impact of Structural Variants aff
       <li><a href="#DevStages">Developmental stages considered per phenotype</a></li>
       <li><a href="#HelpSection">Can we help you?</a></li>
 
-<h2>What is Postre?</h2>
+<h2 id>What is Postre?</h2>
+
 IMAGEN
 
 <h2>How to install?</h2>
@@ -27,3 +28,4 @@ link to the mark with
 
 [Go to my mark](#some-text)
 
+<h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
