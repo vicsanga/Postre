@@ -29,3 +29,17 @@ link to the mark with
 [Go to my mark](#some-text)
 
 <h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
+
+
+
+<h2>How to install?</h2>
+
+
+
+declare target mark in a regular MD header
+## My header with a lot of words, and punctuation
+becomes
+
+## <a name="some-text">My header with a lot of words, and punctuation</a>
+
+link to the mark with
