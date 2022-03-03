@@ -38,7 +38,7 @@ if (!require("pacman")){install.packages("pacman")}
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
 
 ##Instruction 3
-runGitHub("Postre", "vicsanga", subdir = "Postre_app/") ##Instruction 3: Running Postre (latest version)
+runGitHub("Postre", "vicsanga", subdir = "Postre_app/")
 ```
 
 If you want to know more about the different instructions:
