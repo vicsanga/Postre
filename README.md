@@ -19,7 +19,7 @@ IMAGEN
 
 <h2 id="Installation">How to install and run Postre?</h2>
 
-Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!</b> Once you, or the IT colleague has installed Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
+Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!</b> Once you, or the IT colleague, has installed Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
 
 Postre is built with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
 Thus, to run Postre you only need to install R & R-Studio, and a couple of R libraries.
@@ -31,16 +31,22 @@ There is plenty of available information in the internet to do this depending on
 It is very straightforward to run Postre latest version.  It is only required to execute the 3 instructions provided below in R. First, open R studio, afterwards run the following 3 instructions: 
 
 ```R
-if (!require("pacman")){install.packages("pacman")} ##Instruction 1: Checking pacman installed or installing
-source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")##Instruction 2: Installing and loading Postre required libraries
+##Instruction 1
+if (!require("pacman")){install.packages("pacman")} 
+
+##Instruction 2
+source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
+
+##Instruction 3
 runGitHub("Postre", "vicsanga", subdir = "Postre_app/") ##Instruction 3: Running Postre (latest version)
 ```
 
 If you want to know more about the different instructions:
 <b>Instruction 1 </b>:  Checks if a library manager called pacman is installed, if it is not, then pacman will be installed (if R asks for permission to install it, confirm the installation of the package).
-<b>Instruction 2 </b> loads and installs all the required libraries for Postre, taking profit of pacman functionality (the first time that you run Postre this action will take more time, since the different libraries will be installed). 
-<b>Instruction 3 </b> will run and open Postre in your web browser.
 
+<b>Instruction 2 </b>: loads and installs all the required libraries for Postre, taking profit of pacman functionality (the first time that you run Postre this action will take more time, since the different libraries will be installed). 
+
+<b>Instruction 3 </b>: Runs Postre latest version in your web browser.
 
 You can just copy paste and run those instructions at once in R. You can find me doing that in the video below!
 
