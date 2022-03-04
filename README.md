@@ -42,7 +42,7 @@ It is very straightforward to run Postre latest version.  It is only required to
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
 
 ##Instruction 2: Running Postre
-runGitHub("Postre", "vicsanga", subdir = "Postre_app/")
+runGitHub("Postre", "vicsanga", subdir = "Postre_app/", launch.browser = TRUE)
 ```
 
 If you want to know more about the different instructions:
