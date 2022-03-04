@@ -25,17 +25,10 @@ Postre is built with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
 Thus, to run Postre you only require R & R-Studio, and a couple of R libraries.
 
 <h3>1. Installing R and R-Studio </h3>
-There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/>
-
-Tutorial para windows
-https://www.youtube.com/watch?v=NZxSA80lF1I
-
-Para mac
-https://www.youtube.com/watch?v=LanBozXJjOk
-
-
-Para ubuntu
-https://www.youtube.com/watch?v=iN0UZ43G6GE
+There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Web Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/> 
+<a href="https://www.youtube.com/watch?v=NZxSA80lF1I">Windows Youtube Tutorial </a>
+<a href="https://www.youtube.com/watch?v=LanBozXJjOk">Mac Youtube Tutorial </a>
+<a href="https://www.youtube.com/watch?v=iN0UZ43G6GE">Ubuntu Youtube Tutorial </a>
 
 
 <h3>2. Running Postre</h3>      
