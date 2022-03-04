@@ -48,12 +48,14 @@ runGitHub("Postre", "vicsanga", subdir = "Postre_app/", launch.browser = TRUE)
 If you want to know more about the different instructions:
 
 <ol>
-<li><b>Instruction 1 </b>: Installs and loads all the required libraries for Postre. If some libraries are missing R may ask for permission to install them, confirm it. <b>The first time that you run Postre this action will probably take more time, if different libraries are missing</b>. Instruction 1 must always be executed, because if a new library is added to Postre it will be considered in this first step.</li>
+<li><b>Instruction 1 </b>: Installs and loads all the required libraries for Postre. If some libraries are missing R may ask for permission to install them, confirm it.The first time that you run Postre this action will probably take more time. Instruction 1 must always be executed, because if a new library is added to Postre it will be considered in this first step.</li>
 
 <li><b>Instruction 2 </b>: Runs Postre latest version in your web browser.</li>
 
 </ol>
 You can just copy paste and run those instructions at once in R. You can find me doing that in the video below!
+
+<br><br>
 
 YOUTUBE VIDEO INITIALIZING POSTRE
       
