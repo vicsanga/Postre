@@ -21,31 +21,33 @@ IMAGEN
 
 Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!</b> Once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
 
-Postre is built with <a href="https://shiny.rstudio.com/">Shiny</a> framework.
+Postre is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
 Thus, to run Postre you only require R & R-Studio, and a couple of R libraries.
 
 <h3>1. Installing R and R-Studio </h3>
-There is plenty of available information in the internet to do this depending on the OS(Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: <a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Web Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/> 
-<a href="https://www.youtube.com/watch?v=NZxSA80lF1I">Windows Youtube Tutorial </a>
-<a href="https://www.youtube.com/watch?v=LanBozXJjOk">Mac Youtube Tutorial </a>
-<a href="https://www.youtube.com/watch?v=iN0UZ43G6GE">Ubuntu Youtube Tutorial </a>
-
+There is plenty of available information in the internet to do this depending on the OS (Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: 
+<ul>
+<li><a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Web Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/></li>
+<li><a href="https://www.youtube.com/watch?v=NZxSA80lF1I" target="_blank">Windows Youtube Tutorial </a></li>
+<li><a href="https://www.youtube.com/watch?v=LanBozXJjOk" target="_blank">Mac Youtube Tutorial </a></li>
+<li><a href="https://www.youtube.com/watch?v=iN0UZ43G6GE"target="_blank">Ubuntu Youtube Tutorial </a></li>
+</ul>
 
 <h3>2. Running Postre</h3>      
 It is very straightforward to run Postre latest version.  It is only required to execute the instructions provided below in R. First, open R studio, afterwards run the following 2 instructions: 
-<br>
+<br><br>
 
 ```R
-##Instruction 1: Managing Dependencies
+##Instruction 1: Managing & Loading Dependencies
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
 
-##Instruction 2: Running Postre (Mandatory to run previously Instruction 1)
+##Instruction 2: Running Postre
 runGitHub("Postre", "vicsanga", subdir = "Postre_app/")
 ```
 
 If you want to know more about the different instructions:
 
-<b>Instruction 1 </b>: Loads and Installs all the required libraries for Postre. If some libraries are missing R may ask for permission to install them, confirm it (the first time that you run Postre this action may take more time, since the different libraries will be installed). 
+<b>Instruction 1 </b>: Installs and loads all the required libraries for Postre. If some libraries are missing R may ask for permission to install them, confirm it (the first time that you run Postre this action may take more time, since the different libraries will be installed). Instruction 1 must always be executed, if a new library is added to Postre it will be considered in this first step.
 
 <b>Instruction 2 </b>: Runs Postre latest version in your web browser.
 
