@@ -43,18 +43,19 @@ It is very straightforward to run Postre latest version.  It is only required to
 <br>
 
 ```R
-##Instruction 1
+##Instruction 1: Managing Dependencies
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
 
-##Instruction 3
+##Instruction 2: Running Postre (Mandatory to run previously Instruction 1)
 runGitHub("Postre", "vicsanga", subdir = "Postre_app/")
 ```
 
 If you want to know more about the different instructions:
 
-<b>Instruction 1 </b>: Loads and Installs all the required libraries for Postre. If  some libraries are missing R may ask for permission to install them, confirm it (the first time that you run Postre this action may take more time, since the different libraries will be installed). 
+<b>Instruction 1 </b>: Loads and Installs all the required libraries for Postre. If some libraries are missing R may ask for permission to install them, confirm it (the first time that you run Postre this action may take more time, since the different libraries will be installed). 
 
 <b>Instruction 2 </b>: Runs Postre latest version in your web browser.
+
 
 You can just copy paste and run those instructions at once in R. You can find me doing that in the video below!
 
