@@ -12,6 +12,7 @@ Postre is a software developed to <b style='color:#1D3354;'>predict the pathogen
 </div>
 
 IMAGEN
+![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
 
 & Video youtube
 
