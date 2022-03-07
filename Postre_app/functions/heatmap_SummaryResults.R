@@ -233,6 +233,13 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           
           ##Get targetMechanism responsible of pathogenic score
           targetMech<-names(bothGeneScore)[bothGeneScore >= minRequiredScore]
+          ##We are going to also add the pathogenicScore to the heatmap
+          if(targetMech=="LOF"){
+            scoreForCell<-geneScore_LOF
+          }else if(targetMech=="GOF"){
+            scoreForCell<-geneScore_GOF
+          }
+          
           ##Add to the relevant info vector
           ## RELEVANT MATCH is fundamental, used on many things downstream as id
           relevantMatch<-paste(gene,"_",targetMech,"_",nameCol,sep="")
@@ -288,6 +295,7 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
                                  "style='color:#000000;'>",
                                  "<div style='height:100%; width:100%' title='Click for more details'>",##To make pointer sensitive to the whole cell ##To add mouseover text
                                  geneMechanism, ##LOF, GOF
+                                 ": ", scoreForCell,##ADDING PATHOGENIC SCORE
                                  "</div>",
                                  "</a>",
                                  sep="",
@@ -333,6 +341,13 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           for(targetMech in c("LOF","GOF")){
             
             ##print(targetMech) ##Get targetMechanism responsible of pathogenic score
+            
+            ##We are going to also add the pathogenicScore to the heatmap
+            if(targetMech=="LOF"){
+              scoreForCell<-geneScore_LOF
+            }else if(targetMech=="GOF"){
+              scoreForCell<-geneScore_GOF
+            }
             
             ##Add to the relevant info vector
             ## RELEVANT MATCH is fundamental, used on many things downstream as id
@@ -390,6 +405,7 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
                                    "style='color:#000000;'>",
                                    "<div style='height:100%; width:100%' title='Click for more details'>",##To make pointer sensitive to the whole cell ##To add mouseover text
                                    geneMechanism, ##LOF, GOF
+                                   ": ", scoreForCell,##ADDING PATHOGENIC SCORE
                                    "</div>",
                                    "</a>",
                                    sep="",

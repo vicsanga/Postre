@@ -652,6 +652,7 @@ server <- function(input, output, session){
       colnames(patientInfo)[colnames(patientInfo)=="patientID"]<-"SV_ID"
       
       ###Running prediction
+      browser()
       patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore, runMode = runMode_single)
       ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
     },error = function(err){
