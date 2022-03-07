@@ -56,14 +56,18 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
   
   gene_reports<-list()
   
-  ## initial part for geneText_html object
-  headerPart<-##"<html>
-  "<head>
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <style>
-  </style>
-  </head>
-  <body>"
+  # ## initial part for geneText_html object
+  ## DEPRECATED UNNECESSARY
+  # headerPart<-##"<html> 
+  # "<head>
+  # <meta name='viewport' content='width=device-width, initial-scale=1'>
+  # <style>
+  # </style>
+  # </head>
+  # <body>"
+  
+  headerPart<-""
+  
   
   ##Let's remove all line breaks, introduced from internet copypaste java & html code
   headerPart<-gsub("[\r\n]", "", headerPart)
@@ -105,7 +109,7 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         #So the gene is in the human-HPO phenotype categorized matrix
 
         if(humanBased_genePhenotype[gene,mainPhenotype]==1){
-          geneText<-paste(geneText, "<p align='justify'>",
+          geneText<-paste(geneText, "<p style='text-align:justify;'>",
                           targetGene,
                           " has been previously associated with the patient phenotype category in humans.</p>", 
                           collapse = "")
@@ -254,7 +258,7 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         #So the gene is in the mice-phenotype categorized matrix
         ##It can have or not, an association with phenotype
         if(miceBased_genePhenotype[gene,mainPhenotype]==1){
-          geneText<-paste(geneText, "<p align='justify'>The mouse homologous gene for ",
+          geneText<-paste(geneText, "<p style='text-align:justify;'>The mouse homologous gene for ",
                           targetGene,
                           " has been associated in mice with a phenotype category similar to the one reported in the patient.</p>", 
                           collapse = "")
@@ -310,8 +314,8 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
     
     #######################################
     ##Adding links to human and mice logos
-    info_humanLogo<-"<div class='logoHuman_location'><img class='genePhenoImgs' src='personLogo.png' alt='human logo' width=100% height=100%></div>"
-    info_miceLogo<-"<div class='logoMice_location'><img class='genePhenoImgs' src='miceLogo.png' alt='mice logo' width=100% height=100%></div>"
+    info_humanLogo<-"<div class='logoHuman_location'><img class='genePhenoImgs' src='personLogo.png' alt='human logo' style='width:100%;height:100%;'></div>"
+    info_miceLogo<-"<div class='logoMice_location'><img class='genePhenoImgs' src='miceLogo.png' alt='mice logo' style='width:100%;height:100%;'></div>"
     
     ##Embedding geneText in a div to apply a grid css configuration
     
@@ -340,7 +344,8 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
   geneMasterHTML<-paste(unlist(gene_reports),sep = "",collapse = "")
 
   ##AddingCollapsableList INfo
-  endPart<-"</body>"
+  # endPart<-"</body>"##Deprecated. More info to be added
+  endPart<-""
   ##Let's remove all line breaks, introduced from internet copypaste java & html code
   endPart<-gsub("[\r\n]", "", endPart)
   

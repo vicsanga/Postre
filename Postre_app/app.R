@@ -659,7 +659,7 @@ server <- function(input, output, session){
       return(patientResults)
       
     })
-    
+
     ############################################
     #If status error, generate the error html
     #We can be more specific in the future if we are interested

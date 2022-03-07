@@ -28,28 +28,8 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   all_functionsJS<-"<script>"##append them here
   
   ## Starting HTML
-  header_html<-c("<html><head><style>#heatmap {
-    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    }
-
-    #heatmap td, #heatmap th {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-
-    #heatmap tr:nth-child(even){background-color: #f2f2f2;}
-
-    #heatmap tr:hover {background-color: #ddd;}
-
-    #heatmap th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #0066cc;
-      color: white;
-    }</style></head><body>")
+  header_html<-c("<!DOCTYPE html><html lang='en'><head><title>Single SV Submission Results Page</title><meta charset='UTF-8'></head>
+                 <body><div class='wrapperMainSingleResults'>")##And we also start the main div wrapper for this page content
   
   ##
   ##Let's remove all line breaks, introduced from internet copypaste java & html code
@@ -260,14 +240,20 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           relevant_Gene_Phase<-c(relevant_Gene_Phase,
                                  relevantMatch)
           
+          ##Adapting variables names for JavaScript
+          ##Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
+          JS_relevantMatch<-gsub("-","", relevantMatch) 
+          JS_relevant_Gene_Phase<-gsub("-","", relevant_Gene_Phase) 
+          
+          
           ##Creating javascript function to hide/show the gene report specifically
           
           functionsJS<-paste(
             "function myFunction_Tablecell_",
-            relevantMatch,
+            JS_relevantMatch,
             "() {
             var x = document.getElementById('",
-            relevantMatch,
+            JS_relevantMatch,
             "');
             if (x.style.display === 'none') {
             x.style.display = 'block';
@@ -294,10 +280,10 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           ##It will be the geneMechanism as text, but linking the geneReport
           geneMechanism<-targetMech
           geneCellContent<-paste("<a href='#",
-                                 relevantMatch, ##gene_phase
-                                 "'",
+                                 JS_relevantMatch, ##gene_phase
+                                 "' ",
                                  "onclick='myFunction_Tablecell_",
-                                 relevantMatch,
+                                 JS_relevantMatch,
                                  "()' ",
                                  "style='color:#000000;'>",
                                  "<div style='height:100%; width:100%' title='Click for more details'>",##To make pointer sensitive to the whole cell ##To add mouseover text
@@ -355,14 +341,20 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
             relevant_Gene_Phase<-c(relevant_Gene_Phase,
                                    relevantMatch)
             
+            ##Adapting variables names for JavaScript
+            ##Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
+            JS_relevantMatch<-gsub("-","", relevantMatch) 
+            JS_relevant_Gene_Phase<-gsub("-","", relevant_Gene_Phase) 
+            
+            
             ##Creating javascript function to hide/show the gene report specifically
             
             functionsJS<-paste(
               "function myFunction_Tablecell_",
-              relevantMatch,
+              JS_relevantMatch,
               "() {
             var x = document.getElementById('",
-              relevantMatch,
+              JS_relevantMatch,
               "');
             if (x.style.display === 'none') {
             x.style.display = 'block';
@@ -390,10 +382,10 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
             ##It will be the geneMechanism as text, but linking the geneReport
             geneMechanism<-targetMech
             geneCellContent<-paste("<a href='#",
-                                   relevantMatch, ##gene_phase
-                                   "'",
+                                   JS_relevantMatch, ##gene_phase
+                                   "' ",
                                    "onclick='myFunction_Tablecell_",
-                                   relevantMatch,
+                                   JS_relevantMatch,
                                    "()' ",
                                    "style='color:#000000;'>",
                                    "<div style='height:100%; width:100%' title='Click for more details'>",##To make pointer sensitive to the whole cell ##To add mouseover text
@@ -498,19 +490,19 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   
   numbersHeat_html<-generic_table_html_generation(targetMatrix = heatm_targetMatrix)
   
-  
   ##Adding heatmap numbers section
+  ##Avoiding h123... tags wrapping button because was affecting JS associated functions response
+  ##And not recommended to put them inside
   whole_html<-paste(whole_html,
                     "<div class='numbersHeatmap'>",
                     "<button type='button' class='collapsible_subsectionMainResults'>",
-                    "<h3>",
-                    "Pathogenic Scores",
-                    "</h3>",
+                    "<span style='font-size:22px'>Pathogenic Scores</span>",
                     "</button>",
                     "<div class='content_subsectionMainResults'>",
                     numbersHeat_html,
                     "</div>",
                     "</div>",
+                    "<br>",
                     sep="",
                     collapse="")
   
@@ -560,9 +552,7 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   whole_html<-paste(whole_html,
                     "<div class='numbersHeatmap'>",
                     "<button type='button' class='collapsible_subsectionMainResults'>",
-                    "<h3>",
-                    "Prediction Considered Information",
-                    "</h3>",
+                    "<span style='font-size:22px'>Prediction Considered Information</span>",
                     "</button>",
                     "<div class='content_subsectionMainResults'>",
                     patientInfo_html,
@@ -585,23 +575,27 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##for each gene above minScore create section with link to jump from table
   for(reportUnit in patientResults$genesConditions_ToReport){ ##relevant_Gene_Phase
     ##remember reportUnit is FUNDAMENTAL are the ids used to build JS functions
+    ##As previously pointed
+    ##Adapting variables names for JavaScript
+    ##Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
+    JS_reportUnit<-gsub("-","", reportUnit) 
     
     ##div reportEntity, for single gene-phase specific
     ##Link will direct the user here
     ##By default the information is hidden
-    startReportEntity<-paste0("<div id='",reportUnit, "'",
+    startReportEntity<-paste0("<div id='",JS_reportUnit, "' ",
                               "style='display:none;'>")
     
     #Let's control with a button, expanding and collapsing
-    titleReportUnit<-paste("<button type='button' class='collapsibleReportSections'",
+    titleReportUnit<-paste("<h1><button type='button' class='collapsibleReportSections' ",
                            "onclick='",
                            "myFunction_HideReport_",
-                            reportUnit,
+                           JS_reportUnit,
                            "()'",
-                           "><h1><b>Report ",
+                           "><b>Report ",
                            reportUnit,
-                           "</b></h1>",
-                           "</button>",
+                           "</b>",
+                           "</button></h1>",
                            sep="")
     
     ########################
@@ -619,10 +613,10 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
     ##based on click, "Hide Results", and based on click header of the section
     functionsJS<-paste(
       "function myFunction_HideReport_",
-      reportUnit,
+      JS_reportUnit,
       "() {
               var x = document.getElementById('",
-      reportUnit,
+      JS_reportUnit,
       "');
           x.style.display = 'none';
           }",
@@ -643,9 +637,9 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
     anchorSentence<-paste(
       "<a onclick='",
       "myFunction_HideReport_",
-      reportUnit,
-      "()'",
-      " style='cursor:pointer;'> Hide results </a>",
+      JS_reportUnit,
+      "()' ",
+      "style='cursor:pointer;'> Hide results </a>",
       sep=""
     )
     
@@ -703,12 +697,11 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
                     collapse = "")
   
   ##
-  ##Put all main results inside the content of a metaDiv
+  ##Wrap up html
   whole_html<-paste(
-    '<div class="wrapperMainSingleResults"',
     whole_html,
-    '</div>',
-    '</body></html>',
+    "</div>",#closing wrapperMainSingleResults div
+    "</body></html>",
     sep = "",
     collapse = ""
   )

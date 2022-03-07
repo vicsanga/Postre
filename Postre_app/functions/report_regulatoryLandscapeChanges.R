@@ -55,7 +55,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
     ##And not enh
     regLanChanges<-paste(regLanChanges,
                          "<div class='barplotEnh'>",
-                         paste0("<img id='barplotEnhImage' src='graphicalSummaries/", reportUnit,"_", patientResults$job_UniCode, "_regulatoryLandscapeBarplotChanges.png", "',",
+                         paste0("<img class='barplotEnhImage' src='graphicalSummaries/", reportUnit,"_", patientResults$job_UniCode, "_regulatoryLandscapeBarplotChanges.png", "'",
                                 ">"),
                          "</div>",
                          sep="") 
@@ -65,7 +65,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
     regLanChanges<-paste(regLanChanges,
                          "<div class='directImpactPlot'>",
                          #Quitando el image Id
-                         paste0("<img id='directplotEnhImage' src='graphicalSummaries/", reportUnit,"_", patientResults$job_UniCode, "_regulatoryLandscapeBarplotChanges.png", "',",
+                         paste0("<img class='directplotEnhImage' src='graphicalSummaries/", reportUnit,"_", patientResults$job_UniCode, "_regulatoryLandscapeBarplotChanges.png", "'",
                                 ">"),
                          "</div>",
                          sep="")

@@ -801,7 +801,7 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
   ###and the ucsc links info on the right
   ##to get info about the css check: "MainInterfaceStyling.html"
   ################################################################
-  info_imageLogo<-"<div class='logoUCSC_location'><img src='UCSC_logo.png' alt='UCSC logo' width=100%></div>"
+  info_imageLogo<-"<div class='logoUCSC_location'><img src='UCSC_logo.png' alt='UCSC logo' style='width:100%;'></div>"
 
   shiny_html_ucsc<-paste("<div class='linksUCSC_location'>",
                          shiny_html_ucsc,

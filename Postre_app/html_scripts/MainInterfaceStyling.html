@@ -145,7 +145,7 @@ html, body{
   width: 85vw;
 }
 
-#mainGraphicalAbstract{
+.mainGraphicalAbstract{
   /*height: 768px;*/
   /*width: 1152px;*/
   width: 1400px; /*To make the x axis a little big widder, and readjust the height accordingly*/
@@ -365,14 +365,14 @@ Explanation of why the dimensions:
   
 }
 
-#barplotEnhImage{
+.barplotEnhImage{
   max-width: 100%;
   width: 100%;
   /*height: 100%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
   background-color: transparent;
 }  
 
-#directplotEnhImage{
+.directplotEnhImage{
   max-width: 100%;
   width: 100%;
   /*height: 25%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
@@ -475,7 +475,7 @@ Explanation of why the dimensions:
   height: 200px;
 }
 
-#hiPlotImg, #polyCplotImg{
+.hiPlotImg, .polyCplotImg{
   max-width: 100%;
   width: 100%;
   /*height: 25%;*/ /*400px to have the same height that gene-suscept plots */ /*100%;*/
@@ -504,7 +504,7 @@ img {
 }
 
 /*6% to put the dots on the line of the following titles*/
-#reportIndex{
+.reportIndex{
   padding-left: 6%;
   color:#467599;
 }
@@ -1132,6 +1132,31 @@ footer {
   background: #e60000 !important;
   color: #ffffff !important;
 }
+
+/*Info for the Single SV Submission Heatmap*/
+#heatmap {
+    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+#heatmap td, #heatmap th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#heatmap tr:nth-child(even){background-color: #f2f2f2;}
+
+#heatmap tr:hover {background-color: #ddd;}
+
+#heatmap th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #0066cc;
+  color: white;
+}
+
 
 </style>
 

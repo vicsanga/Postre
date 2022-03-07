@@ -62,7 +62,7 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
   
   ##Gene Susceptibility to Loss of Function // or Gain of Functin section line
   
-  indexResults<-paste("<ul id='reportIndex'>",
+  indexResults<-paste("<ul class='reportIndex'>",
                       indexLines_GraphicalAbstract,
                       indexLines_RegLandscape,
                       indexLines_GeneSusceptibility,
@@ -79,7 +79,7 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
   ## Adding Graphical Abstract
   ################################
   
-  graphicalAbstract<-paste0("<img id='mainGraphicalAbstract' src='graphicalSummaries/", reportUnit,"_", patientResults$job_UniCode, ".png", "',",
+  graphicalAbstract<-paste0("<img class='mainGraphicalAbstract' src='graphicalSummaries/", reportUnit,"_", patientResults$job_UniCode, ".png", "'",
                          " >")
   
   ##Explanation about why this sizes below
@@ -88,7 +88,7 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
   ## 1 in corresponds with 96px (approx), hence as we have created the images with height = 8in and width = 12in
   ## The conversion is " height=768px, width=1152px >")
   
-  graphicalAbstract<-paste("<h2 class='gene_FullReport_SectionEntry'id='",
+  graphicalAbstract<-paste("<h2 class='gene_FullReport_SectionEntry' id='",
                            "GraphicalAbstractSection_",
                            reportUnit,
                            "'>Graphical Abstract</h2>",
@@ -113,7 +113,7 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
                                                                       patientResults = patientResults)
   
   ##Embedding report on overall report html.
-  reportChangesRegulatoryLandscape<-paste("<h2 class='gene_FullReport_SectionEntry'id='",
+  reportChangesRegulatoryLandscape<-paste("<h2 class='gene_FullReport_SectionEntry' id='",
                            "RegulatoryLandscapeChangesSection_",
                            reportUnit,
                            "'>Gene Impact - Regulatory Landscape Changes</h2>",
@@ -136,7 +136,7 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
                                                                       patientResults = patientResults)
 
   ##Embedding report on overall report html.
-  reportGeneSusceptibilityToCondition<-paste("<h2 class='gene_FullReport_SectionEntry'id='",
+  reportGeneSusceptibilityToCondition<-paste("<h2 class='gene_FullReport_SectionEntry' id='",
                                           "GeneSusceptibilitySection_",
                                           reportUnit,
                                           "'>Gene Susceptibility to ",

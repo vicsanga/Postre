@@ -65,7 +65,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
     if(targetPhase != "phaseFree"){
       geneSuscept<-paste(geneSuscept,
                          "<div class='dosageSensitivePlot'>",
-                         paste0("<img id='hiPlotImg'class='geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
+                         paste0("<img class='hiPlotImg geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
                                 ">"),
                          "</div>",
                          sep="") 
@@ -75,7 +75,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
       ##To avoid leaving a white space at the left part
       geneSuscept<-paste(geneSuscept,
                          "<div class='dosageSensitivePlot_whenPrimaryPlotNotPresent'>",
-                         paste0("<img id='hiPlotImg'class='geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
+                         paste0("<img class='hiPlotImg geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
                                 ">"),
                          "</div>",
                          sep="")
@@ -93,7 +93,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
     
     geneSuscept<-paste(geneSuscept,
                        "<div class='polyCombPlot'>",
-                       paste0("<img id='polyCplotImg'class='geneSusceptImgs' src='graphicalSummaries/", polycPlotName, "'",
+                       paste0("<img class='polyCplotImg geneSusceptImgs' src='graphicalSummaries/", polycPlotName, "'",
                               ">"),
                        "</div>",
                        sep="") 

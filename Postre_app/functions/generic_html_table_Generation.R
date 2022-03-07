@@ -16,8 +16,7 @@ generic_table_html_generation<-function(targetMatrix){
   }
   
   table_content<-paste("<div class= divTablePathoMech>",
-                       "<table class='tablePathomech' id='",
-                       "'><thead><tr>",
+                       "<table class='tablePathomech'><thead><tr>",
                        sep="")
   
   
