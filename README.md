@@ -19,7 +19,7 @@ Postre is a software developed to <b style='color:#1D3354;'>predict the pathogen
 
 <h2 id="Installation">How to install and run Postre?</h2>
 
-Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!</b> Once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
+Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!. Postre installation is very easy.</b> On top of that, once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
 
 Postre is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
 Thus, to run Postre you only require R & R-Studio, and a couple of R libraries.
