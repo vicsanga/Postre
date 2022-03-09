@@ -15,16 +15,16 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
   enh_y_positions<-rep.int(x=tad_Y_cord[1], times = 4)
   
   ## Let's mantain color codes by TAD position
-  ## If TAD is on the left blue, if it is on the right orange
+  ## If TAD is on the left blue or whatever we choos 1, if it is on the right orange or whatever we choose 2
   ## Regardless whether it is the gene or the secondary domain TAD
   ## In order not to confound the user if > 1 gene is affected
   ##For central tads... all of them paint in kind of orange... not to confound...consider for future
   if(situation == "primaryTAD_Central"){
     colorTAD<-"#9999ff"
   }else if(tad_X_cord[1]<20){
-    colorTAD<-"#66ccff"
+    colorTAD<-"#acdfeb" ##originally blueish
   }else if(tad_X_cord[1]>20){
-    colorTAD<-"#ffcc99"
+    colorTAD<-"#e5edb2" ##oranginally orangeish
   }
   
   
@@ -324,7 +324,7 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
   
   ###################
   #Adding gene body
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   #gene Label
   ##I want it to overlay the breakpoint line
@@ -346,7 +346,7 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
     enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
     
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label="enhancers", cex = 0.8)
@@ -386,7 +386,7 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
     enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
     
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label="enhancers", cex = 0.8)
@@ -470,9 +470,9 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
   ## Regardless whether it is the gene or the secondary domain TAD
   ## In order not to confound the user if > 1 gene is affected
   if(tad_X_cord[1]<20){
-    colorTAD<-"#66ccff"
+    colorTAD<-"#acdfeb"
   }else if(tad_X_cord[1]>20){
-    colorTAD<-"#ffcc99"
+    colorTAD<-"#e5edb2"
   }
   
   ##Painting TAD
@@ -770,7 +770,7 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
   if(nEnh_other_domain>0){
 
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #text(x=enhXpos + 0.4, y=-3, label="enhancers", cex = 0.8)

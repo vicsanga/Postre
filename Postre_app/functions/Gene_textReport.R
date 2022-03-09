@@ -314,8 +314,9 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
     
     #######################################
     ##Adding links to human and mice logos
-    info_humanLogo<-"<div class='logoHuman_location'><img class='genePhenoImgs' src='personLogo.png' alt='human logo' style='width:100%;height:100%;'></div>"
-    info_miceLogo<-"<div class='logoMice_location'><img class='genePhenoImgs' src='miceLogo.png' alt='mice logo' style='width:100%;height:100%;'></div>"
+    ##Antes tenia puesto tambien en style: height:100%;
+    info_humanLogo<-"<div class='logoHuman_location'><img class='genePhenoImgs' src='human_silhouette_blue-01.png' alt='human logo' style='width:100%;'></div>"
+    info_miceLogo<-"<div class='logoMice_location'><img class='genePhenoImgs' src='mouse_silhouette_blue-01.png' alt='mice logo' style='width:100%;'></div>"
     
     ##Embedding geneText in a div to apply a grid css configuration
     

@@ -7,7 +7,8 @@ source(file = "scripts_To_Load_Data/ExpressionThresholds_ForGofAndLof.R",
        local = TRUE)
 
 source("functions/expressionLevelPlot.R", local = TRUE)
-
+source("functions/haploinsufficiencyScorePlot.R", local = TRUE)
+source("functions/polycombScorePlot.R", local = TRUE)
 
 ##Always gene-expression barplot
 plots_geneSusceptibility<-function(patientResults){
@@ -106,8 +107,8 @@ plots_geneSusceptibility<-function(patientResults){
       ##Plotting Haploinsufficiency score info (if there is)
       if(targetHI_score>-1){ ##So as one hi score !=-1 there is one assigned
         
-        ##Plotting HI score
-        source("functions/haploinsufficiencyScorePlot.R", local = TRUE)
+        # ##Plotting HI score
+        # source("functions/haploinsufficiencyScorePlot.R", local = TRUE)
         
         outpPath<-"www/graphicalSummaries/"
         ##outpPath<-"graphicalSummaries/"
@@ -163,8 +164,8 @@ plots_geneSusceptibility<-function(patientResults){
       ##Plotting Polycomb score info (if there is)
       if(polyCscore>-1){ ##So as one polyCscore !=-1 there is one assigned
         
-        ##Plotting polyCscore
-        source("functions/polycombScorePlot.R", local = TRUE)
+        # ##Plotting polyCscore
+        # source("functions/polycombScorePlot.R", local = TRUE)
         
         outpPath<-"www/graphicalSummaries/"
         ##outpPath<-"graphicalSummaries/"

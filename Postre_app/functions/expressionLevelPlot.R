@@ -53,7 +53,7 @@ expressionLevelPlot<-function(targetExpression, targetGene, targetPhase, maxExpr
   
   ###Painting Bar
   polygon(x = c(3,9,9,3), y=c(canvas_Y_limits[1],canvas_Y_limits[1],barplotHeight, barplotHeight),
-          col="#00ccff",#"#9ED8DB",
+          col="#1eabc7",#"#9ED8DB",
           border = "#ffffff")
   
   

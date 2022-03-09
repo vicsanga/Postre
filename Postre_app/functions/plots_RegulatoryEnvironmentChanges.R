@@ -93,19 +93,6 @@ plots_regulatoryEnvironmentChanges<-function(patientResults){
       ##Direct_LongRange_geneDuplication, gene expressed duplicated & gaining a lot of enh difficult to predict main cause
       #################
       ##Barplotting
-      #same function changing axis, and title
-      
-      #source("functions/sv_barplotting.R")##devolver el p1 o p2 object de ggplot2??
-      
-      # outpPath<-"www/graphicalSummaries/"
-      # ##outpPath<-"graphicalSummaries/"
-      # fullOutpPath<-paste0(outpPath,targetGene,"_",targetPhase,
-      #                      "_", patientResults$job_UniCode,"_regulatoryLandscapeBarplotChanges.png")
-      # 
-      # ####################################
-      # ##png with maximum resolution 300dpi
-      # png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
-      ##Jugar con dimensiones, y con tamanyo de labels que asi como esta no se van a ver en el html
       
       par(mfrow=c(1,2))
       sv_barplotting(barplotValues = c(c(nEnh_Initial, nEnh_Final)), 
@@ -173,6 +160,5 @@ plots_regulatoryEnvironmentChanges<-function(patientResults){
       
       dev.off()##Saving Graph
     }
-    # dev.off()##Saving Graph
   }
 }

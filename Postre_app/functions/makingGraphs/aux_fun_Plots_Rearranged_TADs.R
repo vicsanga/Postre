@@ -50,12 +50,12 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
   tad_X_cord<-gene_sv_TAD_x_coord
   
   if(tad_X_cord[1]<20){
-    colorTAD<-"#66ccff"
+    colorTAD<-"#acdfeb"
   }else if(tad_X_cord[1]>20){
-    colorTAD<-"#ffcc99"
+    colorTAD<-"#e5edb2"
   }
   
-  tadColors<-c("#66ccff","#ffcc99")
+  tadColors<-c("#acdfeb","#e5edb2")
     
   
   #########################################
@@ -349,7 +349,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
   
   ###################
   #Adding gene body
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   #gene Label
   ##I want it to overlay the breakpoint line
@@ -396,7 +396,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
         
         draw.ellipse(x=enh_x_positions,
-                     y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                     y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
         
         #enhancers Label
         #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
@@ -450,7 +450,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3)
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions[1:2],a=0.1,col="green")
+                     y=enh_y_positions[1:2],a=0.1,col="#b2d235")
         
         #enhancers Label
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -507,7 +507,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions,a=0.1,col="green")
+                     y=enh_y_positions,a=0.1,col="#b2d235")
         
         #enhancers Label
         boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -561,7 +561,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enhXpos<-enh_x_positions[1]
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions[1:2],a=0.1,col="green")
+                     y=enh_y_positions[1:2],a=0.1,col="#b2d235")
         
         #enhancers Label
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -629,7 +629,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions,a=0.1,col="green")
+                     y=enh_y_positions,a=0.1,col="#b2d235")
         
         #enhancers Label
         boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -679,7 +679,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
           enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
           
           draw.ellipse(x=enh_x_positions,
-                       y=enh_y_positions,a=0.1,col="green")
+                       y=enh_y_positions,a=0.1,col="#b2d235")
           
           #enhancers Label
           boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -727,7 +727,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3)
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions[1:2],a=0.1,col="green")
+                     y=enh_y_positions[1:2],a=0.1,col="#b2d235")
         
         #enhancers Label
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -778,7 +778,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions,a=0.1,col="green")
+                     y=enh_y_positions,a=0.1,col="#b2d235")
         
         #enhancers Label
         #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
@@ -826,7 +826,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
           enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
           
           draw.ellipse(x=enh_x_positions,
-                       y=enh_y_positions,a=0.1,col="green")
+                       y=enh_y_positions,a=0.1,col="#b2d235")
           
           #enhancers Label
           boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -875,7 +875,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         enh_x_positions<-c(enhXpos,enhXpos+0.3)
         
         draw.ellipse(x=enh_x_positions,
-                     y=enh_y_positions[1:2],a=0.1,col="green")
+                     y=enh_y_positions[1:2],a=0.1,col="#b2d235")
         
         #enhancers Label
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -995,7 +995,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
     
     ##
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #Below the level of the other enhancers, to avoid overlaps
@@ -1126,12 +1126,12 @@ paintSecondaryDomain_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gen
   tad_X_cord<-sv_TAD_x_coord
   
   if(tad_X_cord[1]<20){
-    colorTAD<-"#66ccff"
+    colorTAD<-"#acdfeb"
   }else if(tad_X_cord[1]>20){
-    colorTAD<-"#ffcc99"
+    colorTAD<-"#e5edb2"
   }
   
-  tadColors<-c("#66ccff","#ffcc99")
+  tadColors<-c("#acdfeb","#e5edb2")
   
   ###################
   ##Painting TAD
@@ -1455,7 +1455,7 @@ paintSecondaryDomain_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gen
     ## Pintamos los Enh
     ##
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #Below the level of the other enhancers, to avoid overlaps
@@ -1585,7 +1585,7 @@ paintSecondaryDomain_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gen
     ## Pintamos los Enh
     ##
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #Below the level of the other enhancers, to avoid overlaps
@@ -1688,7 +1688,7 @@ paint_Gene_Truncation<-function(gene, xAxisLim, tad_X_cord, tad_YCoord_Rearrange
   ##Painting Gene
   gene_X_cord<-c(genePos, genePos+geneSize, genePos+geneSize, genePos)
   gene_Y_cord<-c(tad_Y_cord[1]-2,tad_Y_cord[1]-2,tad_Y_cord[1]+2,tad_Y_cord[1]+2)
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   ##Adding white box in between. To simulate gene truncated
   whiteBox_X_cord<-c(genePos + geneSize*geneConservedFraction, 
@@ -1763,7 +1763,7 @@ paint_Gene_Deletion<-function(gene, xAxisLim, tad_X_cord, tad_YCoord_Rearrangeme
   ##Painting Gene
   gene_X_cord<-c(genePos, genePos+geneSize, genePos+geneSize, genePos)
   gene_Y_cord<-c(tad_Y_cord[1]-2,tad_Y_cord[1]-2,tad_Y_cord[1]+2,tad_Y_cord[1]+2)
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   # ##Adding white box in between. To simulate gene truncated
   # whiteBox_X_cord<-c(genePos + geneSize*geneConservedFraction, 
@@ -1853,16 +1853,16 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
     color_otherFigure<-"#9999ff" ##color of the other TAD half
     
   }else if(situation == "primaryTAD_Sinistral"){
-    colorTAD<-"#66ccff"
-    color_otherFigure<-"#ffcc99"  ##color of the other TAD half
+    colorTAD<-"#acdfeb"
+    color_otherFigure<-"#e5edb2"  ##color of the other TAD half
     
   }else if(situation == "primaryTAD_Dextral"){
-    colorTAD<-"#ffcc99"
-    color_otherFigure<-"#66ccff"
+    colorTAD<-"#e5edb2"
+    color_otherFigure<-"#acdfeb"
   }
   
   #Obsolete see how to update
-  #tadColors<-c("#66ccff","#ffcc99") ##Esto sera para elegir el color complementario
+  #tadColors<-c("#acdfeb","#e5edb2") ##Esto sera para elegir el color complementario
 
   ###################
   ##Painting TAD
@@ -2215,7 +2215,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
   
   ###################
   #Adding gene body
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   #gene Label
   ##I want it to overlay the breakpoint line
@@ -2263,7 +2263,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions,a=0.1,col="green")
+                   y=enh_y_positions,a=0.1,col="#b2d235")
       
       #enhancers Label
       #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
@@ -2317,7 +2317,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       enh_x_positions<-c(enhXpos,enhXpos+0.3)
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions[1:2],a=0.1,col="green")
+                   y=enh_y_positions[1:2],a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -2374,7 +2374,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions,a=0.1,col="green")
+                   y=enh_y_positions,a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -2428,7 +2428,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       enhXpos<-enh_x_positions[1]
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions[1:2],a=0.1,col="green")
+                   y=enh_y_positions[1:2],a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -2526,7 +2526,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
     
     ##
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #Below the level of the other enhancers, to avoid overlaps
@@ -2857,7 +2857,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
   
   ###################
   #Adding gene body
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   #gene Label
   ##I want it to overlay the breakpoint line
@@ -2903,7 +2903,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
       
       draw.ellipse(x=enh_x_positions,
-                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
       #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
@@ -2952,7 +2952,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6,enhXpos+0.9,enhXpos+1.2,enhXpos+1.5,enhXpos+1.8,enhXpos+2.1)
       
       draw.ellipse(x=enh_x_positions,
-                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
@@ -2995,7 +2995,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6,enhXpos+0.9,enhXpos+1.2,enhXpos+1.5)
       
       draw.ellipse(x=enh_x_positions,
-                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
@@ -3045,7 +3045,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
       
       draw.ellipse(x=enh_x_positions,
-                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -3096,7 +3096,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       enhXpos<-enh_x_positions[1]
       
       draw.ellipse(x=enh_x_positions,
-                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
@@ -3150,7 +3150,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       enhXpos<-enh_x_positions[1]
       
       draw.ellipse(x=enh_x_positions,
-                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="green")
+                   y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
@@ -3261,7 +3261,7 @@ paint_Gene_Duplicated<-function(gene, xAxisLim, tad_X_cord, tad_YCoord_Rearrange
     ##Painting Genes
     gene_X_cord<-c(genePos, genePos+geneSize, genePos+geneSize, genePos)
     gene_Y_cord<-c(tad_Y_cord[1]-2,tad_Y_cord[1]-2,tad_Y_cord[1]+2,tad_Y_cord[1]+2)
-    polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+    polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
     
     ##Adding Gene Label, above gene
     ##Boxed labels: xpad,ypad arguments, used to expand the box beyond the text
@@ -3334,12 +3334,12 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
     color_otherFigure<-"#9999ff" ##color of the other TAD half
     
   }else if(situation == "primaryTAD_Sinistral"){
-    colorTAD<-"#66ccff"
-    color_otherFigure<-"#ffcc99"  ##color of the other TAD half
+    colorTAD<-"#acdfeb"
+    color_otherFigure<-"#e5edb2"  ##color of the other TAD half
     
   }else if(situation == "primaryTAD_Dextral"){
-    colorTAD<-"#ffcc99"
-    color_otherFigure<-"#66ccff"
+    colorTAD<-"#e5edb2"
+    color_otherFigure<-"#acdfeb"
   }
   
   
@@ -3693,7 +3693,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
   
   ###################
   #Adding gene body
-  polygon(gene_X_cord, gene_Y_cord, col = "#0000ff")
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
   
   #gene Label
   ##I want it to overlay the breakpoint line
@@ -3741,7 +3741,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions,a=0.1,col="green")
+                   y=enh_y_positions,a=0.1,col="#b2d235")
       
       #enhancers Label
       #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
@@ -3795,7 +3795,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       enh_x_positions<-c(enhXpos,enhXpos+0.3)
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions[1:2],a=0.1,col="green")
+                   y=enh_y_positions[1:2],a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -3850,7 +3850,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions,a=0.1,col="green")
+                   y=enh_y_positions,a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
@@ -3904,7 +3904,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       enhXpos<-enh_x_positions[1]
       
       draw.ellipse(x=enh_x_positions,
-                   y=enh_y_positions[1:2],a=0.1,col="green")
+                   y=enh_y_positions[1:2],a=0.1,col="#b2d235")
       
       #enhancers Label
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
@@ -3999,7 +3999,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
     
     ##
     draw.ellipse(x=enh_x_positions,
-                 y=enh_y_positions,a=0.1,col="green")
+                 y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
     #Below the level of the other enhancers, to avoid overlaps

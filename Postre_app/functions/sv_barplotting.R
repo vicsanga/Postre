@@ -14,7 +14,8 @@ sv_barplotting<-function(barplotValues, tagsBarplotValues,title){
   
   barplot(height = barplotValues,
           ylim=c(0, maxBarplotValue),
-          col=c("#ffad33","#bb99ff"),
+          col=c("#9ed8da","#1c3353"),
+          border="#FFFFFF",
           main=title,
           names.arg = tagsBarplotValues,
           horiz = FALSE,

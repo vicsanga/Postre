@@ -46,14 +46,14 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##Defining cell colors
   #GOF, TOPGOF, LOF, TOPLOF, Default
   
-  col_default<-"#a6a6a6"#grey
+  col_default<-"#C8C8C8"#"#a6a6a6"#grey
   # col_directImpact_NotPathogenic<-"#DCDCDC"
   
-  col_lof<-"#ff704d"
-  col_top_lof<-"#ff3300" 
+  col_lof<-"#d63f44"
+  col_top_lof<-"#d63f44" 
   
-  col_gof<-"#b3ffb3"
-  col_top_gof<-"#00ff00" 
+  col_gof<-"#b2d235"
+  col_top_gof<-"#b2d235" 
   
   #col_mix<-"#80dfff" ##In case there is a situation (as a result of the thresholds) where both scenarios are likely to occur with a high score
   ##Maybe more realistic for phase free, just in case, implement

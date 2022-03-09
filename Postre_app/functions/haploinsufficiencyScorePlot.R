@@ -44,7 +44,7 @@ haploinsufficiencyScorePlot<-function(targetHI_score, targetGene){
   
   ###Painting Bar
   polygon(x = c(3,9,9,3), y=c(canvas_Y_limits[1],canvas_Y_limits[1],barplotHeight, barplotHeight),
-          col="#0066cc",#"#9ED8DB",
+          col="#477599",#"#9ED8DB",
           border = "#ffffff")
   
   

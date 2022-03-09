@@ -27,7 +27,7 @@ library(diagram)##For curve arrows representation
 
 
 ###Setwd in the folder where all the app info is hosted
-# setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/SV_app")
+# setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
 
 ####################################
 ###Let's load required Functions
@@ -69,6 +69,228 @@ highScore<-0.9
 ###Meter como variables, todos los valores que  estan estaticos en el menu
 relevantChr<-c(paste("chr",1:22,sep = ""), "chrX")##chrY excluded not all data available for chrY
 
+
+#For handling collapse of navbar
+##This not useful but relevant info https://stackoverflow.com/questions/19827605/change-bootstrap-navbar-collapse-breakpoint-without-using-less
+# https://stackoverflow.com/questions/66302145/how-to-change-breakpoint-of-navbarpage-collapse-in-shiny
+navbar_js <- "@media (max-width: 2000px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-left,.navbar-right {
+        float: none !important;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-fixed-top {
+        top: 0;
+        border-width: 0 0 1px;
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin-top: 7.5px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .collapse.in{
+        display:block !important;
+    }
+}"
+
+# https://stackoverflow.com/questions/21738417/bootstrap-remove-responsive-from-navbar
+navbar2_js<-"@media (max-width: 768px) {
+    .navbar-header {
+        float: left;
+    }
+
+    .navbar {
+        border-radius: 4px;
+        min-width: 400px;
+    }
+
+    .nav-tabs-justified > li > a {
+        border-bottom: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+    }
+    .nav-tabs-justified > .active > a,
+    .nav-tabs-justified > .active > a:hover,
+    .nav-tabs-justified > .active > a:focus {
+        border-bottom-color: #fff;
+    }
+
+    .nav-justified > li {
+        display: table-cell;
+        width: 1%;
+    }
+    .nav-justified > li > a {
+        margin-bottom: 0;
+    }
+
+    .nav-tabs.nav-justified > li > a {
+        border-bottom: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+    }
+    .nav-tabs.nav-justified > .active > a,
+    .nav-tabs.nav-justified > .active > a:hover,
+    .nav-tabs.nav-justified > .active > a:focus {
+        border-bottom-color: #fff;
+    }
+
+    .nav-tabs.nav-justified > li {
+        display: table-cell;
+        width: 1%;
+    }
+    .nav-tabs.nav-justified > li > a {
+        margin-bottom: 0;
+    }
+
+    .navbar-right .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
+    .navbar-right .dropdown-menu-left {
+        right: auto;
+        left: 0;
+    }
+    .container {
+        min-width: 400px;
+    }
+
+    .navbar-collapse {
+        width: auto;
+        border-top: 0;
+        box-shadow: none;
+    }
+    .navbar-collapse.collapse {
+        display: block !important;
+        height: auto !important;
+        padding-bottom: 0;
+        overflow: visible !important;
+    }
+    .navbar-collapse.in {
+        overflow-y: visible;
+    }
+    .navbar-fixed-top .navbar-collapse,
+    .navbar-static-top .navbar-collapse,
+    .navbar-fixed-bottom .navbar-collapse {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .container > .navbar-header,
+    .container-fluid > .navbar-header,
+    .container > .navbar-collapse,
+    .container-fluid > .navbar-collapse {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .navbar-static-top {
+        border-radius: 0;
+    }
+
+    .navbar-fixed-top,
+    .navbar-fixed-bottom {
+        border-radius: 0;
+    }
+
+    .navbar-toggle {
+        display: none;
+    }
+
+    .navbar-nav {
+        float: left;
+        margin: 0;
+    }
+    .navbar-nav > li {
+        float: left;
+    }
+    .navbar-nav > li > a {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    .navbar-nav.navbar-right:last-child {
+        margin-right: -15px;
+    }
+
+    .navbar-left {
+        float: left !important;
+    }
+    .navbar-right {
+        float: right !important;
+    }
+
+    .navbar-form .form-group {
+        display: inline-block;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+    .navbar-form .form-control {
+        display: inline-block;
+        width: auto;
+        vertical-align: middle;
+    }
+    .navbar-form .control-label {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+    .navbar-form .radio,
+    .navbar-form .checkbox {
+        display: inline-block;
+        padding-left: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+    .navbar-form .radio input[type='radio'],
+    .navbar-form .checkbox input[type='checkbox'] {
+        float: none;
+        margin-left: 0;
+    }
+    .navbar-form .has-feedback .form-control-feedback {
+        top: 0;
+    }
+
+    .navbar-form {
+        width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-right: 0;
+        margin-left: 0;
+        border: 0;
+        -webkit-box-shadow: none;
+                box-shadow: none;
+    }
+    .navbar-form.navbar-right:last-child {
+        margin-right: -15px;
+    }
+
+    .navbar-text {
+        float: left;
+        margin-right: 15px;
+        margin-left: 15px;
+    }
+    .navbar-text.navbar-right:last-child {
+        margin-right: 0;
+    } 
+}"
+
+##La que igual es util
+# https://stackoverflow.com/questions/21738417/bootstrap-remove-responsive-from-navbar
+
 ui <-function(req){
   # fluidPage(
   #setBackgroundImage(src = "TestBackground.jpeg" , shinydashboard = FALSE),
@@ -76,7 +298,7 @@ ui <-function(req){
     class="container",
     ##Mirar esto del title que no me acaba lo de meterlo como si no existiera nada
     div(class="titleBrowser",
-        titlePanel(title="Structural Variant Effect Prediction Tool, Rada-Iglesias Lab")
+        titlePanel(title="POSTRE: Prediction Of STRuctural variant Effects")
     ),
     includeHTML("html_scripts/MainInterfaceStyling.html"),
     
@@ -87,9 +309,9 @@ ui <-function(req){
         
         navbarPage(title = "",
                    id = "inTabset",
-                   
                    tabPanel(title = "Single SV Submission",
                             value = "SingleSubmissionTab",
+                            icon=icon("dna"),
                             div(class="patientInputPanel",
                                 includeHTML("html_scripts/Single_SV_Submission_Interface.html"),
                                 ######################
@@ -104,7 +326,7 @@ ui <-function(req){
                                         div(class="patientFormulary",
                                             
                                             div(class="inp1",
-                                                wellPanel(selectInput(inputId = "typeSV", label = "Structural Variant type",
+                                                wellPanel(selectInput(inputId = "typeSV", label = "Type SV",
                                                                       choices = c("Deletion","Duplication","Inversion","Translocation"),
                                                                       selected = "Inversion"))
                                             ),
@@ -187,6 +409,7 @@ ui <-function(req){
                    
                    tabPanel(title = "Single SV Results",
                             value = "overview",
+                            icon=icon("poll"),
                             div(class="heatmapPage",
                                 tableOutput(outputId = "masterSummary_result")
                             ),
@@ -209,62 +432,64 @@ ui <-function(req){
                    ),
                    tabPanel(title = "Multiple SV Submission",
                             value = "multiple_Submission",
+                            icon=icon("dna"),
                             div(class="patientInputPanel",
-                             includeHTML("html_scripts/Multiple_SV_Submission_Interface.html"),
-                             ######################
-                             ## Multiple SV Input Panel
-                             ######################
-                             div(class="sideBarClassMultiple",
-                                 ##If I put here on the html, h2 tag it gets styled as the header, so style features 
-                                 ##are connected
-                                 
-                                 #START MULTIPLE SUBMISSION
-                                 div(class="formAndTitle_patient_Multiple_Input",
-                                     ##Patient SV type
-                                     HTML('<h2 id="titleSideBarPannel">Upload Multiple Structural Variants with Phenotypes</h2>'),
-                                     div(class="patientMultipleFormulary",
-                                         
-                                         div(class="multipleSubmission",
-                                             wellPanel(fileInput(
-                                               inputId = "multipleFileInfo",
-                                               label="SelectFile",
-                                               multiple = FALSE,
-                                               accept = ".tsv"
-                                             ),style = "padding: 5px; padding-bottom:0px;")
-                                         ),
-                                         # div(class="enterMail",
-                                         #     wellPanel(textInput(
-                                         #       inputId = "userMultipleMail",
-                                         #       label = "Enter your mail",
-                                         #       placeholder = "enter your mail"
-                                         #     ),style = "padding: 5px;")
-                                         # ),
-                                         
-                                         ##Selecting Running Mode
-                                         div(
-                                           wellPanel(selectInput(inputId = "runMode_Multiple", label = "Running mode",
-                                                                 choices = c("Standard","High-Specificity"),
-                                                                 selected = "Standard"))
-                                         ),
-                                         div(class="submission",
-                                             id="multipleSubm",
-                                             ##Send request
-                                             actionButton(inputId = "clickMultiple",
-                                                          label = "Submit",
-                                                          icon("paper-plane"),
-                                                          style="color: #fff; background-color: #1D3354; border-color: #467599;")
-                                         )
-                                     )
-                                 )
-                                 
-                                 #######END MULTIP SUBMISSION
-                                 
-                             )
+                                includeHTML("html_scripts/Multiple_SV_Submission_Interface.html"),
+                                ######################
+                                ## Multiple SV Input Panel
+                                ######################
+                                div(class="sideBarClassMultiple",
+                                    ##If I put here on the html, h2 tag it gets styled as the header, so style features 
+                                    ##are connected
+                                    
+                                    #START MULTIPLE SUBMISSION
+                                    div(class="formAndTitle_patient_Multiple_Input",
+                                        ##Patient SV type
+                                        HTML('<h2 id="titleSideBarPannel">Upload Multiple Structural Variants with Phenotypes</h2>'),
+                                        div(class="patientMultipleFormulary",
+                                            
+                                            div(class="multipleSubmission",
+                                                wellPanel(fileInput(
+                                                  inputId = "multipleFileInfo",
+                                                  label="SelectFile",
+                                                  multiple = FALSE,
+                                                  accept = ".tsv"
+                                                ),style = "padding: 5px; padding-bottom:0px;")
+                                            ),
+                                            # div(class="enterMail",
+                                            #     wellPanel(textInput(
+                                            #       inputId = "userMultipleMail",
+                                            #       label = "Enter your mail",
+                                            #       placeholder = "enter your mail"
+                                            #     ),style = "padding: 5px;")
+                                            # ),
+                                            
+                                            ##Selecting Running Mode
+                                            div(
+                                              wellPanel(selectInput(inputId = "runMode_Multiple", label = "Running mode",
+                                                                    choices = c("Standard","High-Specificity"),
+                                                                    selected = "Standard"))
+                                            ),
+                                            div(class="submission",
+                                                id="multipleSubm",
+                                                ##Send request
+                                                actionButton(inputId = "clickMultiple",
+                                                             label = "Submit",
+                                                             icon("paper-plane"),
+                                                             style="color: #fff; background-color: #1D3354; border-color: #467599;")
+                                            )
+                                        )
+                                    )
+                                    
+                                    #######END MULTIP SUBMISSION
+                                    
+                                )
                             )
                    ),
                    
                    tabPanel(title = "Multiple SV Results",
                             value = "multiple_overview",
+                            icon=icon("poll"),
                             ##Same format that for Explore Previous Patients Section
                             div(class="previousPatientsPage",
                                 tableOutput(outputId = "master_multipleStats")
@@ -272,12 +497,14 @@ ui <-function(req){
                    ),
                    
                    tabPanel(title = "Explore Previous SVs",
+                            icon=icon("search"),
                             div(class="previousPatientsPage",
                                 includeHTML("html_scripts/ExplorePreviousPatients.html")
                             )
                    ),
                    tabPanel(title = "User Guide",
                             value = "userGuide",
+                            icon=icon("info-circle"),
                             div(class="userGuidePage",
                                 includeHTML("html_scripts/UserGuide_page.html"),
                                 ##h4("Page under construction"),
@@ -285,6 +512,8 @@ ui <-function(req){
                                 ##p("If you have any question please contact: SV_radalab@gmail.com")
                             )
                    )
+                   ,
+                   tags$head(tags$style(HTML(navbar2_js)))
         )
     ), 
     #####################
@@ -325,7 +554,7 @@ server <- function(input, output, session){
     
   })
   
-
+  
   observeEvent(eventExpr = input$click_SingleSubmissionUserGuide, {
     
     updateTabsetPanel(session, 
@@ -539,7 +768,7 @@ server <- function(input, output, session){
     colnames(patientData)<-c("chr_Break1","coord_Break1","chr_Break2",
                              "coord_Break2","TypeSV",
                              "Phenotype","SV_ID","refGenome")
-
+    
     ##Capturing runMode
     runMode_single<-as.character(input$runMode_UserGuide_SingleSubmPat)
     
@@ -612,7 +841,7 @@ server <- function(input, output, session){
     
     #############################
     ## Try to get the prediction
-
+    
     #When want to see error mssg uncomment the following line
     patientResults<-tryCatch({
       ##If there is an error the following instruction will not be terminated
@@ -644,15 +873,14 @@ server <- function(input, output, session){
       
       ##Capturing runMode
       runMode_single<-as.character(input$runMode_AggregatedRes_ExplorePreviousPat)
-
+      
       ##Adding RunMode to patient Prediction info
       patientInfo$runMode<-runMode_single
-
+      
       ##Changing patientID by SV_ID for the html table output.
       colnames(patientInfo)[colnames(patientInfo)=="patientID"]<-"SV_ID"
       
       ###Running prediction
-      browser()
       patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore, runMode = runMode_single)
       ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
     },error = function(err){
@@ -660,7 +888,7 @@ server <- function(input, output, session){
       return(patientResults)
       
     })
-
+    
     ############################################
     #If status error, generate the error html
     #We can be more specific in the future if we are interested
@@ -700,14 +928,14 @@ server <- function(input, output, session){
     ## Computing Prediction
     ###############################
     patientResults<-list()
-
+    
     #############################
     ## Try to get the prediction
     ##Check if the df "multiSV_uploadedFile_AllPatientsInfo" is available here
     #When want to see error mssg uncomment the following line
     ##DF with all SV uploaded, retrieving from the previously created object when handling Multiple SV Submission
     multiSV_uploadedFile_AllPatientsInfo<-multiple_patientResults()$patientsInfo
-
+    
     patientResults<-tryCatch({
       ##If there is an error the following instruction will not be terminated
       
@@ -781,13 +1009,13 @@ server <- function(input, output, session){
   })
   
   
-
+  
   ####################################################
   ## Managing, creating Output for Single Submission
   ####################################################
   #If Not Error, Normal Output. So go checking if error
   ## Igual puedo mirar aqui que objeto tiene un contenido que pertoca
-
+  
   ##MAIN RESULTS
   #We put it the last so that it is the first thing seen upon output rendered
   
@@ -1035,7 +1263,7 @@ server <- function(input, output, session){
   #######################################################
   ## Managing, creating Output for Multiple Submission
   #######################################################
-
+  
   output$master_multipleStats<-renderUI(HTML(multiple_patientResults()$html_recurrency))
   
   
