@@ -36,7 +36,6 @@ library(diagram)##For curve arrows representation
 source(file = "functions/MasterWrapperSinglePrediction.R",local = TRUE)##many other functions loaded here
 source(file = "functions/error_Report.R",local = TRUE)
 source(file = "functions/noGenesFound_report.R",local = TRUE)
-# source(file = "functions/multiple_SV_Functions/sendMail.R",local = TRUE)
 
 ##############################################
 ##Functions for Multiple Patients Submission
@@ -70,10 +69,9 @@ highScore<-0.9
 relevantChr<-c(paste("chr",1:22,sep = ""), "chrX")##chrY excluded not all data available for chrY
 
 
-#To avoid navbar collapse
-
+#To avoid navbar collapse in smaller screens
 # https://stackoverflow.com/questions/21738417/bootstrap-remove-responsive-from-navbar
-navbar2_js<-"@media (max-width: 768px) {
+navbar_js<-"@media (max-width: 768px) {
     .navbar-header {
         float: left;
     }
@@ -250,12 +248,8 @@ navbar2_js<-"@media (max-width: 768px) {
     } 
 }"
 
-##La que igual es util
-# https://stackoverflow.com/questions/21738417/bootstrap-remove-responsive-from-navbar
-
 ui <-function(req){
-  # fluidPage(
-  #setBackgroundImage(src = "TestBackground.jpeg" , shinydashboard = FALSE),
+  
   return(div(
     class="container",
     ##Mirar esto del title que no me acaba lo de meterlo como si no existiera nada
@@ -418,13 +412,6 @@ ui <-function(req){
                                                   accept = ".tsv"
                                                 ),style = "padding: 5px; padding-bottom:0px;")
                                             ),
-                                            # div(class="enterMail",
-                                            #     wellPanel(textInput(
-                                            #       inputId = "userMultipleMail",
-                                            #       label = "Enter your mail",
-                                            #       placeholder = "enter your mail"
-                                            #     ),style = "padding: 5px;")
-                                            # ),
                                             
                                             ##Selecting Running Mode
                                             div(
@@ -468,14 +455,11 @@ ui <-function(req){
                             value = "userGuide",
                             icon=icon("info-circle"),
                             div(class="userGuidePage",
-                                includeHTML("html_scripts/UserGuide_page.html"),
-                                ##h4("Page under construction"),
-                                ##img(src = "WorkInProgress.jpeg", width = 250),
-                                ##p("If you have any question please contact: SV_radalab@gmail.com")
+                                includeHTML("html_scripts/UserGuide_page.html")
                             )
                    )
                    ,
-                   tags$head(tags$style(HTML(navbar2_js)))
+                   tags$head(tags$style(HTML(navbar_js)))
         )
     ), 
     #####################
@@ -1204,8 +1188,6 @@ server <- function(input, output, session){
                                                                             AllPatientsInfo = multiSV_uploadedFile_AllPatientsInfo,
                                                                             explPreviousPatSection = FALSE)
     })
-    
-    ##The waiter will be closed upon mail submission, at that point input panel is displayed again
     
     runjs(
       ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class

@@ -21,7 +21,7 @@
       grid-template-areas:
         /* Only change code below this line */
         "mainPanel";
-        padding: 0px;
+      padding: 0px;
       min-height: 100vh !important;
       font-family: 'Raleway', serif !important;
     }
@@ -32,7 +32,8 @@
   background-color: transparent;
   height: 100%;
   width: 100%;
-  margin-top: 0%;
+  margin:0px;
+  padding:0px;
 }
 
 /*Esto tiene la info de todo el menu */
@@ -53,7 +54,7 @@ nav.navbar {
    font-weight: normal;
    padding: 0px;
    margin: 0px;
-   margin-right: 1%;/*Apparently the bootstrap navbar has some hidden margin that creates horizontal scroll bar, these fixes the issue*/
+   /*margin-right: 1%;*//*Apparently the bootstrap navbar has some hidden margin that creates horizontal scroll bar, these fixes the issue*/
    font-size: 20px;
    height: 100px;
    border-bottom:none;
@@ -92,7 +93,7 @@ nav{
 }
 
 
-/*This class associated to a div to paint the backgroun of the header, so that no white gap*/
+/*This class associated to a div to paint the background of the header, so that no white gap*/
 /*RE CHECK PROFITABILITY OF THIS, IF IT WAS FOR ZOOM IN OR OUT OR SHADOW NECESSARY?*/
 .regionHeader{
   position: absolute;
@@ -456,19 +457,6 @@ Explanation of why the dimensions:
   background-color: transparent; 
 }
 
-/*The following lines added to avoid images to extend beyond their container//cell-grid space*/
-/*
-img {
-  box-sizing: border-box;
-  display: block;
-  object-fit: contain;
-  max-width: 100%;
-  margin: 0;
-  border: 0;
-  padding: 3px;
-}*/
-
-
 .reportHr{
   margin-left:10%;
   margin-right: 10%;
@@ -594,36 +582,10 @@ img {
 }
 
 
-
-
-
-
 /*Adjusting explore previous patients Style*/
 .DirectEffectLOF,.DirectEffectGOF,.LongRangeLOF,.LongRangeGOF{
   margin-left: 50px;
 }
-
-/*
-.hzScroll{
-    width: 70em;
-    height: 700px;
-    overflow-x: auto;
-    overflow-y: auto;
-    white-space: nowrap;
-}*/
-
-/*
-table tbody {
-  display: block;
-  max-height: 400px;
-  overflow-y: scroll;
-}
-
-table thead, table tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}*/
 
 .explanationExplorePreviousPat{
   margin-left: 10px;
@@ -672,12 +634,12 @@ table thead, table tbody tr {
   color:#1D3354;
 }
 
-/**********************************************************************/
+/*********************************************************************************/
 /*Information to style Multiple Results section (user & explPreviousPat section)*/
-/**********************************************************************/
+/*******************************************************************************/
 
   .collapsibleExplorePrev, .collapsible {
-  background-color:#9ED8DB ;/*rgb(179, 217, 255);*/
+  background-color:#9ED8DB ;
   color: black;
   cursor: pointer;
   padding: 10px;
@@ -699,7 +661,6 @@ table thead, table tbody tr {
   }
   
   .collapsibleExplorePrev_mainSection, .collapsibleMainSection{
-    /*background-color:#467599 ;rgb(179, 217, 255);*/
     color: black;
     cursor: pointer;
     padding: 10px;
@@ -713,7 +674,7 @@ table thead, table tbody tr {
   }
   
   .collapsibleExplorePrev_mainSection:hover, .collapsibleMainSection:hover {
-    background-color:#33adff !important; /*rgb(77, 77, 255);*/
+    background-color:#33adff !important;
   }
   
   .content {
@@ -777,8 +738,6 @@ padding: 8px;
 .tableUsrGuide tr:nth-child(even)  {
   background-color: #f2f2f2;
 }
-
-/**.tableUsrGuide tr:hover {background-color: #ddd;}**/
 
 #click_SingleSubmissionUserGuide:hover {
   color: yellow;
@@ -882,7 +841,6 @@ height:600px;
   padding-top: 15%;
 }
 
-
 .patientFormulary{
   width: 65%;
   margin: auto;
@@ -952,14 +910,15 @@ color:#1D3354;
     grid-gap: 5px;
     grid-template-areas:
       "uploadBox"
-    "enterMail"
-    "submMultiple";
+      "enterMail"
+      "submMultiple";
   }
 
 .multipleSubmission{
   grid-area:uploadBox;
 }
 
+/*Change entermail by multipleSVRunMode*/
 .enterMail{
   grid-area:enterMail;
 }
