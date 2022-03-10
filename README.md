@@ -42,7 +42,7 @@ Thus, to run Postre you only require R & R-Studio, and a couple of R libraries.
 
 <h3>1. Installing R and R-Studio </h3>
 There is plenty of available information in the internet to do this depending on the OS (Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: 
-
+<br>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=NZxSA80lF1I" target="_blank">Windows Youtube Tutorial </a></li>
 <li><a href="https://www.youtube.com/watch?v=LanBozXJjOk" target="_blank">Mac Youtube Tutorial </a></li>
