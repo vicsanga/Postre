@@ -4,7 +4,7 @@ Software developed to predict and annotate the impact of Structural Variants aff
       <li><a href="#ExplanationPostre">What is Postre?</a></li>
       <li><a href="#UsingPostre">Using Postre</a></li>
       <ul>
-         <li><a href="#Installation">Local usage: How to install and run Postre in your computer</a></li>
+         <li><a href="#Installation">Local usage: How to install and run Postre on your computer</a></li>
          <li><a href="#OnlinePostre">Online usage: Running postre on the web</a></li>
       </ul>
 </ul>
