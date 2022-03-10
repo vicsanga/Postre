@@ -79,7 +79,7 @@ YOUTUBE VIDEO INITIALIZING POSTRE
 <h2 id="OnlinePostre">Online usage: Running postre on the web</h2>
 Postre latest version is also hosted in the cloud to offer an online usage. However, given limitations of the currently hired cloud service, <b>it may not be available if the cloud monthly suscribed services have been consumed, (e.g. maximum usage hours)</b>. If you find Postre unavailable online, go for <a href="#Installation">Local usage: How to install and run Postre in your computer</a>. 
 
-<br>
+<br><br>
 You can find Postre online here: <a href="https://svradalab.shinyapps.io/postre_app/">Postre online service</a>.
 
 <br><br><br><br>
