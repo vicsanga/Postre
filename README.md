@@ -2,7 +2,11 @@
 Software developed to predict and annotate the impact of Structural Variants affecting both the coding and non-coding genome.
 <ul>
       <li><a href="#ExplanationPostre">What is Postre?</a></li>
-      <li><a href="#Installation">How to install and run Postre?</a></li>
+      <li><a href="#UsingPostre">Using Postre</a></li>
+      <ul>
+         <li><a href="#Installation">Local usage: How to install and run Postre in your computer</a></li>
+         <li><a href="#OnlinePostre">Online usage: Running postre from the web</a></li>
+      </ul>
 </ul>
 <h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
 
