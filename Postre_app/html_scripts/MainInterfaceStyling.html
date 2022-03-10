@@ -45,8 +45,6 @@
   padding-top: 25px;
 }
 
-
-
 nav.navbar {
    background-color: #1D3354;
    /*width: 90%;*/
@@ -57,7 +55,6 @@ nav.navbar {
    margin: 0px;
    margin-right: 1%;/*Apparently the bootstrap navbar has some hidden margin that creates horizontal scroll bar, these fixes the issue*/
    font-size: 20px;
-   float: right;
    height: 100px;
    border-bottom:none;
    border-left:none;
@@ -89,51 +86,27 @@ html, body{
     font-family: 'Raleway', serif !important;
 }
 
-#logoLab {
-      max-width: 100%;
-      height: 100px;
-      padding-top: 0px;
-      margin-top: 0px;
-    }
-    
-.logoArea{
-  height:100px;
-  width:10%;
-  padding-top: 0px;
-  margin-top: 0px;
-  position: absolute;
-  top: 0px;
-  background-color:#1D3354;
+/*Adding shadow to navbar*/
+nav{
+  /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
 }
 
 
-.barBelowHeader{
-  position: absolute;
-  top: 100px;
-  height: 4px;
-  width:100%;
-  min-width:100%;
-  background-color: #467599;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  padding: 0;
-  margin: 0px;
-}   
-
-
 /*This class associated to a div to paint the backgroun of the header, so that no white gap*/
+/*RE CHECK PROFITABILITY OF THIS, IF IT WAS FOR ZOOM IN OR OUT OR SHADOW NECESSARY?*/
 .regionHeader{
   position: absolute;
   top: 0px;
   height:100px;
   width:100%;
   background-color: #1D3354;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
   margin:0px;
 }
 
 
 .resPerPhase, .GraphSummaryPage, .heatmapPage, .genesReportPage, .numbersHeatmapPage, .geneEvMatrixPage, .patInfo, .predictionMethodPage, .userGuidePage, .helpPage, .previousPatientsPage{
-  margin-top: 150px;
+  margin-top: 20px;
   padding-left: 80px;
   padding-right: 80px;
 }    
@@ -1165,9 +1138,6 @@ footer {
 
 </head>
     <div class="regionHeader">
-      <div class="logoArea">
-        <img id="logoLab" src="encabezado_postre_400x100_300ppp.png" alt="Lab logo">
-      </div>
     </div>
     
     <div class="barBelowHeader">

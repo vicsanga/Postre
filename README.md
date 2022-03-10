@@ -5,7 +5,7 @@ Software developed to predict and annotate the impact of Structural Variants aff
       <li><a href="#UsingPostre">Using Postre</a></li>
       <ul>
          <li><a href="#Installation">Local usage: How to install and run Postre in your computer</a></li>
-         <li><a href="#OnlinePostre">Online usage: Running postre from the web</a></li>
+         <li><a href="#OnlinePostre">Online usage: Running postre on the web</a></li>
       </ul>
 </ul>
 <h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
@@ -15,13 +15,23 @@ Postre is a software developed to <b style='color:#1D3354;'>predict the pathogen
  <br> <br>
 </div>
 
-![alt text](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/WhatIsPostre.png?raw=true)
+![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/WhatIsPostre.png?raw=true)
 
 & Video youtube
 
 
+<h2 id="UsingPostre">Using Postre</h2>
 
-<h2 id="Installation">How to install and run Postre?</h2>
+Postre can be used in two different ways:
+
+ <ul>
+   <li><a href="#Installation">Local usage: How to install and run Postre in your computer</a></li>
+   <li><a href="#OnlinePostre">Online usage: Running postre on the web</a></li>
+ </ul>
+      
+<i>Online option may not ve available if users usage has already exceeded the cloud suscribed services (e.g. maximum hours usage).</i>      
+
+<h2 id="Installation">How to install and run Postre in your computer</h2>
 
 Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!. Postre installation is very easy.</b> On top of that, once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
 
@@ -64,4 +74,11 @@ You can just copy paste and run those instructions at once in R. You can find me
 YOUTUBE VIDEO INITIALIZING POSTRE
       
 
+<br><br>
 
+<h2 id="OnlinePostre">Online usage: Running postre on the web</h2>
+Postre latest version is also hosted in the cloud to offer an online usage. However, given limitations of the currently hired cloud service, <b>it may not be available if the cloud monthly suscribed services have been consumed, (e.g. maximum usage hours)</b>. If you find Postre unavailable online, go for <a href="#Installation">Local usage: How to install and run Postre in your computer</a>. 
+
+You can find Postre online here: <a href="https://svradalab.shinyapps.io/postre_app/">Postre online service</a>.
+
+<br><br><br><br>

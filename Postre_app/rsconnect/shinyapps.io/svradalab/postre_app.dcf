@@ -5,7 +5,7 @@ account: svradalab
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5813369
-bundleId: 5663092
+bundleId: 5668013
 url: https://svradalab.shinyapps.io/postre_app/
-when: 1646853182.2113
-lastSyncTime: 1646853182.21133
+when: 1646942063.11628
+lastSyncTime: 1646942063.11632
