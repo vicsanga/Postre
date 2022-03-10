@@ -33,7 +33,9 @@ Postre can be used in two different ways:
 
 <h2 id="Installation">Local usage: How to install and run Postre on your computer</h2>
 
-This is the explanation to use Postre locally, using your device resources, without the need to depend on the web option availability. At the same time, you will be running Postre latest version. Before going into detail, <b>eventhough you may not have computational skills, do not be afraid!. Postre installation is very easy.</b> On top of that, once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
+This is the explanation to use Postre locally, using your device resources, without the need to depend on the web option availability. At the same time, you will be running Postre latest version.
+
+<b>Eventhough you may not have computational skills, do not be afraid!. Postre installation is very easy.</b> On top of that, once you (or the IT colleague) install Postre, running and using it is as easy as any other desktop application. Thanks to its user friendly graphical interface.
 
 Postre is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
 Thus, to run Postre you only require R & R-Studio, and a couple of R libraries.
