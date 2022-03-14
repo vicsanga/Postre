@@ -62,7 +62,7 @@ source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_D
 runGitHub("Postre", "vicsanga", subdir = "Postre_app/", launch.browser = TRUE)
 
 ##Alternative instruction2:
-runUrl("https://github.com/vicsanga/Postre/blob/main/Postre_app.zip?raw=true", filetype = ".zip")
+runUrl("https://github.com/vicsanga/Postre/blob/main/Postre_app.zip?raw=true", filetype = ".zip", launch.browser = TRUE)
 ```
 
 If you want to know more about the different instructions:
