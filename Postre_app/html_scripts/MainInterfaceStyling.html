@@ -36,50 +36,46 @@
   padding:0px;
 }
 
-/*Esto tiene la info de todo el menu */
-#inTabset{
-  background-color: #1D3354;
-  width: 100%;
-  /*margin-top: -50px;*/
-  height: 100px;
-  position: absolute;
-  padding-top: 25px;
-}
+/*Adjusting navbar properties*/
 
 nav.navbar {
    background-color: #1D3354;
-   /*width: 90%;*/
-   width:1500px;
-   color: hsl(180, 100%, 70%);
+   width:1800px;
+   color: white !important;
    font-weight: normal;
    padding: 0px;
    margin: 0px;
-   /*margin-right: 1%;*//*Apparently the bootstrap navbar has some hidden margin that creates horizontal scroll bar, these fixes the issue*/
    font-size: 20px;
-   height: 100px;
+   height: 80px;
    border-bottom:none;
    border-left:none;
 }
 
+/*To adjust colors and properties of navbar links*/
 .navbar-default.navbar-static-top li a:hover {
     color: #9ED8DB !important;
     margin-top: 0px;
 }
 
-
-/*Box donde estan los subtabs del menu*/
 .navbar-default.navbar-static-top li a{
   display: block;
   background-color: transparent !important;
-  color:white !important; /*With this I eliminate the greyish WITH IMPORTANT*/
+  color:white !important;
 }
 
-
-/*Para quitar el rojito ese*/
-.navbar-default.navbar-static-top li a:hover {
-    color: #9ed8db ;
+#inTabset{
+  margin-top:7.5px;
+  padding-top:7.5px;
 }
 
+/*Adjusting properties navbar title*/
+.navbar-brand{
+  color: white !important;
+  font-size:40px;
+  margin-top: 15px;
+  padding-top:15px;
+  
+}
 
 html, body{
     margin:0px;
@@ -87,24 +83,18 @@ html, body{
     font-family: 'Raleway', serif !important;
 }
 
-/*Adding shadow to navbar*/
-nav{
-  /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
-}
-
 
 /*This class associated to a div to paint the background of the header, so that no white gap*/
 /*RE CHECK PROFITABILITY OF THIS, IF IT WAS FOR ZOOM IN OR OUT OR SHADOW NECESSARY?*/
+
 .regionHeader{
   position: absolute;
   top: 0px;
-  height:100px;
+  height:80px;
   width:100%;
   background-color: #1D3354;
-  /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
   margin:0px;
 }
-
 
 .resPerPhase, .GraphSummaryPage, .heatmapPage, .genesReportPage, .numbersHeatmapPage, .geneEvMatrixPage, .patInfo, .predictionMethodPage, .userGuidePage, .helpPage, .previousPatientsPage{
   margin-top: 20px;

@@ -33,7 +33,7 @@ Postre can be used in two different ways:
 
 <h2 id="Installation">Local usage: How to install and run Postre on your computer</h2>
 
-This is the explanation to use Postre locally, using your device resources, without the need to depend on the web option availability. At the same time, you will be running Postre latest version.
+This is the explanation to use Postre locally, using your device resources, without the need to depend on the web option availability. At the same time, you will also be running Postre latest version.
 
 <b>Eventhough you may not have computational skills, do not be afraid!. Postre installation is very easy.</b> On top of that, once Postre is installed, running and using it is as simple as any other desktop application. Thanks to its user friendly graphical interface.
 
@@ -50,8 +50,8 @@ There is plenty of available information in the internet to do this depending on
 <li><a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Web Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/></li>
 </ul>
 
-<h3>2. Running Postre</h3>      
-To run Postre latest version it is only required to execute the instructions provided below in R. First, open R studio, afterwards execute the following 2 instructions: 
+<h3>2. Running Postre</h3>     
+Once R and R-Studio is installed, just open R studio and execute the following 2 instructions.
 <br><br>
 
 ```R

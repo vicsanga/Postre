@@ -263,7 +263,7 @@ ui <-function(req){
     ######################
     div(class="mainPanel",
         
-        navbarPage(title = "",
+        navbarPage(title = "POSTRE",
                    id = "inTabset",
                    tabPanel(title = "Single SV Submission",
                             value = "SingleSubmissionTab",
