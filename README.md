@@ -55,12 +55,8 @@ Once R and R-Studio is installed, just open R studio and execute the following 2
 <br><br>
 
 ```R
-##Instruction 1: Managing & Loading Dependencies
-source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
-
-##Instruction 2: Running Postre
-runUrl("https://github.com/vicsanga/Postre/blob/main/Postre_app.zip?raw=true", filetype = ".zip", launch.browser = TRUE)
-
+##Instruction to manage dependencies and run postre
+source("https://raw.githubusercontent.com/vicsanga/Postre/main/Postre_wrapper.R")
 ```
 Problems may arise with old versions of R. If you have installed an Old Version update R.
 
