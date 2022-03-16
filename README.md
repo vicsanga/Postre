@@ -59,10 +59,8 @@ Once R and R-Studio is installed, just open R studio and execute the following 2
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_Dependencies.R")
 
 ##Instruction 2: Running Postre
-runGitHub("Postre", "vicsanga", subdir = "Postre_app/", launch.browser = TRUE)
-
-##Alternative instruction2:
 runUrl("https://github.com/vicsanga/Postre/blob/main/Postre_app.zip?raw=true", filetype = ".zip", launch.browser = TRUE)
+
 ```
 
 If you want to know more about the different instructions:
