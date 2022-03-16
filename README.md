@@ -38,9 +38,9 @@ This is the explanation to use Postre locally, using your device resources, with
 <b>Eventhough you may not have computational skills, do not be afraid!. Postre installation is very easy.</b> On top of that, once Postre is installed, running and using it is as simple as any other desktop application. Thanks to its user friendly graphical interface.
 
 Postre is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
-Thus, to run Postre you only require R & R-Studio, and a couple of R libraries.
+Thus, to run Postre you only require R (version >=3.5.0) & R-Studio, and a couple of R libraries.
 
-<h3>1. Installing R and R-Studio </h3>
+<h3>1 Installing R and R-Studio </h3>
 There is plenty of available information in the internet to do this depending on the OS (Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: 
 <br><br>
 <ul>
@@ -62,6 +62,9 @@ source("https://raw.githubusercontent.com/vicsanga/Postre/main/Managing_Postre_D
 runUrl("https://github.com/vicsanga/Postre/blob/main/Postre_app.zip?raw=true", filetype = ".zip", launch.browser = TRUE)
 
 ```
+Problems may arise with old versions of R. If you have installed an Old Version update R.
+
+
 
 If you want to know more about the different instructions:
 
