@@ -22,11 +22,7 @@ A quick tutorial showing main Postre features and explaining its usage is provid
 
 & Video youtube
 
-<h2 id="UsingPostre">Using Postre</h2>
-
-Postre can be used in two different ways:
-
-
+<br><br>
 <h2 id="Installation">How to install and run Postre</h2>
 
 This is the explanation to use Postre locally, using your device resources, without the need to depend on the web option availability. At the same time, you will also be running Postre latest version.
