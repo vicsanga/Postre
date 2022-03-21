@@ -8,13 +8,13 @@ Software developed to predict and annotate the impact of Structural Variants aff
 <h2 id="ExplanationPostre"> <b>What is Postre?</b> </h2>
 
  <div>
-Postre is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. Postre aims to identify the genes responsible for the disease together with the pathological mechanism. In parallel, it determines the SV associated pathogenic events <b style='color:#1D3354;'>in space and time</b>. Postre is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and direct pathogenic events</b>.
+Postre is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. Postre aims to identify the genes responsible for the disease together with the pathological mechanism. In parallel, it determines the SV associated pathogenic events <b style='color:#1D3354;'>in space and time</b>. Postre is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and coding pathogenic events</b>.
  <br> <br>
 </div>
 
-Check the infographic displayed below to see a representation of Postre functionality. Click to expand!
+Check the infographic displayed below to see a representation of Postre functionality. <b>Click the image to expand and see in high resolution!</b>
 
-![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografiav1.png?raw=true)
+![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografia.png?raw=true)
 
 <h2 id="UsingPostre">How to use Postre?</h2>
 
