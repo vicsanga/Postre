@@ -43,7 +43,7 @@ There is plenty of available information in the internet to do this depending on
 </ul>
 
 <h3>2. Running Postre Latest Version</h3>     
-Once R  is installed, just execute the following 2 instructions in a R console to run Postre latest version:
+Once R  is installed, just execute the following instruction in a R console to run Postre latest version:
 <br><br>
 
 ```R
