@@ -14,7 +14,7 @@ Postre is a software developed to <b style='color:#1D3354;'>predict the pathogen
 
 Check the infographic displayed below to see a representation of Postre functionality. <b>Click the image to expand it and see it in high resolution!</b>
 
-![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografia.png?raw=true)
+![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografia_test_600ppp.png?raw=true)
 
 <h2 id="UsingPostre">How to use Postre?</h2>
 
