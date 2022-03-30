@@ -23,10 +23,7 @@ phenoScore_fun<-function(geneData, gof_case){
   
   ###########################################
   phenoScore<-0
-  
-  ##When adding +relevance if in >1 db
-  phenoScore<-0
-  
+
   if(associatedMainPhenoInOMIM == TRUE ){
     ##So, associated with phenotype in Human, Top Relevant
     ##Does not matter whether it is not in mice, Human, Top Relevant specie

@@ -213,10 +213,6 @@ eval_Gof_indirectEffect_score<-function(matrixPhase,geneTransversalData, phenoSc
   ##If it is not exp, it can get activated. And if it is active its expression can be boosted if it gains more enh than it loses.
   nEnhGained<-matrixPhase[,"nEnhancers_gained"] 
   
-  # if(is.na(nEnhGained)){##This is unnecesary
-  #   nEnhGained<-0
-  # }
-  
   scoreExp<-0
   
   if(nEnhGained > 0){

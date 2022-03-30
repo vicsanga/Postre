@@ -12,12 +12,10 @@ rankingGenes<-function(genesData, phasesVector, runMode){
   
   if(runMode == "Standard"){
     source("functions/scoringGenes/standard/Functions_toGet_LOFandGOFscores.R",local = TRUE)
-    source("functions/scoringGenes/standard/PhaseFree_Functions_toGet_LOFandGOFscores.R",local = TRUE)
     source("functions/scoringGenes/standard/phenoScore_function.R",local = TRUE)
     
   }else if(runMode == "High-Specificity"){
     source("functions/scoringGenes/high_specificity/Functions_toGet_LOFandGOFscores.R",local = TRUE)
-    source("functions/scoringGenes/high_specificity/PhaseFree_Functions_toGet_LOFandGOFscores.R",local = TRUE)
     source("functions/scoringGenes/high_specificity/phenoScore_function.R",local = TRUE)
     
   }
