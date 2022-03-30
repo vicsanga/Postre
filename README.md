@@ -47,11 +47,10 @@ Once R  is installed, just execute the following instruction in a R console to r
 <br><br>
 
 ```R
-##Instruction to manage dependencies and run POSTRE
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Postre_wrapper.R")
 ```
 
-The above comand installs and loads all the required libraries for POSTRE. If some libraries are missing R may ask for permission to install them, confirm it. The first time that you run POSTRE this action will probably take more time.
+The above instruction installs and loads all the required libraries for POSTRE. If some libraries are missing R may ask for permission to install them, confirm it. The first time that you run POSTRE this action will probably take more time.
 
 If you are not sure about how to do it. You can find me initializing POSTRE in the video below!
 <br><br>

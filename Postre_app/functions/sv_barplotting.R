@@ -26,23 +26,4 @@ sv_barplotting<-function(barplotValues, tagsBarplotValues,title){
           cex.sub=2,
           cex.names = 2.5)
   
-  
-  
-  
-  
-  
-  # dataBarplot<-data.frame(
-  #   name=factor(tagsBarplotValues, 
-  #               levels = tagsBarplotValues, 
-  #               ordered=TRUE),
-  #   value=barplotValues
-  # )
-  # 
-  # ##Barplot
-  # ##Seguir mirando tengo que cambiar colores, mirar como exportar en buena calidad
-  # ggplot(data = dataBarplot, aes(x=name, y=value, fill=name)) +
-  #   geom_bar(stat="identity") +
-  #   ggtitle(title)
-  
-  
 }
