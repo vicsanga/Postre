@@ -20,7 +20,7 @@ Check the infographic displayed below to see a representation of POSTRE function
 
 A quick tutorial showing main POSTRE features and explaining its usage is provided in the video below. 
 
-& Video youtube
+![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)](https://youtu.be/CUfsCKL8El4 "POSTRE Tutorial")
 
 <br><br>
 <h2 id="Installation">How to install and run POSTRE</h2>
@@ -33,7 +33,10 @@ POSTRE is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny<
 Thus, to run POSTRE you only require R (version >=3.5.0) and a couple of R libraries.
 
 <h3>1 Installing R </h3>
-There is plenty of available information in the internet to do this depending on the OS (Windows, Mac, Linux etc.). If you need help, different tutorials are provided here: 
+
+To run Postre R version >=3.5.0 is required.
+
+There is plenty of available information in the internet about how to install R depending on the OS (Windows, Mac, Linux etc.). Usually upon R installation people also install R-Studio, which is an integrated development environment to write R code. As a result, most tutorials explain how to install both R and R-Studio. But, to run Postre R-Studio is not necessary.  If you need help for R download, different tutorials are provided here: 
 <br><br>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=NZxSA80lF1I" target="_blank">Windows Youtube Tutorial </a></li>
@@ -52,7 +55,7 @@ source("https://raw.githubusercontent.com/vicsanga/Postre/main/Postre_wrapper.R"
 
 The above instruction installs and loads all the required libraries for POSTRE. If some libraries are missing R may ask for permission to install them, confirm it. The first time that you run POSTRE this action will probably take more time.
 
-If you are not sure about how to do it. You can find me initializing POSTRE in the video below!
+If you are not sure about how to do it. You can find me initializing POSTRE from R in the video below!
 <br><br>
 
 YOUTUBE VIDEO INITIALIZING POSTRE
