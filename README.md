@@ -4,6 +4,8 @@ POSTRE: Prediction Of STRuctural variant Effects
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
       <li><a href="#Installation">How to install and run POSTRE</a></li>
+      <li><a href="#Help">Can we help you?</a></li>
+      Help
 </ul>
 <h2 id="ExplanationPOSTRE"> <b>What is POSTRE?</b> </h2>
 
@@ -60,4 +62,9 @@ If you are not sure about how to do it. You can find me initializing POSTRE from
 
 [![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://www.youtube.com/watch?v=FCYitDfbnXk "POSTRE Running")
       
-<br><br><br><br>
+<br><br>
+
+<h2 id="Help">Can we help you?</h2>
+If you are experiencing some trouble, or you just want to contact us for any reason, please send a mail to postre.radaiglesiaslab@gmail.com. 
+
+<br><br>
