@@ -1,5 +1,5 @@
 # POSTRE
-Software developed to predict and annotate the impact of Structural Variants affecting both the coding and non-coding genome.
+POSTRE: Prediction Of STRuctural variant Effects
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
