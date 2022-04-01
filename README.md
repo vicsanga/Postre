@@ -20,7 +20,7 @@ Check the infographic displayed below to see a representation of POSTRE function
 
 A quick tutorial showing main POSTRE features and explaining its usage is provided here. Click on the image below to see the video in Youtube. Reproduce it in Full Screen and High Quality (1080p) for optimal visualitzation. 
 
-[![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)](https://youtu.be/CUfsCKL8El4 "POSTRE Tutorial")
+[![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)](https://www.youtube.com/watch?v=SeR6vD0wPrE "POSTRE Tutorial")
 
 <br><br>
 <h2 id="Installation">How to install and run POSTRE</h2>
