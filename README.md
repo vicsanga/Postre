@@ -3,9 +3,8 @@ POSTRE: Prediction Of STRuctural variant Effects
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
-      <li><a href="#Installation">How to install and run POSTRE</a></li>
+      <li><a href="#Installation">How to install and run POSTRE?</a></li>
       <li><a href="#Help">Can we help you?</a></li>
-      Help
 </ul>
 <h2 id="ExplanationPOSTRE"> <b>What is POSTRE?</b> </h2>
 
@@ -25,7 +24,7 @@ A quick tutorial showing main POSTRE features and explaining its usage is provid
 [![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)](https://www.youtube.com/watch?v=SeR6vD0wPrE "POSTRE Tutorial")
 
 <br><br>
-<h2 id="Installation">How to install and run POSTRE</h2>
+<h2 id="Installation">How to install and run POSTRE?</h2>
 
 This is the explanation to use POSTRE locally, using your device resources, without the need to depend on the web option availability. At the same time, you will also be running POSTRE latest version.
 
