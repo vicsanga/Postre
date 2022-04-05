@@ -59,7 +59,7 @@ The above instruction installs and loads all the required libraries for POSTRE. 
 If you are not sure about how to do it. You can find me initializing POSTRE from R in the video below!
 <br><br>
 
-[![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://www.youtube.com/watch?v=FCYitDfbnXk "POSTRE Running")
+[![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
       
 <br><br>
 
