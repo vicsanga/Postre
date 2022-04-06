@@ -47,19 +47,19 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
     
     ##To plot nice header
     if(targetPheno=="head_neck"){
-      phenoTag<-"Head & Neck - Structural Variants"
+      phenoTag<-"Head & Neck SVs"
     }else if(targetPheno=="cardiovascular"){
-      phenoTag<-"Cardiovascular - Structural Variants"
+      phenoTag<-"Cardiovascular SVs"
     }else if(targetPheno=="limbs"){
-      phenoTag<-"Limbs - Structural Variants"
+      phenoTag<-"Limbs SVs"
     }else if(targetPheno=="neurodevelopmental"){
-      phenoTag<-"Neurodevelopmental - Structural Variants"
+      phenoTag<-"Neurodevelopmental SVs"
     }else if(targetPheno=="nervous_system"){
       phenoTag<-"Nervous System - Brain"
     }else if(targetPheno=="HowToNavigateResults"){
       phenoTag<-"How to navigate this section?"
     }else if(targetPheno=="SubmittingPrediction"){
-      phenoTag<-"Submit structural variant for prediction"
+      phenoTag<-"Submit SV for prediction"
     }
     
     # https://www.w3schools.com/howto/howto_js_collapsible.asp
@@ -228,7 +228,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       
       
       htmlSubmissionSection_Title<-'<div class="titleSubmissionBoxAggregatedResults">
-        <h3><center><b style="color:#467599;">Run prediction with the structural variant of interest</b></center></h3>
+        <h3><center><b style="color:#467599;">Run prediction with the Structural Variant of interest</b></center></h3>
         </div>'
       
     ##Assembling html + ADDING TITLE FOR ABOVE OF THE SUBMISSION BOX
@@ -268,25 +268,25 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
         h1_tag_name_targetMatrix<-name_targetMatrix
         
         if(h1_tag_name_targetMatrix == "anyMechanism"){
-          h1_tag_name_targetMatrix<-"Overview - Any Pathological Mechanism"
+          h1_tag_name_targetMatrix<-"Overview | Any Pathological Mechanism"
           
         }else if(h1_tag_name_targetMatrix == "DirectEffectLOF"){
-          h1_tag_name_targetMatrix<-"Direct Effect - Loss of Function"
+          h1_tag_name_targetMatrix<-"Coding Effect | Loss of Function"
           
         }else if(h1_tag_name_targetMatrix == "DirectEffectGOF"){
-          h1_tag_name_targetMatrix<-"Direct Effect - Gain of Function"
+          h1_tag_name_targetMatrix<-"Coding Effect | Gain of Function"
           
         }else if(h1_tag_name_targetMatrix == "LongRangeLOF"){
-          h1_tag_name_targetMatrix<-"Long Range Effect - Loss of Function"
+          h1_tag_name_targetMatrix<-"Long-Range Effect | Loss of Function"
           
         }else if(h1_tag_name_targetMatrix == "LongRangeGOF"){
-          h1_tag_name_targetMatrix<-"Long Range Effect - Gain of Function"
+          h1_tag_name_targetMatrix<-"Long-Range Effect | Gain of Function"
           
         }else if(h1_tag_name_targetMatrix == "errorInfo"){
-          h1_tag_name_targetMatrix<-"Unresolved Structural Variants"
+          h1_tag_name_targetMatrix<-"Unresolved SVs"
           
         }else if(h1_tag_name_targetMatrix == "patientsInfo"){
-          h1_tag_name_targetMatrix<-"Structural Variants Information"
+          h1_tag_name_targetMatrix<-"SVs Information"
           
         }
         

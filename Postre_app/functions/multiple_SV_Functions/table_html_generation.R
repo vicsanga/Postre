@@ -49,20 +49,36 @@ table_html_generation<-function(targetMatrix, name_targetMatrix,targetPheno, ids
                     "()' placeholder='Search for...' title='Type in a name'> <br>",
                     sep=""
   )
+  
+  ##Adding style='white-space:nowrap;' to prevent breaking header names into multiple lines eg chr (in one line) breakp1 (in different line)
   table_content<-paste(searchCode,
                        "<br>",
                        "<div class= divTablePathoMech>",
-                       "<table class='tablePathomech' id='",
+                       "<table class='tablePathomech' style='white-space:nowrap;' id='",
                        idTable,
                        "'><thead><tr>",
                        sep="")
   
+  ###############################################################################################
+  ##Dataframe for reformating for html varible names for Headers, substituting _ by spaces etc.
+  ###############################################################################################
+  valueInR<-c("affected_gene", "Num_SVs", "SV_IDs", "DirectEffectLOF","LongRangeLOF","DirectEffectGOF", "LongRangeGOF", "SV_ID", "chr_Break1","coord_Break1", "chr_Break2","coord_Break2", "TypeSV","source")                                                   
+  valueInHTML<-c("Gene", "N SVs","SV IDs", "Coding LOF", "Long-Range LOF", "Coding GOF", "Long-Range GOF","SV ID","Chr Breakp1", "Coord Breakp1", "Chr Breakp2","Coord Breakp2", "Type SV","Source")
+  
+  dfDat<-data.frame("valueInR"=valueInR, "valueInHTML"=valueInHTML)
+  rownames(dfDat)<-valueInR
   
   #First, table header
   for(nameCol in colnames(targetMatrix)){
     table_content<-paste(table_content,
                          "<th>",
-                         nameCol,
+                         
+                         if(nameCol %in% rownames(dfDat)){
+                           ##Formatting variable name to HTML more pleasing style
+                           dfDat[nameCol,"valueInHTML"]
+                         }else{
+                           nameCol
+                         },
                          "</th>",
                          sep = "",
                          collapse = "")
