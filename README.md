@@ -19,7 +19,7 @@ Check the infographic displayed below to see a representation of POSTRE function
 
 <h2 id="UsingPOSTRE">How to use POSTRE?</h2>
 
-A quick tutorial showing main POSTRE features and explaining its usage is provided here. Click on the image below to see the video in Youtube. Reproduce it in Full Screen and High Quality (1080p) for optimal visualitzation. 
+An overview of POSTRE is provided in this section. Click on the image below to see the video in Youtube. Reproduce it in Full Screen and High Quality (1080p) for optimal visualitzation. 
 
 [![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)]( https://youtu.be/Pc7MsKvqyQs "POSTRE Tutorial")
 
