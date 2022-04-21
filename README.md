@@ -29,7 +29,7 @@ An overview of POSTRE is provided in this section. Click on the image below to s
 <b>Eventhough you may not have computational skills, do not be afraid!. POSTRE installation is very easy.</b> On top of that, once POSTRE is installed, running and using it is as simple as any other desktop application. Thanks to its user friendly graphical interface.
 
 POSTRE is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
-Thus, to run POSTRE you only require R (version >=3.5.0) and a couple of R libraries.
+Thus, to run POSTRE you only require R (version >=3.5.0).
 
 <h3>1 Installing R </h3>
 
