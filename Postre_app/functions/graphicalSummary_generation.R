@@ -668,13 +668,14 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   tad_X_cord<-tad_XCoord_OnRightSide
                   tad_Y_cord<-tad_YCoord_WildTypeLine
                   ##Info returned used to represent the rearrangement
+                  
                   info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
                                                                             tad_Y_cord = tad_YCoord_WildTypeLine,
                                                                             nEnh_other_domain = nEnh_other_domain,
                                                                             geneCenter = geneCenter,
                                                                             otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                             situation = situation,
-                                                                            geneBreakP_Position_respectToTSS,
+                                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
                                                                             patientResults = patientResults)
                   
                 }else if(situation == "primaryTAD_Dextral"){
@@ -712,13 +713,14 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   tad_Y_cord<-tad_YCoord_WildTypeLine
                   
                   ##Info returned used to represent the rearrangement
+                  
                   info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
                                                                             tad_Y_cord = tad_YCoord_WildTypeLine,
                                                                             nEnh_other_domain = nEnh_other_domain,
                                                                             geneCenter = geneCenter,
                                                                             otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                             situation = situation,
-                                                                            geneBreakP_Position_respectToTSS,
+                                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
                                                                             patientResults = patientResults)
                 }
                 
@@ -972,13 +974,14 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     tad_X_cord<-tad_XCoord_MoreRighted_OnRightSide
                     
                     ##Info returned used to represent the rearrangement
+                    
                     info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
                                                                               tad_Y_cord = tad_YCoord_Rearrangements,
                                                                               nEnh_other_domain = nEnh_other_domain,
                                                                               geneCenter = geneCenter,
                                                                               otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                               situation = situation,
-                                                                              geneBreakP_Position_respectToTSS,
+                                                                              geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
                                                                               patientResults = patientResults)
                     
                   }else if(situation == "primaryTAD_Dextral"){
@@ -1015,13 +1018,14 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     
                     
                     ##Info returned used to represent the rearrangement
+                    
                     info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
                                                                               tad_Y_cord = tad_YCoord_Rearrangements,
                                                                               nEnh_other_domain = nEnh_other_domain,
                                                                               geneCenter = geneCenter,
                                                                               otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                               situation = situation,
-                                                                              geneBreakP_Position_respectToTSS,
+                                                                              geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
                                                                               patientResults = patientResults)
                   }
                   

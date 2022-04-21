@@ -162,11 +162,11 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
       
       ##So an HI score provided
       textExplanation<-paste(textExplanation,
-                             "The Haploinsufficiency Score obtained for ",
+                             "The Dosage Sensitivity Score (DS) obtained for ",
                              targetGene,
                              " is : ",
                              round2(targetHI_score, digits=2),
-                             ". This score must be interpreted on a 0-1 scale (1 means HI, 0 means not HI) .",
+                             ". This score must be interpreted on a 0-1 scale (1 means that for the candidate gene, producing more or less protein than normal is likely pathogenic, 0 means that deviations from the normal amount of generated protein are not detrimental).",
                              # "<br><br>",
                              sep="") 
     }
@@ -187,8 +187,8 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
     
     textExplanation<-paste(textExplanation,
                            "To be a strong candidate for 'Loss of Function', at a particular stage, the candidate gene must be expressed. ",
-                           "In addition, it is important to know the dosage sensitivity for the target gene, Haploinsufficiency metrics are used as proxy for this aim. ",
-                           "Furthermore, we also find relevant to study whether the candidate gene is a polycomb one (genes covered by broad domains of H3K27me3 when inactive and with tissue specific expression patterns), since these genes tend to regulate cellular identity and altering their expression can lead to strong phenotypic alterations. ",
+                           "In addition, it is important to know the dosage sensitivity for the target gene. Because, having more or less protein than normal can be pathogenic for some but not all genes, Haploinsufficiency metrics are currently used as proxy for this aim. ",
+                           "Furthermore, we also find relevant to study whether the candidate gene is a polycomb one (genes covered by broad domains of H3K27me3 when inactive and with tissue specific expression patterns), since these genes tend to regulate cellular identity and altering their expression can lead to strong phenotypic alterations. Check our manuscript to know more about how these metrics have been obtained. ",
                            "<br><br>",
                            sep="")
 
@@ -244,11 +244,11 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
       
       ##So an HI score provided
       textExplanation<-paste(textExplanation,
-                             "The Haploinsufficiency Score obtained for ",
+                             "The Dosage Sensitivity Score (DS) obtained for ",
                              targetGene,
                              " is : ",
                              round2(targetHI_score, digits=2),
-                             ". This score must be interpreted on a 0-1 scale (1 means HI, 0 means not HI) .",
+                             ". This score must be interpreted on a 0-1 scale (1 means that for the candidate gene, producing more or less protein than normal is likely pathogenic, 0 means that deviations from the normal amount of generated protein are not detrimental).",
                              # "<br><br>",
                              sep="") 
     }
@@ -269,7 +269,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
     
     textExplanation<-paste(textExplanation,
                            "To be a strong candidate for 'Gain of Function', we consider important being a polycomb gene (genes covered by broad domains of H3K27me3 when inactive and with tissue specific expression patterns), since these genes tend to regulate cellular identity and altering their expression can lead to strong phenotypic alterations. ",
-                           "It is also relevant to know the dosage sensitivity for the target gene, Haploinsufficiency metrics are used as proxy for this aim.",
+                           "It is also relevant to know the dosage sensitivity for the target gene. Because, having more or less protein than normal can be pathogenic for some but not all genes, Haploinsufficiency metrics are currently used as proxy for this aim. Check our manuscript to know more about how these metrics have been obtained.",
                            "<br><br>",
                            sep="")
     
@@ -308,11 +308,11 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
       
       ##So an HI score provided
       textExplanation<-paste(textExplanation,
-                             "The Haploinsufficiency Score obtained for ",
+                             "The Dosage Sensitivity Score (DS) obtained for ",
                              targetGene,
                              " is : ",
                              round2(targetHI_score, digits=2),
-                             ". This score must be interpreted on a 0-1 scale (1 means HI, 0 means not HI) .",
+                             ". This score must be interpreted on a 0-1 scale (1 means that for the candidate gene, producing more or less protein than normal is likely pathogenic, 0 means that deviations from the normal amount of generated protein are not detrimental).",
                              # "<br><br>",
                              sep="") 
     }
@@ -371,11 +371,11 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
       
       ##So an HI score provided
       textExplanation<-paste(textExplanation,
-                             "The Haploinsufficiency Score obtained for ",
+                             "The Dosage Sensitivity Score (DS) obtained for ",
                              targetGene,
                              " is : ",
                              round2(targetHI_score, digits=2),
-                             ". This score must be interpreted on a 0-1 scale (1 means HI, 0 means not HI) .",
+                             ". This score must be interpreted on a 0-1 scale (1 means that for the candidate gene, producing more or less protein than normal is likely pathogenic, 0 means that deviations from the normal amount of generated protein are not detrimental).",
                              # "<br><br>",
                              sep="") 
     }

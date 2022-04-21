@@ -617,7 +617,7 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
       }else if(geneBreakP_Position_respectToTSS=="beforeTSS"){
         ##The gene is RELOCATED to the other TAD so, not gaining enhancers implies the breakpoint is AFTER the enhancers
         gene_relocated<-TRUE ##Not make sense in this context
-        ##For Deletions there is no gene relocation, this will imply gene Deletion
+        ##For Deletions there is no gene relocation, THIS WILL IMPLY GENE DELETION!
         ##But let's keep it for the sake of the plot
         
         ##I'm not going too think too much about this, makes not much sense
@@ -657,7 +657,7 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
       }else if(geneBreakP_Position_respectToTSS=="afterTSS"){
         ##So the gene is RELOCATED to the other TAD. Hence not gaining enhancers implies that the secondary breakpoint is before the enhancers
         gene_relocated<-TRUE ##Not make sense in this context
-        ##For Deletions there is no gene relocation, this will imply gene Deletion
+        ##For Deletions there is no gene relocation, THIS WILL IMPLY GENE DELETION!!
         ##But let's keep it for the sake of the plot
         
         ##I'm not going too think too much about this, makes not much sense
@@ -703,6 +703,22 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
           breakPos<-enh_x_positions[4] + distanceBreakpFromEnhCluster
         }
         
+      }else if(geneBreakP_Position_respectToTSS=="afterTSS"){
+        
+        ###THIS WILL IMPLY THAT THE GENE IS NOT DUPLICATED
+        ##SO THE ONLY POSSIBLE THING, in this context where two tads involved
+        ## IS THAT THIS IS PATHOGENIC IS BECAUSE THE GENE IS TRUNCATED BY THE DUPLICATION
+        ##Because if not everything duplicated, enhancer, go to a neoTAD so has no effect on the non duplicated gene
+        #Unless as said is truncated
+        
+        ##I'm not going too think too much about this, makes not much sense
+        ##And in addition enh will not be painted (because gene direct effect)
+        ##So just leave it the way it is 
+        
+        ##Just going to say, paint the breakpoint in the middle of the TAD
+        ##I will paint the breakp then in the middle of the TAD, where the cluster of enh is for now located
+        breakPos<-tad_X_cord[3]
+        
       }
     }else if(situation=="primaryTAD_Dextral"){
       ##So the SECONDARY TAD is painted on the Left Side of the Screen
@@ -724,6 +740,22 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
           # breakPos<-tad_X_cord[1]+1.5 ##1.5 Units after TAD start
           breakPos<-enh_x_positions[1] - distanceBreakpFromEnhCluster
         }      
+      }else if(geneBreakP_Position_respectToTSS=="beforeTSS"){
+        
+        ###THIS WILL IMPLY THAT THE GENE IS NOT DUPLICATED
+        ##SO THE ONLY POSSIBLE THING, in this context where two tads involved
+        ## IS THAT THIS IS PATHOGENIC IS BECAUSE THE GENE IS TRUNCATED BY THE DUPLICATION
+        ##Because if not everything duplicated, enhancer, go to a neoTAD so has no effect on the non duplicated gene
+        #Unless as said is truncated
+        
+        ##I'm not going too think too much about this, makes not much sense
+        ##And in addition enh will not be painted (because gene direct effect)
+        ##So just leave it the way it is 
+        
+        ##Just going to say, paint the breakpoint in the middle of the TAD
+        ##I will paint the breakp then in the middle of the TAD, where the cluster of enh is for now located
+        breakPos<-tad_X_cord[3]
+        
       }
     }
   }

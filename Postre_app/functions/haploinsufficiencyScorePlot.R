@@ -32,11 +32,12 @@ haploinsufficiencyScorePlot<-function(targetHI_score, targetGene){
        xaxt = 'n', yaxt = 'n', bty = 'n', pch = '', ylab = '', xlab = '') ##Upon completion, REMOVE AXIS
   
   #Adding plot header
-  
-  text(x=6, y=1.45, label=paste0(targetGene," Haploinsufficiency"), cex = 3.5, font = 2)
+  #5.8 to ensure that a gene with 9 letters perfectly fit
+  text(x=5.8, y=1.45, label=paste0(targetGene," Dosage Sensitivity"), cex = 3.5, font = 2)
   
   #Adding score
-  text(x=6, y=1.3, label=paste0(round2(x = targetHI_score,
+  text(x=6, y=1.3, label=paste0("DS score = ",
+                                     round2(x = targetHI_score,
                                      digits = 2)), cex = 3,
        font=2)
   
@@ -57,10 +58,10 @@ haploinsufficiencyScorePlot<-function(targetHI_score, targetGene){
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=-3.7, y=0.9, label=paste0("HI gene"), cex = 3, pos = 4, font = 2)
+  text(x=-3.7, y=0.9, label=paste0("DS gene"), cex = 3, pos = 4, font = 2)
   
   ##Adding tags
-  text(x=-3.7, y=0.05, label=paste0("Not HI gene"), cex = 3, pos = 4, font = 2)  
+  text(x=-3.7, y=0.05, label=paste0("Not DS gene"), cex = 3, pos = 4, font = 2)  
   
   ##Adding "axes" inssided of canvas
   #Y axes

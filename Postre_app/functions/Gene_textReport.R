@@ -6,7 +6,7 @@
 gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targetGene){
   ##We need the results for just one condition, for all the genes.
   ##Min patogenicScore, defines the minimum patogenic score to show gene report
-
+  patientPhenoAnalyzed<-patientResults$patientInfo$Phenotype ##To specify the phenotype considered
   ########################################
   ## Loading gene-phenotype relationships
   ########################################
@@ -111,7 +111,7 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         if(humanBased_genePhenotype[gene,mainPhenotype]==1){
           geneText<-paste(geneText, "<p style='text-align:justify;'>",
                           targetGene,
-                          " has been previously associated with the patient phenotype category in humans.</p>", 
+                          " has been previously associated with the patient phenotype category in humans (",patientPhenoAnalyzed ,").</p>", 
                           collapse = "")
           
           ###Ensure we only mantain entries associated with the main phenotype
@@ -122,7 +122,7 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         }else{
           geneText<-paste(geneText, "<p>Eventhough ", 
                           targetGene,
-                          " has not been linked with the patient phenotype category, it has been associated with other pathologies.</p>", collapse = "")
+                          " has not been linked with the patient phenotype category (",patientPhenoAnalyzed,"), it has been associated with other pathologies.</p>", collapse = "")
           
         }
       }else{
@@ -193,20 +193,24 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
       ##############################
       ####Adding MedGen INFO
       ##"NULL" is the way absence of info is annotated on the table
-      if(any(medgene_entries!="NULL")){
-        ##Introduce space lines between elements if it gets two close
-        geneText<-paste(geneText, "<p></p>", collapse = "")
-        geneText<-paste(geneText, "<p>+ info in MedGen:</p>",collapse = "")
-        
-        ####Create html link
-        all_urls<-paste("https://www.ncbi.nlm.nih.gov/medgen/",unique(medgene_entries), sep = "")
-        
-        nEntry<-0
-        for(entry in all_urls){
-          nEntry<-nEntry+1
-          geneText<-paste(geneText, "<p class='linkEntry'><a href='",entry,"' target='_blank'>","MedGen Entry:",nEntry,"</a></p>", 
-                          collapse = "")
-        } 
+      
+      if(is.na(medgene_entries)==FALSE){
+        ##Previous check to avoid a bug
+        if(any(medgene_entries!="NULL")){
+          ##Introduce space lines between elements if it gets two close
+          geneText<-paste(geneText, "<p></p>", collapse = "")
+          geneText<-paste(geneText, "<p>+ info in MedGen:</p>",collapse = "")
+          
+          ####Create html link
+          all_urls<-paste("https://www.ncbi.nlm.nih.gov/medgen/",unique(medgene_entries), sep = "")
+          
+          nEntry<-0
+          for(entry in all_urls){
+            nEntry<-nEntry+1
+            geneText<-paste(geneText, "<p class='linkEntry'><a href='",entry,"' target='_blank'>","MedGen Entry:",nEntry,"</a></p>", 
+                            collapse = "")
+          } 
+        }
       }
       
       ##############################
@@ -260,7 +264,7 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         if(miceBased_genePhenotype[gene,mainPhenotype]==1){
           geneText<-paste(geneText, "<p style='text-align:justify;'>The mouse homologous gene for ",
                           targetGene,
-                          " has been associated in mice with a phenotype category similar to the one reported in the patient.</p>", 
+                          " has been associated in mice with a phenotype category similar to the one reported in the patient (", patientPhenoAnalyzed,").</p>", 
                           collapse = "")
           
         }else{
@@ -268,7 +272,7 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
             #So the gene is associated with at least a phenotype (but not the main one)
             geneText<-paste(geneText, "<p>Eventhough the mouse homologous gene for ", 
                             targetGene,
-                            " has not been linked with a phenotype category similar to the one reported in the patient, it has been associated with other pathologies.</p>", collapse = "")
+                            " has not been linked with a phenotype category similar to the one reported in the patient (",patientPhenoAnalyzed,"), it has been associated with other pathologies.</p>", collapse = "")
             
           }
         }

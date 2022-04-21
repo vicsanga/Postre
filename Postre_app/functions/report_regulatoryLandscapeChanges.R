@@ -33,9 +33,9 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
   
   ###################
   ## Text variables to be repeated
-  text_gof1<-"To be a strong candidate for 'Gain of Function' through a long-range pathological mechanism, the gene should gain enhancer activity. To estimate enhancer activity we have considered the enhancer number and the overall H3K27ac levels associated to the enhancers."
+  text_gof1<-"To be a strong candidate for 'Gain of Function' through a long-range pathological mechanism, the gene should gain enhancer activity. To estimate enhancer activity we have considered the overall H3K27ac levels associated to the enhancers."
   
-  text_lof1<-"To be a strong candidate for 'Loss of Function' through a long-range pathological mechanism, the gene should lose enhancer activity. To estimate enhancer activity we have considered the enhancer number and the overall H3K27ac levels associated to the enhancers."
+  text_lof1<-"To be a strong candidate for 'Loss of Function' through a long-range pathological mechanism, the gene should lose enhancer activity. To estimate enhancer activity we have considered the overall H3K27ac levels associated to the enhancers."
   
   
   ######################################################

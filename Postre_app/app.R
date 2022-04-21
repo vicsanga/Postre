@@ -35,6 +35,7 @@ library(diagram)##For curve arrows representation
 
 source(file = "functions/MasterWrapperSinglePrediction.R",local = TRUE)##many other functions loaded here
 source(file = "functions/error_Report.R",local = TRUE)
+source(file = "functions/error_Report_MultipleSV_submission.R",local = TRUE)
 source(file = "functions/noGenesFound_report.R",local = TRUE)
 
 ##############################################
@@ -409,7 +410,7 @@ ui <-function(req){
                                                   inputId = "multipleFileInfo",
                                                   label="SelectFile",
                                                   multiple = FALSE,
-                                                  accept = ".tsv"
+                                                  accept = "*"
                                                 ),style = "padding: 5px; padding-bottom:0px;")
                                             ),
                                             
@@ -536,7 +537,7 @@ server <- function(input, output, session){
     runjs(
       ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
       ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.patientInputPanel')) el.style.display = 'none';"
+      "for (let el of document.querySelectorAll('.wrapperMultipleSVSubmission')) el.style.display = 'none';"
     )
   })
   
@@ -1049,166 +1050,196 @@ server <- function(input, output, session){
                                    Please be patient"),
                        color="#0066ff")
     
-    ##Retrieving dataframe for processing
-    multiMetaData<-input$multipleFileInfo
-    multiData<-read.delim(file = multiMetaData$datapath,
-                          header = FALSE,
-                          sep="\t",
-                          stringsAsFactors = FALSE)
-    
-    colnames(multiData)<-c("chr_Break1","coord_Break1","chr_Break2",
-                           "coord_Break2","TypeSV","Phenotype","patientID") ##For internal usage, patientID, for frontEnd SV_ID. To clearly show that a patient can carry multiple SVs
-    
-    rownames(multiData)<-multiData$patientID
-    
-    ######################################################################################
-    ##Ensuring data in proper character format, for the coordinates, needed in character
-    ######################################################################################
-    multiData$chr_Break1<-as.character(multiData$chr_Break1)
-    multiData$coord_Break1<-as.character(multiData$coord_Break1)
-    
-    multiData$chr_Break2<-as.character(multiData$chr_Break2)
-    multiData$coord_Break2<-as.character(multiData$coord_Break2)
-    #######################################
+    #########################################################################################
+    ## During file loading we could get an error if file not selected or format not correct
+    ## So start tracking error from here
+    #########################################################################################
     multiple_patientResults<-list()
-    
-    multiple_patientResults$patientsInfo<-multiData
-    
-    ##Capturing runMode
-    runMode_Multiple<-as.character(input$runMode_Multiple)
-    
-    ##############################
-    ## Multiple Patient Analysis
-    ##############################
-    multiSV_uploadedFile_AllPatientsInfo<-multiData
-    
-    all_patientResults<-list()
-    
-    ###############################
-    ## Computing Prediction
-    
-    ###Adding Prediction Progress bar
-    ##The class of the notifier is 'shiny-notification' important to relocate it with css
-    withProgress(message = 'Working on Structural Variant Nr', value = 0, {
+    multiple_patientResults<-tryCatch({    
+      ##Retrieving dataframe for processing
+      multiMetaData<-input$multipleFileInfo
+      multiData<-read.delim(file = multiMetaData$datapath,
+                            header = FALSE,
+                            sep="\t",
+                            stringsAsFactors = FALSE)
       
-      # Number of times we'll go through the loop
-      n <- nrow(multiSV_uploadedFile_AllPatientsInfo)##max Number. Required for visual progress bar to know proportional size of iterations
+      colnames(multiData)<-c("chr_Break1","coord_Break1","chr_Break2",
+                             "coord_Break2","TypeSV","Phenotype","patientID") ##For internal usage, patientID, for frontEnd SV_ID. To clearly show that a patient can carry multiple SVs
       
-      ###Tracker variables
-      nPatient<-0  ##Tracking Status
-      cohortTractablePhenos<-character() ##To track patient provided phenotypes, only sections related to patient phenotypes will be shown. No sense on showing cardiovascular, if no cardiovascular.
-      ##Phenos considered when we also have data form them (eg if patient limb but yet no limb data also not section)
-      for(patient in rownames(multiSV_uploadedFile_AllPatientsInfo)){
-        print("                   ")
-        print(patient)
+      rownames(multiData)<-multiData$patientID
+      
+      ######################################################################################
+      ##Ensuring data in proper character format, for the coordinates, needed in character
+      ######################################################################################
+      multiData$chr_Break1<-as.character(multiData$chr_Break1)
+      multiData$coord_Break1<-as.character(multiData$coord_Break1)
+      
+      multiData$chr_Break2<-as.character(multiData$chr_Break2)
+      multiData$coord_Break2<-as.character(multiData$coord_Break2)
+      #######################################
+      #multiple_patientResults<-list()
+      
+      multiple_patientResults$patientsInfo<-multiData
+      
+      ##Capturing runMode
+      runMode_Multiple<-as.character(input$runMode_Multiple)
+      
+      ##############################
+      ## Multiple Patient Analysis
+      ##############################
+      multiSV_uploadedFile_AllPatientsInfo<-multiData
+      
+      all_patientResults<-list()
+      
+      ###############################
+      ## Computing Prediction
+      
+      ###Adding Prediction Progress bar
+      ##The class of the notifier is 'shiny-notification' important to relocate it with css
+      withProgress(message = 'Working on Structural Variant Nr', value = 0, {
         
-        nPatient<-nPatient+1
+        # Number of times we'll go through the loop
+        n <- nrow(multiSV_uploadedFile_AllPatientsInfo)##max Number. Required for visual progress bar to know proportional size of iterations
         
-        cat("n Structural Variant: ",nPatient,"\n")
-        
-        # Increment the progress bar, and update the detail text.
-        ##This line is specific for the shiny html progressbar, for local running makes no sense
-        incProgress(1/n, detail = paste(" ", nPatient))
-        
-        ########################################
-        ## Selecting Patient Info
-        patientInfo<-multiSV_uploadedFile_AllPatientsInfo[patient,]
-        
-        all_patientPheno<-unlist(strsplit(x = patientInfo$Phenotype, split = ",", fixed = TRUE))
-        for(pheno in all_patientPheno){
+        ###Tracker variables
+        nPatient<-0  ##Tracking Status
+        cohortTractablePhenos<-character() ##To track patient provided phenotypes, only sections related to patient phenotypes will be shown. No sense on showing cardiovascular, if no cardiovascular.
+        ##Phenos considered when we also have data form them (eg if patient limb but yet no limb data also not section)
+        for(patient in rownames(multiSV_uploadedFile_AllPatientsInfo)){
           print("                   ")
-          print(pheno)
+          print(patient)
           
-          ##Working on each pheno separately, running prediction
-          monoPheno_patientInfo<-patientInfo
-          monoPheno_patientInfo$Phenotype<-pheno 
-          print(monoPheno_patientInfo)
+          nPatient<-nPatient+1
           
-          ##If pheno among the ones considered in the app, run prediction
-          if(pheno %in% consideredPheno){
-            ############################
-            ## Carrying prediction #####
-            ############################
+          cat("n Structural Variant: ",nPatient,"\n")
+          
+          # Increment the progress bar, and update the detail text.
+          ##This line is specific for the shiny html progressbar, for local running makes no sense
+          incProgress(1/n, detail = paste(" ", nPatient))
+          
+          ########################################
+          ## Selecting Patient Info
+          patientInfo<-multiSV_uploadedFile_AllPatientsInfo[patient,]
+          
+          all_patientPheno<-unlist(strsplit(x = patientInfo$Phenotype, split = ",", fixed = TRUE))
+          for(pheno in all_patientPheno){
+            print("                   ")
+            print(pheno)
             
-            cohortTractablePhenos<-c(cohortTractablePhenos, pheno)##We track this phenotype, and we will provide information for it in the multi pat section
+            ##Working on each pheno separately, running prediction
+            monoPheno_patientInfo<-patientInfo
+            monoPheno_patientInfo$Phenotype<-pheno 
+            print(monoPheno_patientInfo)
             
-            patientResults<-list()
-            
-            patientResults<-tryCatch({
-              ##If there is an error the following instruction will not be terminated
+            ##If pheno among the ones considered in the app, run prediction
+            if(pheno %in% consideredPheno){
+              ############################
+              ## Carrying prediction #####
+              ############################
               
-              ##In multiple screening we do not generate graphics,so only master_scoring_function used, and not the wrapper for graphics one
-              patientResults<-master_scoring_function(patientInfo = monoPheno_patientInfo, runMode = runMode_Multiple)              
-              ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
-            },error = function(err){
-              patientResults$Status<-"ERROR"
-              return(patientResults)
+              cohortTractablePhenos<-c(cohortTractablePhenos, pheno)##We track this phenotype, and we will provide information for it in the multi pat section
               
-            })
+              patientResults<-list()
+              
+              patientResults<-tryCatch({
+                ##If there is an error the following instruction will not be terminated
+                
+                ##In multiple screening we do not generate graphics,so only master_scoring_function used, and not the wrapper for graphics one
+                patientResults<-master_scoring_function(patientInfo = monoPheno_patientInfo, runMode = runMode_Multiple)              
+                ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
+              },error = function(err){
+                patientResults$Status<-"ERROR"
+                return(patientResults)
+                
+              })
+              
+              ################################################
+              ## Storaging Results per Patient & Phenotype
+              ################################################
+              ##To avoid the object size to be unnecessary huge, only mantain strictly necessary info
+              ##We can maybe even simplify this more by using the matrix behind heatmap
+              ##but let's see for now how it goes
+              patientResults$resultsPerPhase_secondaryInfo<-NULL
+              patientResults$genomeBrowser_links<-NULL
+              patientResults$allAffectedGenes_positionalInfo<-NULL
+              patientResults$MasterEnh_map<-NULL
+              patientResults$resultsPerPhase<-NULL
+              
+              all_patientResults[[patient]][[pheno]]<-patientResults 
+            } 
             
-            ################################################
-            ## Storaging Results per Patient & Phenotype
-            ################################################
-            ##To avoid the object size to be unnecessary huge, only mantain strictly necessary info
-            ##We can maybe even simplify this more by using the matrix behind heatmap
-            ##but let's see for now how it goes
-            patientResults$resultsPerPhase_secondaryInfo<-NULL
-            patientResults$genomeBrowser_links<-NULL
-            patientResults$allAffectedGenes_positionalInfo<-NULL
-            patientResults$MasterEnh_map<-NULL
-            patientResults$resultsPerPhase<-NULL
-            
-            all_patientResults[[patient]][[pheno]]<-patientResults 
-          } 
+          }
           
         }
         
-      }
+        
+        
+        ###################################################
+        ## Parsing Patient Results Once Prediction is done
+        ###################################################
+        cohortTractablePhenos<-unique(cohortTractablePhenos)##Phenos that have appeared on the patients, and that we can predict impact
+        ##For the phenos that appear in the patients
+        
+        cohort_results<-cohortResults_Parser(minScore = minScore, all_patientResults = all_patientResults,
+                                             consideredPheno = cohortTractablePhenos,
+                                             discardRelevantByBrokenGene = FALSE,
+                                             AllPatientsInfo = multiSV_uploadedFile_AllPatientsInfo)
+        
+        #########################################
+        ## Generating HTML from Parsed results
+        #########################################
+        
+        multiple_patientResults$html_recurrency<-multipleStats_htmlGeneration(cohort_results = cohort_results, 
+                                                                              consideredPheno = cohortTractablePhenos,
+                                                                              ids_append="",##no append, for previous "previous pat"
+                                                                              AllPatientsInfo = multiSV_uploadedFile_AllPatientsInfo,
+                                                                              explPreviousPatSection = FALSE)
+      })
       
+      #############################################################################
+      #############################################################################
+      ##anyadir resultados de pacientes para los tests, para ver que el correo depende del input
+      multiple_patientResults$patientSpecificResults<-all_patientResults
       
+      ##If the code reaches this point, no global error, due to file format or anything arised
+      ##browser()
+      multiple_patientResults$Status<-"OK"
       
-      ###################################################
-      ## Parsing Patient Results Once Prediction is done
-      ###################################################
-      cohortTractablePhenos<-unique(cohortTractablePhenos)##Phenos that have appeared on the patients, and that we can predict impact
-      ##For the phenos that appear in the patients
+      ##Lets assign to the variable associated with tryCatch (variable<-tryCatch) the content of interest: 
+      ##In this case, the multiple_patientResults object
+      ##We do that by just printing its content. However, for the error we need to return the object
+      ## Ceck script testingTryCatch.R
       
-      cohort_results<-cohortResults_Parser(minScore = minScore, all_patientResults = all_patientResults,
-                                           consideredPheno = cohortTractablePhenos,
-                                           discardRelevantByBrokenGene = FALSE,
-                                           AllPatientsInfo = multiSV_uploadedFile_AllPatientsInfo)
+      multiple_patientResults
       
-      #########################################
-      ## Generating HTML from Parsed results
-      #########################################
+      },error = function(err){
+      ##A global error arised (not during the processing of a particular SV)
+      multiple_patientResults$Status<-"ERROR"
+      multiple_patientResults<-error_Report_multiSVsubm(multiple_patientResults = multiple_patientResults)
       
-      multiple_patientResults$html_recurrency<-multipleStats_htmlGeneration(cohort_results = cohort_results, 
-                                                                            consideredPheno = cohortTractablePhenos,
-                                                                            ids_append="",##no append, for previous "previous pat"
-                                                                            AllPatientsInfo = multiSV_uploadedFile_AllPatientsInfo,
-                                                                            explPreviousPatSection = FALSE)
+      ##We need to return the error report
+      return(multiple_patientResults)
     })
     
-    runjs(
-      ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
-      ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.patientInputPanel')) el.style.display = 'grid';"
-    )
-    ##Stoping waiter
+    ##Stoping waiter AND Returning results
     remove_modal_spinner()
-    #############################################################################
-    #############################################################################
-    ##anyadir resultados de pacientes para los tests, para ver que el correo depende del input
-    multiple_patientResults$patientSpecificResults<-all_patientResults
-    
     return(multiple_patientResults)
+    
   })
+  
   
   #######################################################
   ## Managing, creating Output for Multiple Submission
   #######################################################
   
-  output$master_multipleStats<-renderUI(HTML(multiple_patientResults()$html_recurrency))
+  output$master_multipleStats<-renderUI(
+    if(multiple_patientResults()$Status == "OK"){
+      HTML(multiple_patientResults()$html_recurrency) 
+      
+    }else if(multiple_patientResults()$Status == "ERROR"){
+      HTML(multiple_patientResults()$errorReport) 
+    }
+  )
   
   
 }

@@ -34,7 +34,7 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
   
   ###########################
   ## Starting HTML ##########
-  shiny_html_ucsc<-"<p style='font-size:25px'><b>UCSC links to Affected Domains in the WT condition</b></p>"
+  shiny_html_ucsc<-"<p style='font-size:25px'><b>UCSC links to Affected Domains in the Control condition</b></p>"
   # shiny_html_ucsc<-paste(shiny_html_ucsc,
   #                        "<p>For each affected Domain, it is depicted in blue the regulatory domain limits, and in red the breakpoint location.</p>",
   #                        sep = "",
@@ -86,52 +86,6 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
       ##############################################
       
       browser_highlight<-"&highlight="
-      
-      ###################################
-      ##FIRST, For TAD limits +- 100bp
-      ###################################
-      #For now not adding tad limits because we have the bed coord below
-      #If we need to paint an average tad coord... maybe doing it by rethinking the track
-      #Or adding beed coord simultaneously, or painting regarding the coord of the TAD providing a high score
-      #Internally we take into account the average
-      #But not painting TAD coord in bed + grey vertical lines because too much, emborrona mucho
-      
-      # ####For each TAD limit, the colouring coords are TADlimit+-100bp
-      # start_TAD<-domainsCoord[nDomain,"start"]
-      # extension_start<-start_TAD - borderHighlight_extension
-      # 
-      # end_TAD<-domainsCoord[nDomain,"end"]
-      # extension_end<-end_TAD + borderHighlight_extension
-      # 
-      # #startRegion
-      # startRegion<-paste("hg19.",
-      #                    chr_browser,"%3A",
-      #                    extension_start,"-",
-      #                    start_TAD,
-      #                    collapse = "",
-      #                    sep = "")
-      # #EndRegion
-      # endRegion<-paste("hg19.",
-      #                  chr_browser,"%3A",
-      #                  end_TAD,"-",
-      #                  extension_end,
-      #                  collapse = "",
-      #                  sep = "")
-      # 
-      # ##RegionColor For the Regions ##gray
-      # colorBorders<-paste("%23",##%23 is essential is the conversion somehow to url syntax of #
-      #                     "877878",
-      #                     sep = "",
-      #                     collapse = "")##colorCode  # el del breakpoint "#e60000"
-      # 
-      # browser_highlight<-paste(browser_highlight,
-      #                          startRegion,
-      #                          colorBorders,
-      #                          "%7C",
-      #                          endRegion,
-      #                          colorBorders,
-      #                          sep="",
-      #                          collapse = "")
       
       ###############################
       ## ADDING BREAKPOINT HIGHLIGHT
@@ -224,15 +178,25 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
       }
 
       #############################################################
-      ## Highligthing All enhancers in the affected genome region
+      ## Highligthing All enhancers in the affected TAD
       #############################################################
       
       masterEnh<-patientResults$MasterEnh_map
       masterEnh<-subset(masterEnh, source==devStage)
       #subset for genome region
       masterEnh$isChr<-masterEnh$chr==chr_browser
-      masterEnh$isBeforeEnd<-masterEnh$end<=end_browser
-      masterEnh$isAfterStart<-masterEnh$start>=start_browser
+      
+      ##Before displaying all enhancers in browser displayed region. Now filtering only for TAD where disease gene is present.
+      # masterEnh$isBeforeEnd<-masterEnh$end<=end_browser
+      # masterEnh$isAfterStart<-masterEnh$start>=start_browser
+      # start_browser<-domainsCoord[nDomain,"start"] - zoomOutDist
+      # end_browser<-domainsCoord[nDomain,"end"] + zoomOutDist
+      
+      ##Usar midpoint en lugar de enhancer start-end?? We are considering whole enh to be inside TADs on prediction scripts, so continue as it is.
+      masterEnh$isBeforeEnd<-masterEnh$end<=domainsCoord[nDomain,"end"]
+      masterEnh$isAfterStart<-masterEnh$start>=domainsCoord[nDomain,"start"]
+      
+      
       
       targetEnh<-rowSums(masterEnh[,c("isChr","isBeforeEnd","isAfterStart")])==3
       ##filter for targetEnh

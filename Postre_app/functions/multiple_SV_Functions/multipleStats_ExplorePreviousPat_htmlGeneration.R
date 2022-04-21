@@ -15,7 +15,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
   
   ##It is the header info to create the html collapsibleExplorePrev list
   # https://www.w3schools.com/howto/howto_js_collapsibleExplorePrev.asp
-  headerPart<-"<html>
+  headerPart<-paste("<html>
   <head>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <style>
@@ -23,7 +23,17 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
   </style>
   </head>
   <body>
-  "
+  ",
+  ##Adding wrapper of the whole document to be able to modify it and clean results upon resubmission when performing Multiple SV analysis
+  if(explPreviousPatSection == FALSE){
+    ##So, multipleSV submission from user
+    "<div class= 'wrapperMultipleSVSubmission'>"
+  }else{
+    #So, explore previous SV html generation
+    "<div class= 'wrapperExplorePreviousPat'>"
+  },
+  sep="",
+  collapse = "")
   
   ##gsub
   ##Let's remove all line breaks, introduced from internet copypaste java & html code
@@ -110,7 +120,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       contentExplorePreviousPat<-paste(c("<div class = 'explanationExplorePreviousPat'>",
                                          "<p style = 'font-size: 20px;'> In the video below there is an explanation about how to navigate the current page. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualitzation. </p>",
                                          "<div class ='videotutorialExplPreviousPat'>",##div used to center video
-                                         '<p align="center"><iframe width="640" height="360" src="https://www.youtube.com/embed/PqPbzfC-Qz4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>',
+                                         '<p align="center"><iframe width="640" height="360" src="https://www.youtube.com/embed/movwXisGsmM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>',
                                          "</div>",
                                          "</div>"),
                                        sep=" ",
@@ -518,7 +528,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
   master_pathomechTable_html<-paste(master_pathomechTable_html,
                                     allPhenoInfoHtml,
                                     endPart,
-                                    ##"</div>",#closing Div=previousPatientsPage
+                                    "</div>",#closing Document main wrapper (wrapperMultipleSVSubmission | wrapperExplorePreviousPat)
                                     "</body>",
                                     "</html>",
                                     sep="")
