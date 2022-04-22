@@ -45,7 +45,7 @@ There is plenty of available information in the internet about how to install R 
 </ul>
 
 <h3>2. Running POSTRE Latest Version</h3>     
-Once R  is installed, just execute the following instruction in a R console to run POSTRE latest version:
+Once R  is installed, just execute the following instruction in an R console to run POSTRE latest version:
 <br><br>
 
 ```R
