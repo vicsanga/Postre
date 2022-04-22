@@ -550,14 +550,21 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
     
     #############################################################
     ## Highligthing All enhancers in the affected genome region
+    ##THOSE ENHANCERS OUTSIDE OF NOT AFFECTED TADS NOT PAINTED
+    ##Those only considering for margins the left most TAD coord and right most TAD coord
     #############################################################
     
     masterEnh<-patientResults$MasterEnh_map
     masterEnh<-subset(masterEnh, source==devStage)
     #subset for genome region
     masterEnh$isChr<-masterEnh$chr==chr_browser
-    masterEnh$isBeforeEnd<-masterEnh$end<=end_browser
-    masterEnh$isAfterStart<-masterEnh$start>=start_browser
+    
+    # This is the code from when I was painting all the enh in the browser
+    # masterEnh$isBeforeEnd<-masterEnh$end<=end_browser
+    # masterEnh$isAfterStart<-masterEnh$start>=start_browser
+    
+    masterEnh$isBeforeEnd<-masterEnh$end<=max(domainsCoord$end)
+    masterEnh$isAfterStart<-masterEnh$start>=min(domainsCoord$start)
     
     targetEnh<-rowSums(masterEnh[,c("isChr","isBeforeEnd","isAfterStart")])==3
     ##filter for targetEnh
