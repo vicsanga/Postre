@@ -138,7 +138,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                            "<br><br>", 
                            targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
                            "<br><br>", 
-                           "As noted in the Graphical Abstract section, only changes with respect to cognate enhnacers are considered when evaluating Loss of Function, altough new ectopic enhancers may come close to the candidate gene depending on the genetic rearrangement. The interaction with ectopic enhancers is only considered when evaluating Gain Of Function.",
+                           "As noted in the Graphical Abstract section, only changes in the cognate enhancers of the candidate gene are considered when evaluating Loss of Function. Ectopic enhancers might appear within the candidate gene regulatory domain depending on the genetic rearrangement. However, such ectopic enhancers are only considered when evaluating Gain Of Function.",
                            "<br><br>",
                            targetGene," initially had ",
                            nEnh_Initial," enhancers  on its regulatory domain, ",

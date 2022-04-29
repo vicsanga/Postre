@@ -100,7 +100,7 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
                            graphicalAbstract,
                            ##Meter la frase aqui si long range and lof
                            if((pathomechanism_ImpactOverGene == "LongRange") && (targetMech == "LOF")){
-                             "<b>NOTE: Only changes with respect to cognate enhnacers are considered when evaluating Loss of Function, altough new ectopic enhancers may come close to the candidate gene depending on the genetic rearrangement. The interaction with ectopic enhancers is only considered, thus plotted if it occurs, when evaluating Gain Of Function.</b>"
+                             "<b>NOTE: Only changes in the cognate enhancers of the candidate gene are considered (and plotted) when evaluating Loss of Function. Ectopic enhancers might appear within the candidate gene regulatory domain depending on the genetic rearrangement. However, such ectopic enhancers are only considered (and plotted) when evaluating Gain Of Function.</b>"
                            },
                            "</div>",
                            sep="")
