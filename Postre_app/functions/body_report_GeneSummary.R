@@ -13,6 +13,10 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
   targetMech<-unlist(strsplit(x = reportUnit, split = "_", fixed = TRUE))[2]
   targetPhase<-unlist(strsplit(x = reportUnit, split = "_", fixed = TRUE))[3]
   
+  ##To capture whether mechanism is long-range or coding(direct)
+  targetRow_resultsPhase<-paste0(targetGene,"--",targetMech)
+  pathomechanism_ImpactOverGene<-patientResults$resultsPerPhase[[targetPhase]][[targetPhase]][targetRow_resultsPhase,]$GeneImpact
+  
   #This way of approaching the GOF-LOF info, deprecated
   # pathoMechanism<-patientResults$resultsPerPhase[[targetPhase]][[targetPhase]][targetGene,]$Mechanism
   # pathoMechanism<-unlist(strsplit(x = pathoMechanism,
@@ -87,13 +91,17 @@ body_report_GeneSummary<-function(patientResults, reportUnit,minRequiredScore, t
   ##Regarding https://www.w3schools.com/cssref/css_units.asp
   ## 1 in corresponds with 96px (approx), hence as we have created the images with height = 8in and width = 12in
   ## The conversion is " height=768px, width=1152px >")
-  
+ 
   graphicalAbstract<-paste("<h2 class='gene_FullReport_SectionEntry' id='",
                            "GraphicalAbstractSection_",
                            reportUnit,
                            "'>Graphical Abstract</h2>",
                            "<div class='gene_FullReport_SectionContent'>",
                            graphicalAbstract,
+                           ##Meter la frase aqui si long range and lof
+                           if((pathomechanism_ImpactOverGene == "LongRange") && (targetMech == "LOF")){
+                             "<b>NOTE: Only changes with respect to cognate enhnacers are considered when evaluating Loss of Function, altough new ectopic enhancers may come close to the candidate gene depending on the genetic rearrangement. The interaction with ectopic enhancers is only considered, thus plotted if it occurs, when evaluating Gain Of Function.</b>"
+                           },
                            "</div>",
                            sep="")
   

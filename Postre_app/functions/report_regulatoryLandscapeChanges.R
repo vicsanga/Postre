@@ -137,6 +137,8 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                            "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
                            "<br><br>", 
                            targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
+                           "<br><br>", 
+                           "As noted in the Graphical Abstract section, only changes with respect to cognate enhnacers are considered when evaluating Loss of Function, altough new ectopic enhancers may come close to the candidate gene depending on the genetic rearrangement. The interaction with ectopic enhancers is only considered when evaluating Gain Of Function.",
                            "<br><br>",
                            targetGene," initially had ",
                            nEnh_Initial," enhancers  on its regulatory domain, ",
