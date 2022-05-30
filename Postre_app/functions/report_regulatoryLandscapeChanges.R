@@ -133,6 +133,14 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
   
   if((pathoMechanism=="LOF")&&(pathomechanism_ImpactOverGene=="LongRange")){
     
+    #######################################
+    ## Text for LOF && Long-range ##
+    #######################################
+    
+    ##Para LOF long-range solo tenemos en cuenta los enhancers cognate, por tanto si se pierde acetilacion
+    ##Se pierden enhancers en numero. En GOF long-range que se tiene en cuenta tanto los cognate como los ectopicos
+    ##Si que puede pasar que pierdas en numero pero ganes en actividad, por tanto ahi lo tendremo en cuenta para que el output textual no sea confuso
+    
     textExplanation<-paste(textExplanation,
                            "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
                            "<br><br>", 
@@ -164,68 +172,108 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
     ## Text for GOF && Long-range ##
     #######################################
     
+    ##Para LOF long-range solo tenemos en cuenta los enhancers cognate, por tanto si se pierde acetilacion
+    ##Se pierden enhancers en numero. En GOF long-range que se tiene en cuenta tanto los cognate como los ectopicos
+    ##Por tanto puede pasar que pierdas en numero pero ganes en actividad, (ya que los que ganas son mas fuertes que los que pierdes) 
+    ##por tanto ahi lo tendremos en cuenta para que el output textual no sea confuso
+    
+    
     ##If initially the gene had no enhancers, saying that there were not, but not indicate an infinite gain of enh
     ##That makes no sense
     
-    textExplanation<-paste(textExplanation,
-                           "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
-                           "<br><br>", 
-                           targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
-                           "<br><br>",
-                           targetGene,
-                           " initially had ",
-                           nEnh_Initial," enhancers  on its regulatory domain, ",
-                           "and it gained ", round2(x = (nEnh_Final - nEnh_Initial),digits = 0),
-                           " due to the ", sv_type,
-                           sep = ""
-    )
-    
-                           
-    if(nEnh_Initial>0){
-      ##So it makes sense to provide a ratio or percentage increase
+    if((nEnh_Final - nEnh_Initial) >0){
+      ##SO there is a gain in enhancers number
       textExplanation<-paste(textExplanation,
-                             " (", round2(x = (abs(nEnh_Final - nEnh_Initial)/nEnh_Initial)*100, digits = 1),
-                             "% increase). In addition, the total H3K27ac levels measured at its enhancers changed from ",
-                             acetilation_Initial,
-                             " to ",
-                             round2(x = acetilation_Final,digits = 1),
-                             " RPGC (reads per genome coverage) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
-                             "% increase). ",
+                             "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
+                             "<br><br>", 
+                             targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
+                             "<br><br>",
+                             targetGene,
+                             " initially had ",
+                             nEnh_Initial," enhancers  on its regulatory domain, ",
+                             "and it gained ", round2(x = (nEnh_Final - nEnh_Initial),digits = 0),
+                             " due to the ", sv_type,
+                             sep = ""
+      )
+      
+      
+      if(nEnh_Initial>0){
+        ##So it makes sense to provide a ratio or percentage increase
+        textExplanation<-paste(textExplanation,
+                               " (", round2(x = (abs(nEnh_Final - nEnh_Initial)/nEnh_Initial)*100, digits = 1),
+                               "% increase). In addition, the total H3K27ac levels measured at its enhancers changed from ",
+                               acetilation_Initial,
+                               " to ",
+                               round2(x = acetilation_Final,digits = 1),
+                               " RPGC (reads per genome coverage) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
+                               "% increase). ",
+                               "<br><br>",
+                               sep="")
+      }else{
+        ##Skip ratios info, since if nEnh initial = 0, and there is a gain... the gain is infinite
+        textExplanation<-paste(textExplanation,
+                               "In addition, the total H3K27ac levels measured at its enhancers changed from ",
+                               acetilation_Initial,
+                               " to ",
+                               round2(x = acetilation_Final, digits = 1),
+                               " RPGC (reads per genome coverage).",
+                               "<br><br>",
+                               sep="")
+      }
+      
+      textExplanation<-paste(textExplanation,
+                             text_gof1,
                              "<br><br>",
                              sep="")
-    }else{
-      ##Skip ratios info, since if nEnh initial = 0, and there is a gain... the gain is infinite
+      
+    }else if((nEnh_Final - nEnh_Initial) <=0){
+      ##So in terms of enhancer numbers, there are the same OR LESS. But, sure they will be stronger since it is 
+      ## A gof prediction
       textExplanation<-paste(textExplanation,
-                             "In addition, the total H3K27ac levels measured at its enhancers changed from ",
-                             acetilation_Initial,
-                             " to ",
-                             round2(x = acetilation_Final, digits = 1),
-                             " RPGC (reads per genome coverage).",
+                             "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
+                             "<br><br>", 
+                             targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
+                             "<br><br>",
+                             "Despite there is not a gain in the number of enhancers around ",
+                             targetGene,
+                             " (initially had ",
+                             nEnh_Initial," enhancers  on its regulatory domain, ",
+                             "and after the rearrangement there are ", round2(x = (nEnh_Final),digits = 0),
+                             ") the activity of the enhancers in the patient scenario is larger than the one of the control situation. ",
+                             sep = ""
+      )
+      
+      
+      if(nEnh_Initial>0){
+        ##So it makes sense to provide a ratio or percentage increase
+        textExplanation<-paste(textExplanation,
+                               "The total H3K27ac levels measured at its enhancers changed from ",
+                               acetilation_Initial,
+                               " to ",
+                               round2(x = acetilation_Final,digits = 1),
+                               " RPGC (reads per genome coverage) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
+                               "% increase). ",
+                               "<br><br>",
+                               sep="")
+      }else{
+        ##Skip ratios info, since if nEnh initial = 0, and there is a gain... the gain is infinite
+        textExplanation<-paste(textExplanation,
+                               "The total H3K27ac levels measured at its enhancers changed from ",
+                               acetilation_Initial,
+                               " to ",
+                               round2(x = acetilation_Final, digits = 1),
+                               " RPGC (reads per genome coverage).",
+                               "<br><br>",
+                               sep="")
+      }
+      
+      textExplanation<-paste(textExplanation,
+                             text_gof1,
                              "<br><br>",
                              sep="")
-    }
-    
-    # Not sure whether this is worth adding, putting this on user guide
-    # #Ending sentence, if gain by TAD fusion, in deletion point it, as maybe it is something unexpected
-    # if(sv_type == "Deletion"){
-    #   textExplanation<-paste(textExplanation,
-    #                          "The Deletion has caused the fusion of different TADs due to the removal of TAD boundaries.",
-    #                          "<br><br>",
-    #                          sep="")
-    # }
-    # else{
-    #    textExplanation<-paste(textExplanation,
-    #                           " ",
-    #                           sep="")
-    #  }
-    
-
-    
-    textExplanation<-paste(textExplanation,
-                           text_gof1,
-                           "<br><br>",
-                           sep="")
-    
+      
+      
+    }    
     
   }else if(pathomechanism_ImpactOverGene == "LongRange_geneDuplication"){
     ##---
@@ -280,7 +328,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
       }
       
       textExplanation<-paste(textExplanation,
-                             " All the enhancers belonging to this new TAD have been duplicated. Hence, they appear both, at their normal domain, and also on the newly created.",
+                             " All the enhancers belonging to this new TAD have been duplicated. Hence, they appear both, at their cognate regulatory domain, and also on the newly created.",
                              "<br><br>",
                              sep="")  
       
@@ -301,8 +349,11 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
     if(nEnh_Initial>0){
       ##So it makes sense to provide a ratio or percentage increase
       textExplanation<-paste(textExplanation,
-                             "This implies an increase of ", round2(x =  (abs(nEnh_Final - nEnh_Initial)/nEnh_Initial)*100, digits = 1),
-                             "%. In addition, the total H3K27ac levels measured at its enhancers changed from ",
+                             ##Quitar la frase esta del porcentaje de increase por si no es increase en numero
+                             ##En acetilacion es seguro
+                             #"This implies an increase of ", round2(x =  (abs(nEnh_Final - nEnh_Initial)/nEnh_Initial)*100, digits = 1), "%.",
+                             
+                             "In addition, the total H3K27ac levels measured at its enhancers changed from ",
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
@@ -389,7 +440,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
       }
       
       textExplanation<-paste(textExplanation,
-                             " All the enhancers belonging to this new TAD have been duplicated. Hence, they appear both, at their normal domain, and also on the newly created.",
+                             " All the enhancers belonging to this new TAD have been duplicated. Hence, they appear both, at their cognate regulatory domain, and also on the newly created.",
                              "<br><br>",
                              sep="")  
       
@@ -404,41 +455,42 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                            " initially had ",
                            nEnh_Initial," enhancers  on its regulatory domain.",
                            " Now, there is a total of ", round2(x = (nEnh_Final),digits = 0),
-                           " enhancers around him, attending to the overall impact of the ", sv_type,
+                           " enhancers around him, attending to the overall impact of the ", sv_type, ". ",
                            sep="")       
     
     if(nEnh_Initial>0){
       ##So it makes sense to provide a ratio or percentage increase
       textExplanation<-paste(textExplanation,
-                             " (", round2(x = (abs(nEnh_Final - nEnh_Initial)/nEnh_Initial)*100, digits = 1),
-                             "% increase). In addition, the total H3K27ac levels measured at its enhancers changed from ",
+                             ##Quitar la frase esta del porcentaje de increase por si no es increase en numero
+                             ##En acetilacion es seguro
+                             #"This implies an increase of ", round2(x =  (abs(nEnh_Final - nEnh_Initial)/nEnh_Initial)*100, digits = 1), "%.",
+                             
+                             "In addition, the total H3K27ac levels measured at its enhancers changed from ",
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
-                             " RPGC (reads per genome coverage) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
-                             "% increase).",
+                             " RPGC (reads per genome coverage) (",
+                             round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
+                             "% increase). ",
                              "<br><br>",
                              sep="")
     }else{
       ##Skip ratios info, since if nEnh initial = 0, and there is a gain... the gain is infinite
       textExplanation<-paste(textExplanation,
-                             ". In addition, the total H3K27ac levels measured at its enhancers changed from ",
+                             "In addition, the total H3K27ac levels measured at its enhancers changed from ",
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
-                             " RPGC (reads per genome coverage).",
+                             " RPGC (reads per genome coverage)",
                              "<br><br>",
                              sep="")
     }
-    
-    
     
     textExplanation<-paste(textExplanation,
                            text_gof1,
                            "<br><br>",
                            sep="")
-    
-
+  
   }else if(pathomechanism_ImpactOverGene == "Direct_geneDuplication"){
     
     textExplanation<-paste(textExplanation,

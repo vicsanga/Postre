@@ -1,0 +1,11 @@
+name: postre_app
+title:
+username:
+account: svradalab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5813369
+bundleId: 5851571
+url: https://svradalab.shinyapps.io/postre_app/
+when: 1651245838.11099
+lastSyncTime: 1651245838.11102
