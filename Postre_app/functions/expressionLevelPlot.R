@@ -27,7 +27,7 @@ expressionLevelPlot<-function(targetExpression, targetGene, targetPhase, maxExpr
   ##Puedo pintar yo el cuadro y arreglado
   #When I want to se the axis, uncomment the 3 following lines
   
-  canvas_X_limits<-c(-4,14)
+  canvas_X_limits<-c(-4,15)
   canvas_Y_limits<-c(-1,16.5)
   # plot(x=1, y=1, type = "n",
   #      ylim = canvas_Y_limits,
@@ -46,7 +46,7 @@ expressionLevelPlot<-function(targetExpression, targetGene, targetPhase, maxExpr
   
   #Adding fpkms
   text(x=6, y=14, label=paste0(round2(x = targetExpression,
-                                                      digits = 1), " fpkm"), cex = 3,
+                                                      digits = 1), " FPKM"), cex = 3,
        font=2)
   
   
@@ -68,23 +68,23 @@ expressionLevelPlot<-function(targetExpression, targetGene, targetPhase, maxExpr
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=9.5, y=10, label=paste(">",maxExpression," fpkm", sep="", collapse=""), cex = 3, pos = 4, font = 2)
+  text(x=9.5, y=10, label=paste(">",maxExpression," FPKM", sep="", collapse=""), cex = 2.5, pos = 4, font = 2)
   
   ##Adding tags
-  text(x=9.5, y=1, label=paste(">",minExpression," fpkm", sep="", collapse=""), cex = 3, pos = 4, font = 2)
+  text(x=9.5, y=1, label=paste(">",minExpression," FPKM", sep="", collapse=""), cex = 2.5, pos = 4, font = 2)
   
   
   
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=-3.7, y=11, label=paste0("Considerable"), cex = 3, pos = 4, font = 2)
+  text(x=-2.2, y=11, label=paste0("High"), cex = 3, pos = 4, font = 2)
   
   ##Adding tags
-  text(x=-3.7, y=5, label=paste0("Intermediate"), cex = 3, pos = 4, font = 2)
+  text(x=-2.2, y=5, label=paste0("Medium"), cex = 3, pos = 4, font = 2)
 
   ##Adding tags
-  text(x=-3.7, y=0, label=paste0("Poor"), cex = 3, pos = 4, font = 2)  
+  text(x=-2.2, y=0, label=paste0("Low"), cex = 3, pos = 4, font = 2)  
   
    ##Adding "axes" inssided of canvas
   #Y axes

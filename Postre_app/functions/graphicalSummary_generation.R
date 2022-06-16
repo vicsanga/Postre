@@ -600,7 +600,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               # enhNumbersSize<-1##Some variables for text sizes
               
               #Adding plot header
-              text(x=20, y=30, label=paste0("Graphical Representation Focusing on gene ", gene, " in ", phase), cex = 1.7)
+              text(x=20, y=30, label=paste0("Graphical summary of ", gene, " regulatory domain in ", phase), cex = 1.7)
               
               text(x=20,y=26, label="Simplification",cex=1.7)
               

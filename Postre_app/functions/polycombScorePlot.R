@@ -19,7 +19,7 @@ polycombScorePlot<-function(polyCscore, targetGene){
   ##Puedo pintar yo el cuadro y arreglado
   #When I want to se the axis, uncomment the 3 following lines
   
-  canvas_X_limits<-c(-4,14)
+  canvas_X_limits<-c(-4,15)
   canvas_Y_limits<-c(0,maxBarplotValue)
   # plot(x=1, y=1, type = "n",
   #      ylim = canvas_Y_limits,
@@ -34,7 +34,7 @@ polycombScorePlot<-function(polyCscore, targetGene){
   
   #Adding plot header
   
-  text(x=6, y=1.45, label=paste0(targetGene," Polycomb Score"), cex = 3.5, font = 2)
+  text(x=6, y=1.45, label=paste0(targetGene," Polycomb (PcG) Score"), cex = 3.5, font = 2)
   text(x=6, y=1.35, label=paste0("based on H3K27me3"), cex = 2.8, font = 2)
 
   #Adding score
@@ -42,7 +42,7 @@ polycombScorePlot<-function(polyCscore, targetGene){
   #                                      digits = 2)), cex = 3,
   #      font=2)
   
-  text(x=6, y=1.25, label=paste0(round2(x = polyCscore,
+  text(x=6, y=1.25, label=paste0("PcG score = ", round2(x = polyCscore,
                                        digits = 2)), cex = 3,
        font=2)
   
@@ -55,15 +55,15 @@ polycombScorePlot<-function(polyCscore, targetGene){
   lines(x = c(2.5,9.5),y = c(1,1), lty = 3, lwd= 1)
   
   ##Adding tags
-  text(x=9.5, y=1, label="score = 1", cex = 3, pos = 4, font = 2)
+  text(x=9.5, y=1, label="Max score = 1", cex = 2.5, pos = 4, font = 2)
   
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=-3.7, y=0.9, label=paste0("Regulatory \n    Gene"), cex = 3, pos = 4, font = 2)
+  text(x=-3.8, y=0.9, label=paste0("Developmental \n        gene"), cex = 2.5, pos = 4, font = 2)
   
   ##Adding tags
-  text(x=-3.7, y=0.09, label=paste0("      Not \nRegulatory"), cex = 3, pos = 4, font = 2)  
+  text(x=-3.8, y=0.1, label=paste0("         NOT \n developmental \n        gene"), cex = 2.5, pos = 4, font = 2)  
   
   ##Adding "axes" inssided of canvas
   #Y axes

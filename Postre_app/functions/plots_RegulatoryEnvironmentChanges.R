@@ -97,11 +97,11 @@ plots_regulatoryEnvironmentChanges<-function(patientResults){
       par(mfrow=c(1,2))
       sv_barplotting(barplotValues = c(c(nEnh_Initial, nEnh_Final)), 
                      tagsBarplotValues = c("Control","Patient"),
-                     title= "Enh. Number Changes")
+                     title= "Enhancer number\n")
       
       sv_barplotting(barplotValues = c(acetilation_Initial, acetilation_Final), 
                      tagsBarplotValues = c("Control","Patient"),
-                     title= "Enh. H3K27ac Changes")
+                     title= "Enhancer activity\n(H3K27ac levels)")
       
       dev.off()##Saving Graph
       

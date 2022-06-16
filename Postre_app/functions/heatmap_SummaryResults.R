@@ -46,14 +46,15 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##Defining cell colors
   #GOF, TOPGOF, LOF, TOPLOF, Default
   
-  col_default<-"#C8C8C8"#"#a6a6a6"#grey
+  #col_header<-"#236fA7" ##applied on css, Main interface styling.html
+  col_default<-"#d6d6d6"##app:"#C8C8C8"#"#a6a6a6"#grey
   # col_directImpact_NotPathogenic<-"#DCDCDC"
   
-  col_lof<-"#d63f44"
-  col_top_lof<-"#d63f44" 
+  col_lof<-"#ED645F"##app:"#d63f44"
+  col_top_lof<-"#ED645F"##app:"#d63f44" 
   
-  col_gof<-"#b2d235"
-  col_top_gof<-"#b2d235" 
+  col_gof<-"#CAD83A"##app"#b2d235"
+  col_top_gof<-"#CAD83A"##app:"#b2d235" 
   
   #col_mix<-"#80dfff" ##In case there is a situation (as a result of the thresholds) where both scenarios are likely to occur with a high score
   ##Maybe more realistic for phase free, just in case, implement
@@ -89,7 +90,7 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
     }else if(nameCol=="GeneImpact"){
       table_content<-paste(table_content,
                            "<th>",
-                           "Gene Impact",
+                           "Pathomechanism",
                            "</th>",
                            sep = "",
                            collapse = "")
@@ -124,7 +125,9 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
         #Adding column in the row
         table_content<-paste(table_content,
                              "<td>",
+                             "<em>",
                              gene,
+                             "</em>",
                              sep="",
                              collapse = "")
         

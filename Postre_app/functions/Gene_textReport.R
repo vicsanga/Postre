@@ -110,7 +110,9 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
 
         if(humanBased_genePhenotype[gene,mainPhenotype]==1){
           geneText<-paste(geneText, "<p style='text-align:justify;'>",
+                          #"<em>",
                           targetGene,
+                          #"</em>",
                           " has been previously associated with the patient phenotype category in humans (",patientPhenoAnalyzed ,").</p>", 
                           collapse = "")
           
@@ -121,7 +123,9 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
           
         }else{
           geneText<-paste(geneText, "<p>Eventhough ", 
+                          #"<em>",
                           targetGene,
+                          #"</em>",
                           " has not been linked with the patient phenotype category (",patientPhenoAnalyzed,"), it has been associated with other pathologies.</p>", collapse = "")
           
         }
@@ -132,7 +136,9 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         ##Introduce space lines between elements if it gets two close
         geneText<-paste(geneText, "<p></p>", collapse = "")
         geneText<-paste(geneText, "<p>We are sorry to inform you that altough ",
+                        #"<em>",
                         targetGene,
+                        #"</em>",
                         " presents a link to a disease, we could not get any standarized phenotype information. So, we could not take it into consideration. Feel free to explore it.</p>",
                         "<p>If you are sure it is associated to a phenotype tell us, and we will take it into account.</p>",
                         collapse = "")
@@ -262,17 +268,21 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         #So the gene is in the mice-phenotype categorized matrix
         ##It can have or not, an association with phenotype
         if(miceBased_genePhenotype[gene,mainPhenotype]==1){
-          geneText<-paste(geneText, "<p style='text-align:justify;'>The mouse homologous gene for ",
+          geneText<-paste(geneText, "<p style='text-align:justify;'>",
+                          #"<em>",
                           targetGene,
-                          " has been associated in mice with a phenotype category similar to the one reported in the patient (", patientPhenoAnalyzed,").</p>", 
+                          #"</em>",
+                          " has been associated in mice (through its homologous gene) with a phenotype category similar to the one reported in the patient (", patientPhenoAnalyzed,").</p>", 
                           collapse = "")
           
         }else{
           if(rowSums(miceBased_genePhenotype[gene,])>=1){
             #So the gene is associated with at least a phenotype (but not the main one)
-            geneText<-paste(geneText, "<p>Eventhough the mouse homologous gene for ", 
+            geneText<-paste(geneText, "<p>", 
+                            #"<em>",
                             targetGene,
-                            " has not been linked with a phenotype category similar to the one reported in the patient (",patientPhenoAnalyzed,"), it has been associated with other pathologies.</p>", collapse = "")
+                            #"</em>",
+                            " has not been associated in mice (through its homologous gene) with a phenotype category similar to the one reported in the patient (",patientPhenoAnalyzed,"). However, it has been associated with other pathologies.</p>", collapse = "")
             
           }
         }
@@ -283,7 +293,9 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
         ##Introduce space lines between elements if it gets two close
         geneText<-paste(geneText, "<p></p>", collapse = "")
         geneText<-paste(geneText, "<p>We are sorry to inform you that altough the mouse homologous gene for ",
+                        #"<em>",
                         targetGene,
+                        #"</em>",
                         " presents a link to an MGI entry, we could not get any standarized phenotype information. So, we could not take it into consideration. Feel free to explore it.</p>",
                         "<p>If you are sure it is associated to a phenotype tell us, and we will take it into account.</p>",
                         collapse = "")

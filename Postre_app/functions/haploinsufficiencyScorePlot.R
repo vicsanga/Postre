@@ -18,7 +18,7 @@ haploinsufficiencyScorePlot<-function(targetHI_score, targetGene){
   ##Puedo pintar yo el cuadro y arreglado
   #When I want to se the axis, uncomment the 3 following lines
   
-  canvas_X_limits<-c(-4,14)
+  canvas_X_limits<-c(-4,15)
   canvas_Y_limits<-c(0,maxBarplotValue)
   # plot(x=1, y=1, type = "n",
   #      ylim = canvas_Y_limits,
@@ -33,7 +33,7 @@ haploinsufficiencyScorePlot<-function(targetHI_score, targetGene){
   
   #Adding plot header
   #5.8 to ensure that a gene with 9 letters perfectly fit
-  text(x=5.8, y=1.45, label=paste0(targetGene," Dosage Sensitivity"), cex = 3.5, font = 2)
+  text(x=5.8, y=1.45, label=paste0(targetGene," Dosage Sensitivity (DS)"), cex = 3.5, font = 2)
   
   #Adding score
   text(x=6, y=1.3, label=paste0("DS score = ",
@@ -53,15 +53,15 @@ haploinsufficiencyScorePlot<-function(targetHI_score, targetGene){
   lines(x = c(2.5,9.5),y = c(1,1), lty = 3, lwd= 1)
 
   ##Adding tags
-  text(x=9.5, y=1, label="score = 1", cex = 3, pos = 4, font = 2)
+  text(x=9.5, y=1, label="Max score = 1", cex = 2.5, pos = 4, font = 2)
   
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=-3.7, y=0.9, label=paste0("DS gene"), cex = 3, pos = 4, font = 2)
+  text(x=-3.2, y=0.9, label=paste0("DS gene\n"), cex = 2.5, pos = 4, font = 2)##el \n para poner a misma altura
   
   ##Adding tags
-  text(x=-3.7, y=0.05, label=paste0("Not DS gene"), cex = 3, pos = 4, font = 2)  
+  text(x=-3.7, y=0.05, label=paste0("NOT DS gene"), cex = 2.5, pos = 4, font = 2)  
   
   ##Adding "axes" inssided of canvas
   #Y axes
