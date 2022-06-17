@@ -148,7 +148,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            " presents an expression of ",
                            round2(x = targetExpression,
                                   digits = 1),
-                           " fpkm at the ", targetPhase,
+                           " FPKM at the ", targetPhase,
                            " stage. ",
                            ##"<br><br>",
                            sep="")
@@ -179,7 +179,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            targetGene,
                            " is: ",
                            round2(polycScore,digits = 2),
-                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based regulatory gene, 0 implies the opposite).",
+                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based developmental gene, 0 implies the opposite).",
                            "<br><br>",
                            sep="") 
     
@@ -230,7 +230,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            " presents an expression of ",
                            round2(x = targetExpression,
                                   digits = 1),
-                           " fpkm at the ", targetPhase,
+                           " FPKM at the ", targetPhase,
                            " stage. ",
                            ##"<br><br>",
                            sep="")
@@ -262,7 +262,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            targetGene,
                            " is: ",
                            round2(polycScore,digits = 2),
-                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based regulatory gene, 0 implies the opposite).",
+                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based developmental gene, 0 implies the opposite).",
                            "<br><br>",
                            sep="") 
     
@@ -325,7 +325,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            targetGene,
                            " is: ",
                            round2(polycScore,digits = 2),
-                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based regulatory gene, 0 implies the opposite).",
+                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based developmental gene, 0 implies the opposite).",
                            "<br><br>",
                            sep="") 
     
@@ -388,7 +388,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            targetGene,
                            " is: ",
                            round2(polycScore,digits = 2),
-                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a polycomb regulatory gene, 0 implies the opposite)",
+                           ". This score must be interpreted on a 0-1 scale (1 means strong evidence for being a H3K27me3-polycomb based developmental gene, 0 implies the opposite)",
                            "<br><br>",
                            sep="") 
     
