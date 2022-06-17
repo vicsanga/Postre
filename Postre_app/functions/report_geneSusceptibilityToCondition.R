@@ -148,7 +148,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            " presents an expression of ",
                            round2(x = targetExpression,
                                   digits = 1),
-                           " FPKM at the ", targetPhase,
+                           " FPKMs at the ", targetPhase,
                            " stage. ",
                            ##"<br><br>",
                            sep="")
@@ -230,7 +230,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            " presents an expression of ",
                            round2(x = targetExpression,
                                   digits = 1),
-                           " FPKM at the ", targetPhase,
+                           " FPKMs at the ", targetPhase,
                            " stage. ",
                            ##"<br><br>",
                            sep="")
