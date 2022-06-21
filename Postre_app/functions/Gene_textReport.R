@@ -200,7 +200,9 @@ gene_textReport<-function(patientResults, minPatogenicScore, mainPhenotype, targ
       ####Adding MedGen INFO
       ##"NULL" is the way absence of info is annotated on the table
       
-      if(is.na(medgene_entries)==FALSE){
+      if(is.na(medgene_entries[1])==FALSE){
+        ##If there are multiple entries only the first one will be used, so [1]. And if there is only one, then that is the one used
+        ##Doing [1] to avoid a warning when multiple entries exist
         ##Previous check to avoid a bug
         if(any(medgene_entries!="NULL")){
           ##Introduce space lines between elements if it gets two close
