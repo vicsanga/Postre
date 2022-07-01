@@ -913,11 +913,12 @@ color:#1D3354;
     border-radius: 10px;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows:1fr 0.05fr 0.05fr;
+    grid-template-rows:1fr 0.05fr 0.05fr 0.05fr;
     grid-gap: 5px;
     grid-template-areas:
       "uploadBox"
-      "enterMail"
+      "multipleSVRunMode"
+      "infoRefGenome"
       "submMultiple";
   }
 
@@ -926,12 +927,16 @@ color:#1D3354;
 }
 
 /*Change entermail by multipleSVRunMode*/
-.enterMail{
-  grid-area:enterMail;
+.multipleSVRunMode{
+  grid-area:multipleSVRunMode;
+}
+
+.multipleSVRefGenome{
+  grid-area:infoRefGenome;
 }
 
 #multipleSubm{
-grid-area:submMultiple;
+  grid-area:submMultiple;
 }
 
 /**Mover luego fuera de aqui la info para hacer el menu del panel de submission**/

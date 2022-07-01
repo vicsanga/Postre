@@ -339,7 +339,7 @@ ui <-function(req){
                                                          <a href= "http://genome.ucsc.edu/cgi-bin/hgLiftOver" target="_blank">UCSC LiftOver</a>, 
                                                          <a href= "https://www.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core" target="_blank">ENSEMBL Assembly Converter</a>, 
                                                          <a href= "https://liftover.broadinstitute.org/" target="_blank">Broad Institute LiftOver</a>
-                                                         ')
+                                                         </p>')
                                                   )
                                                 ),
                                             ),
@@ -408,17 +408,34 @@ ui <-function(req){
                                             div(class="multipleSubmission",
                                                 wellPanel(fileInput(
                                                   inputId = "multipleFileInfo",
-                                                  label="SelectFile",
+                                                  label="Select File",
                                                   multiple = FALSE,
                                                   accept = "*"
                                                 ),style = "padding: 5px; padding-bottom:0px;")
                                             ),
                                             
                                             ##Selecting Running Mode
-                                            div(
+                                            div(class="multipleSVRunMode",
                                               wellPanel(selectInput(inputId = "runMode_Multiple", label = "Running mode",
                                                                     choices = c("Standard","High-Specificity"),
                                                                     selected = "Standard"))
+                                            ),
+                                            ##Specifying reference Genome
+                                            div(class="multipleSVRefGenome",
+                                              # wellPanel(selectInput(inputId = "refGenome", label = "Reference Genome",
+                                              #                       choices = c("hg19","hg38"),
+                                              #                       selected = "hg19"))
+                                              
+                                              wellPanel(
+                                                div(class="textRefGenome",
+                                                    HTML('<h4><b>NOTE: Reference Genome Coordinates required in GRCh37/hg19</b></h4>'),
+                                                    HTML('<p style="font-size:15px;">Please, visit any of the following websites to convert your coordinates to hg19 if you need it:
+                                                         <a href= "http://genome.ucsc.edu/cgi-bin/hgLiftOver" target="_blank">UCSC LiftOver</a>, 
+                                                         <a href= "https://www.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core" target="_blank">ENSEMBL Assembly Converter</a>, 
+                                                         <a href= "https://liftover.broadinstitute.org/" target="_blank">Broad Institute LiftOver</a>
+                                                         </p>')
+                                                )
+                                              ),
                                             ),
                                             div(class="submission",
                                                 id="multipleSubm",
