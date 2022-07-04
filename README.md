@@ -9,7 +9,7 @@ POSTRE: Prediction Of STRuctural variant Effects
 <h2 id="ExplanationPOSTRE"> <b>What is POSTRE?</b> </h2>
 
  <div>
-POSTRE is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. POSTRE aims to identify the genes responsible for the disease together with the pathological mechanism. In parallel, it determines the SV associated pathogenic events <b style='color:#1D3354;'>in space and time</b> through performing cell type/tissue specific predictions. POSTRE is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and coding pathogenic events</b>.
+POSTRE is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. POSTRE aims to identify the genes responsible for the disease together with the pathological mechanism. In parallel, it determines the SV associated pathogenic events <b style='color:#1D3354;'>in space and time</b> through performing cell type/tissue specific predictions. POSTRE is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and coding pathogenic events</b>. Read <a href="https://www.biorxiv.org/content/10.1101/2022.06.20.496902v1" target="_blank">POSTRE manuscript</a> for more details.
  <br> <br>
 </div>
 
@@ -17,9 +17,12 @@ Check the infographic displayed below to see a representation of POSTRE function
 
 ![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografia.png?raw=true)
 
+<br><br>
+Visualize POSTRE performance with a real patient in the following <a href="https://youtu.be/g1vinL4Xra4" target="_blank">YouTube video</a>. Reproduce it in Full Screen and High Quality (1080p) for optimal visualitzation. For this patient, with BOFS syndrome carrying an inversion <a href="10.1016/j.stem.2019.03.004 " target="_blank">(Laugsch et al., 2019)</a>, POSTRE successfully predicts the loss of TFAP2A expression in neural crest cells through an enhancer disconnection mechanism.
+
 <h2 id="UsingPOSTRE">How to use POSTRE?</h2>
 
-An overview of POSTRE is provided in this section. Click on the image below to see the video in Youtube. Reproduce it in Full Screen and High Quality (1080p) for optimal visualitzation. 
+A detailed overview of POSTRE is provided in this section. Click on the image below to see the video in Youtube. Reproduce it in Full Screen and High Quality (1080p) for optimal visualitzation. 
 
 [![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)]( https://youtu.be/Pc7MsKvqyQs "POSTRE Tutorial")
 
