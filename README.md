@@ -9,7 +9,7 @@ POSTRE: Prediction Of STRuctural variant Effects
 <h2 id="ExplanationPOSTRE"> <b>What is POSTRE?</b> </h2>
 
  <div>
-POSTRE is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. POSTRE aims to identify the genes responsible for the disease together with the pathological mechanism. In parallel, it determines the SV associated pathogenic events <b style='color:#1D3354;'>in space and time</b> through performing cell type/tissue specific predictions. POSTRE is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and coding pathogenic events</b>. Read <a href="https://www.biorxiv.org/content/10.1101/2022.06.20.496902v1" target="_blank">POSTRE manuscript</a> for more details.
+POSTRE is a software developed to <b style='color:#1D3354;'>predict the pathogenic impact of Structural Variants (SVs)</b>. POSTRE aims to identify the genes responsible for the disease together with the pathological mechanism. The software determines the SV associated pathogenic events <b style='color:#1D3354;'>in space and time</b> through performing cell type/tissue specific predictions. POSTRE is able to handle <b style='color:#1D3354;'>long-range (enhancer driven) and coding pathogenic events</b>. Read <a href="https://www.biorxiv.org/content/10.1101/2022.06.20.496902v1" target="_blank">POSTRE manuscript</a> for more details.
  <br> <br>
 </div>
 
