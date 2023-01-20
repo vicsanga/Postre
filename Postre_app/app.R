@@ -1,6 +1,8 @@
-#################################################
-### Rada-Iglesias Lab SV Effect Prediction Tool
-#################################################
+########################################################
+### POSTRE (Prediction of STRuctural variant Effects)
+########################################################
+
+##Do not repeat devStages or phases Names! Even for different phenotypes!!
 
 ##To consider bioconductor repos
 ##To avoid this error: https://community.rstudio.com/t/deployment-error-unable-to-determine-the-location-for-some-packages/102312
@@ -17,36 +19,17 @@ library(plotrix)##For enhancers, ellipse shape representation
 library(shape)##For curve arrows representation
 library(diagram)##For curve arrows representation
 
-##Librerias para el liftover tratar de poner aqui
-##Si se cargan dentro del source de la funcion tarda la vida
-# library(liftOver)
-# library(GenomicRanges)
-# library(rtracklayer)
-# library(reticulate)
-
-
-
 ###Setwd in the folder where all the app info is hosted
 # setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
 
 ####################################
 ###Let's load required Functions
 ####################################
+source("scripts_To_Load_Data/metaFunctionLoad.R")
 
-source(file = "functions/MasterWrapperSinglePrediction.R",local = TRUE)##many other functions loaded here
-source(file = "functions/error_Report.R",local = TRUE)
-source(file = "functions/error_Report_MultipleSV_submission.R",local = TRUE)
-source(file = "functions/noGenesFound_report.R",local = TRUE)
-
-##############################################
-##Functions for Multiple Patients Submission
-##############################################
-source("functions/multiple_SV_Functions/cohortResults_Parser.R", local = TRUE)
-source("functions/multiple_SV_Functions/multipleStats_ExplorePreviousPat_htmlGeneration.R",local=TRUE)
-
-##To deal with rounding .5 problems
-##round2 function
-source(file = "functions/roundingHalfs.R", local = FALSE) ##Local == FALSE to be loaded in the global env so that all functions can find it
+##Required object for Single Prediction
+##Loading multidata object, to avoid multiple reloading
+load("data/MultiDataList.RData")
 
 ####################################################################################################
 ##Patients tables for User Easy Submission. Maybe only loading when Submission of this kind done
@@ -65,10 +48,8 @@ load("data/patientTables/AllPatientsInfo.RData")
 minScore<-0.8
 highScore<-0.9
 
-
 ###Meter como variables, todos los valores que  estan estaticos en el menu
 relevantChr<-c(paste("chr",1:22,sep = ""), "chrX")##chrY excluded not all data available for chrY
-
 
 #To avoid navbar collapse in smaller screens
 # https://stackoverflow.com/questions/21738417/bootstrap-remove-responsive-from-navbar
@@ -289,16 +270,32 @@ ui <-function(req){
                                             ),
                                             div(class="inp2",
                                                 ##Patient Phenotype
-                                                wellPanel(selectInput(inputId = "phenoPatient",
-                                                                      label = "Phenotype",
-                                                                      ##Choices full name is then matched & renamed in GenomicData_Loader.R
-                                                                      ##Alphabet order
-                                                                      choices = c("Cardiovascular",
-                                                                                  "Head & Neck",
-                                                                                  "Limbs",
-                                                                                  "Neurodevelopmental"
-                                                                      ),
-                                                                      selected ="Head & Neck" ))
+                                                wellPanel(           
+                                                  # selectInput(
+                                                  # inputId = "phenoPatient",
+                                                  # label = "Phenotype",
+                                                  # ##Choices full name is then matched & renamed in GenomicData_Loader.R
+                                                  # ##Alphabet order
+                                                  # choices = c("Cardiovascular",
+                                                  #             "Head & Neck",
+                                                  #             "Limbs",
+                                                  #             "Neurodevelopmental"
+                                                  # ),
+                                                  # selected ="Head & Neck" )
+                                                  
+                                                  # https://shiny.rstudio.com/reference/shiny/1.6.0/checkboxGroupInput.html
+                                                  checkboxGroupInput(inputId = "phenoPatient", label = "Phenotype",
+                                                                     # c("Head & Neck" = "head_neck",
+                                                                     #   "Cardiovascular" = "cardiovascular",
+                                                                     #   "Limbs" = "limbs",
+                                                                     #   "Neurodevelopmental" = "neurodevelopmental"),
+                                                                     c("Cardiovascular" = "cardiovascular",
+                                                                       "Head & Neck" = "head_neck",
+                                                                       "Limbs" = "limbs",
+                                                                       "Neurodevelopmental" = "neurodevelopmental"),
+                                                                     selected = "head_neck",
+                                                                     inline = TRUE)
+                                                )
                                             ),
                                             ##SV coordinates
                                             div(class="inp3",
@@ -310,7 +307,7 @@ ui <-function(req){
                                                               selected="chr6"),
                                                   
                                                   textInput(inputId = "bp1_coord",
-                                                            label = "Breakpoint 1 coordinates (coord1,coord2 if interval)",
+                                                            label = "Breakpoint 1 coordinates in hg19 (coord1,coord2 if interval)",
                                                             value = "10355280")
                                                 )),
                                             
@@ -323,12 +320,12 @@ ui <-function(req){
                                                               selected = "chr6"),
                                                   
                                                   textInput(inputId = "bp2_coord",
-                                                            label = "Breakpoint 2 coordinates (coord1,coord2 if interval)",
+                                                            label = "Breakpoint 2 coordinates in hg19 (coord1,coord2 if interval)",
                                                             value = "99103873")
                                                 )),
                                             ##Specifying reference Genome
                                             div(class="inp5",
-                                                # wellPanel(selectInput(inputId = "refGenome", label = "Reference Genome",
+                                                # wellPanel(selectInput(inputId = "refGenome_SingleSV_Subm", label = "Reference Genome",
                                                 #                       choices = c("hg19","hg38"),
                                                 #                       selected = "hg19"))
                                                 
@@ -336,18 +333,119 @@ ui <-function(req){
                                                   div(class="textRefGenome",
                                                       HTML('<h4><b>NOTE: Reference Genome Coordinates required in GRCh37/hg19</b></h4>'),
                                                       HTML('<p style="font-size:15px;">Please, visit any of the following websites to convert your coordinates to hg19 if you need it:
-                                                         <a href= "http://genome.ucsc.edu/cgi-bin/hgLiftOver" target="_blank">UCSC LiftOver</a>, 
-                                                         <a href= "https://www.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core" target="_blank">ENSEMBL Assembly Converter</a>, 
+                                                         <a href= "http://genome.ucsc.edu/cgi-bin/hgLiftOver" target="_blank">UCSC LiftOver</a>,
+                                                         <a href= "https://www.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core" target="_blank">ENSEMBL Assembly Converter</a>,
                                                          <a href= "https://liftover.broadinstitute.org/" target="_blank">Broad Institute LiftOver</a>
                                                          </p>')
                                                   )
-                                                ),
+                                                )
+                                                # ,
                                             ),
+                                            
+                                            #################################
+                                            ##Adding Advanced Features Menu
+                                            #################################
                                             ##Selecting Running Mode
+                                            ##Drop down menu shiny
+                                            #https://rdrr.io/cran/shinyWidgets/man/dropdown.html
+                                            ##No me acaba, hacer tipo webGestalt
+                                            # https://www.w3schools.com/howto/howto_js_collapsible.asp
+                                            ##https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible
+                                            ##Con la parte de AddIcons
+                                            ##Y pillar el html que genera Shiny, yeah
+                                            
                                             div(class="inp6",
-                                                wellPanel(selectInput(inputId = "runMode_single", label = "Running mode",
-                                                                      choices = c("Standard","High-Specificity"),
-                                                                      selected = "Standard"))
+                                                wellPanel(HTML('
+<div class="WrapperAdvancedFeatures">
+<button class="collapsibleAdvancedFeatures" id="buttonSingleSubmAdvancedFeatures">Advanced Parameters [+]</button>
+<div class="contentAdvancedFeatures">
+
+  <!-- Selecting Running Mode -->
+  <div class="form-group shiny-input-container">
+  <label class="control-label" id="runMode_single-label" for="runMode_single">Running mode</label>
+  <div>
+    <select id="runMode_single"><option value="Standard" selected>Standard</option>
+<option value="High-Specificity">High-Specificity</option></select>
+    <script type="application/json" data-for="runMode_single" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+  </div>
+</div>
+
+<!-- Considering gene previous association with patient phenotype, yes or no?-->
+<div id="phenoConsideration_singleSubm" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="phenoConsideration_singleSubm-label">
+  <label class="control-label" id="phenoConsideration_singleSubm-label" for="phenoConsideration_singleSubm">Gene-PatientPheno: Require known association of the candidate genes with the patient phenotype for pathogenicity</label>
+                                                                 <div class="shiny-options-group">
+                                                                 <label class="radio-inline">
+                                                                 <input type="radio" name="phenoConsideration_singleSubm" value="yes" checked="checked"/>
+                                                                 <span>Yes (default)</span>
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                 <input type="radio" name="phenoConsideration_singleSubm" value="no"/>
+                                                                 <span>No</span>
+                                                                 </label>
+                                                                 </div>
+                                                                 </div>
+                            
+<hr>                    
+
+<div class="tadSubmissionManagement">
+
+<!-- Uploading your own TAD map -->
+<div class="TADSubmission">
+  <div class="form-group shiny-input-container">
+    <label class="control-label" id="TADsInfo_single-label" for="TADsInfo_single">Upload TAD map</label>
+    <div class="input-group">
+      <label class="input-group-btn input-group-prepend">
+        <span class="btn btn-default btn-file">
+          Browse...
+          <input id="TADsInfo_single" name="TADsInfo_single" type="file" style="position: absolute !important; top: -99999px !important; left: -99999px !important;" accept="*"/>
+        </span>
+      </label>
+      <input type="text" class="form-control" placeholder="No file selected" readonly="readonly"/>
+    </div>
+    <div id="TADsInfo_single_progress" class="progress active shiny-file-input-progress">
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+</div>
+
+<button id="resetTADmap_singleSVsubm" type="button" class="action-button resetTADmapSelection resetSubmTAD">Remove selected TAD map</button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+  /*Function to expand-hidde the collapsible menu of advanced features*/
+  var coll = document.getElementsByClassName("collapsibleAdvancedFeatures");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+
+
+  /*Function to change advanced features text depending if it is expanded or hidden*/
+  const btn = document.getElementById("buttonSingleSubmAdvancedFeatures");
+  btn.addEventListener("click", ()=>{
+
+    if(btn.innerText === "Advanced Parameters [+]"){
+        btn.innerText = "Advanced Parameters [-]";
+    }else{
+        btn.innerText= "Advanced Parameters [+]";
+    }
+  });
+</script>
+'),
+                                                )
                                             ),
                                             div(class="submission",
                                                 #Send request
@@ -411,31 +509,122 @@ ui <-function(req){
                                                   label="Select File",
                                                   multiple = FALSE,
                                                   accept = "*"
-                                                ),style = "padding: 5px; padding-bottom:0px;")
+                                                ))#,style = "padding: 5px; padding-bottom:0px;")
                                             ),
                                             
                                             ##Selecting Running Mode
                                             div(class="multipleSVRunMode",
-                                              wellPanel(selectInput(inputId = "runMode_Multiple", label = "Running mode",
-                                                                    choices = c("Standard","High-Specificity"),
-                                                                    selected = "Standard"))
+                                                ##Meter aqui la info del panel de Advanced Features
+                                                wellPanel(HTML('
+<div class="WrapperAdvancedFeatures">
+<button class="collapsibleAdvancedFeaturesMultiple" id="buttonMultipleSubmAdvancedFeatures">Advanced Parameters [+]</button>
+<div class="contentAdvancedFeatures">
+
+  <!-- Selecting Running Mode -->
+  <div class="form-group shiny-input-container">
+    <label class="control-label" id="runMode_Multiple-label" for="runMode_Multiple">Running mode</label>
+    <div>
+      <select id="runMode_Multiple"><option value="Standard" selected>Standard</option>
+<option value="High-Specificity">High-Specificity</option></select>
+      <script type="application/json" data-for="runMode_Multiple" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+    </div>
+  </div>
+
+<!-- Considering gene previous association with patient phenotype, yes or no? -->
+<div id="phenoConsideration_multipleSubm" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="phenoConsideration_multipleSubm-label">
+  <label class="control-label" id="phenoConsideration_multipleSubm-label" for="phenoConsideration_multipleSubm">Gene-PatientPheno: Require known association of the candidate genes with the patient phenotype for pathogenicity</label>
+                                                                 <div class="shiny-options-group">
+                                                                 <label class="radio-inline">
+                                                                 <input type="radio" name="phenoConsideration_multipleSubm" value="yes" checked="checked"/>
+                                                                 <span>Yes</span>
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                 <input type="radio" name="phenoConsideration_multipleSubm" value="no"/>
+                                                                 <span>No</span>
+                                                                 </label>
+                                                                 </div>
+                                                                 </div>
+                                                                 
+<hr>                    
+
+<div class="tadSubmissionManagement">
+
+<!-- Uploading your own TAD map -->
+<div class="TADSubmission">
+  <div class="form-group shiny-input-container">
+    <label class="control-label" id="TADsInfo_multiple-label" for="TADsInfo_multiple">Upload TAD map</label>
+    <div class="input-group">
+      <label class="input-group-btn input-group-prepend">
+        <span class="btn btn-default btn-file">
+          Browse...
+          <input id="TADsInfo_multiple" name="TADsInfo_multiple" type="file" style="position: absolute !important; top: -99999px !important; left: -99999px !important;" accept="*"/>
+        </span>
+      </label>
+      <input type="text" class="form-control" placeholder="No file selected" readonly="readonly"/>
+    </div>
+    <div id="TADsInfo_multiple_progress" class="progress active shiny-file-input-progress">
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+</div>
+
+<button id="resetTADmap_multipleSVsubm" type="button" class="action-button resetTADmapSelection resetSubmTAD">Remove selected TAD map</button>
+
+</div>
+                                                                 
+</div>
+</div>
+
+<script>
+/*Function to expand-hidde the coll2apsible menu of advanced features*/
+  var coll2 = document.getElementsByClassName("collapsibleAdvancedFeaturesMultiple");
+  var i;
+  
+  for (i = 0; i < coll2.length; i++) {
+    coll2[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.maxHeight){
+        content.style.maxHeight = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+      } 
+    });
+}
+
+
+  /*Function to change advanced features text depending if it is expanded or hidden*/
+  const btn2 = document.getElementById("buttonMultipleSubmAdvancedFeatures");
+  btn2.addEventListener("click", ()=>{
+
+    if(btn2.innerText === "Advanced Parameters [+]"){
+        btn2.innerText = "Advanced Parameters [-]";
+    }else{
+        btn2.innerText= "Advanced Parameters [+]";
+    }
+  });
+</script>
+'),
+                                                )
+                          
                                             ),
                                             ##Specifying reference Genome
                                             div(class="multipleSVRefGenome",
-                                              # wellPanel(selectInput(inputId = "refGenome", label = "Reference Genome",
-                                              #                       choices = c("hg19","hg38"),
-                                              #                       selected = "hg19"))
-                                              
-                                              wellPanel(
-                                                div(class="textRefGenome",
-                                                    HTML('<h4><b>NOTE: Reference Genome Coordinates required in GRCh37/hg19</b></h4>'),
-                                                    HTML('<p style="font-size:15px;">Please, visit any of the following websites to convert your coordinates to hg19 if you need it:
-                                                         <a href= "http://genome.ucsc.edu/cgi-bin/hgLiftOver" target="_blank">UCSC LiftOver</a>, 
-                                                         <a href= "https://www.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core" target="_blank">ENSEMBL Assembly Converter</a>, 
+                                                
+                                                # wellPanel(selectInput(inputId = "refGenome_MultiSV_Subm", label = "Reference Genome",
+                                                #                       choices = c("hg19","hg38"),
+                                                #                       selected = "hg19"))
+                                                
+                                                wellPanel(
+                                                  div(class="textRefGenome",
+                                                      HTML('<h4><b>NOTE: Reference Genome Coordinates required in GRCh37/hg19</b></h4>'),
+                                                      HTML('<p style="font-size:15px;">Please, visit any of the following websites to convert your coordinates to hg19 if you need it:
+                                                         <a href= "http://genome.ucsc.edu/cgi-bin/hgLiftOver" target="_blank">UCSC LiftOver</a>,
+                                                         <a href= "https://www.ensembl.org/Homo_sapiens/Tools/AssemblyConverter?db=core" target="_blank">ENSEMBL Assembly Converter</a>,
                                                          <a href= "https://liftover.broadinstitute.org/" target="_blank">Broad Institute LiftOver</a>
                                                          </p>')
+                                                  )
                                                 )
-                                              ),
                                             ),
                                             div(class="submission",
                                                 id="multipleSubm",
@@ -492,12 +681,79 @@ ui <-function(req){
 
 server <- function(input, output, session){
   
+  ##Defining phenotypes currenlty accepted by POSTRE, 
+  ##Variable used in downstream computations
+  ##When doing multiple patient and pheno analysis, considered pheno
+  ##If not here,  not do prediction
+  consideredPheno<-c("head_neck",
+                     "cardiovascular",
+                     "limbs",
+                     "neurodevelopmental")##As more phenos considered they will appear here
   ####################################################
   ##Defining initial behaviour when clicking buttons
   ####################################################
   
+  ######################################################################
+  ##Code to reset and capture the content of the TAD selected by user
+  ######################################################################
+
+  #####################################################
+  ## For SingleSV submission, with code explanation
+  #####################################################
+  
+  #Here we create an object that stores reactive values for user selected TAD map
+  # It is similar to a list, but with special capabilities for reactive programming. 
+  # When you read a value from it, the calling reactive expression takes a reactive dependency on that value, 
+  # and when you write to it, it notifies any reactive functions that depend on that value.
+  #It contains an element that we have named data, with initial value of NULL
+  #The value can be accessed as rv_singleSVsubm$data or [['data']] in a reactive context
+  # https://shiny.rstudio.com/reference/shiny/0.11/reactiveValues.html
+  
+  rv_singleSVsubm <- reactiveValues(data = NULL) ##To track the path for the USER selected TAD map
+
+  ##Constantly monitoring the state of the input, if it changes, it also changes the value of the variable
+  observe({
+    req(input$TADsInfo_single)
+    rv_singleSVsubm$data <- input$TADsInfo_single
+  })
+  
+  #It triggers the action when the reset button is actioned
+  #In this case if the rest button is actioned the info of the TADinput is erased
+  observeEvent(input$resetTADmap_singleSVsubm, {
+    reset('TADsInfo_single')##This does not delete the cached info (only the visual appearance) so we need the next step & the object created with reactiveValues
+    rv_singleSVsubm$data <- NULL
+  })
+  
+  #################################################
+  ##For MultiSV submission advanced features menu
+  #################################################
+  rv_multiSVsubm <- reactiveValues(data = NULL) ##To track the path for the USER selected TAD map
+  
+  ##Constantly monitoring the state of the input, if it changes, it also changes the value of the variable
+  observe({
+    req(input$TADsInfo_multiple)
+    rv_multiSVsubm$data <- input$TADsInfo_multiple
+  })
+  
+  #It triggers the action when the reset button is actioned
+  #In this case if the rest button is actioned the info of the TADinput is erased
+  observeEvent(input$resetTADmap_multipleSVsubm, {
+    reset('TADsInfo_multiple')##This does not delete the cached info (only the visual appearance) so we need the next step & the object created with reactiveValues
+    rv_multiSVsubm$data <- NULL
+  })
+  
+  
+  #############################################################
+  ##Object for submission from UserGuide, ExplorePreviousPat
+  #############################################################
+  # rv_userGuide <- reactiveValues(data = NULL) 
+  # rv_explorePreviousPat <- reactiveValues(data = NULL) 
+  rv_multiSVresults <- reactiveValues(data = NULL) ##This will capture the one of the last multiSVsubmission test this
+  
+  ######################################################################
+  ######################################################################
+  
   observeEvent(eventExpr = input$click, {
-    
     updateTabsetPanel(session, 
                       inputId = "inTabset",
                       selected = "overview")
@@ -506,12 +762,10 @@ server <- function(input, output, session){
           document.getElementById("top").scrollIntoView();
           ')
     
-    # ##Clear whtvr content can be present at the tab
-    #Hence we are gonna hidde the heatmap section
     runjs(
-      ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
-      ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      ##En la zona donde confluyen multiples plots hay que meter el remove, para que no se solapen funciones ocultas con mismos nombres
+      # "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.remove();"
     )
     
     runjs("window.scrollTo(0, 0)")
@@ -529,12 +783,10 @@ server <- function(input, output, session){
           document.getElementById("top").scrollIntoView();
           ')
     
-    # ##Clear whtvr content can be present at the tab
-    #Hence we are gonna hidde the heatmap section
     runjs(
-      ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
-      ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      ##En la zona donde confluyen multiples plots hay que meter el remove, para que no se solapen funciones ocultas con mismos nombres
+      # "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.remove();"
     )
     
   })
@@ -552,10 +804,8 @@ server <- function(input, output, session){
     runjs("window.scrollTo(0, 0)")
     
     runjs(
-      ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
-      ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.wrapperMultipleSVSubmission')) el.style.display = 'none';"
-    )
+     "for (let el of document.querySelectorAll('.wrapperMultipleSVSubmission')) el.style.display = 'none';"
+      )
   })
   
   observeEvent(eventExpr = input$click_AggregatedRes_ExplorePreviousPat, {
@@ -567,13 +817,11 @@ server <- function(input, output, session){
     runjs('
           document.getElementById("top").scrollIntoView();
           ')
-    
-    # ##Clear whtvr content can be present at the tab
-    #Hence we are gonna hidde the heatmap section
+
     runjs(
-      ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
-      ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      ##En la zona donde confluyen multiples plots hay que meter el remove, para que no se solapen funciones ocultas con mismos nombres
+      # "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.remove();"
     )
     
   })
@@ -588,12 +836,11 @@ server <- function(input, output, session){
           document.getElementById("top").scrollIntoView();
           ')
     
-    # ##Clear whtvr content can be present at the tab
-    #Hence we are gonna hidde the heatmap section
     runjs(
-      ##"document.getElementsByClassName('wrapperMainSingleResults')[0].style.visibility='hidden';"##With this we would just modify one instance of the class
-      ##With the for, all elements belonging to the class change their status. With visibility hidden the space of the div is not erased
-      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      ##En la zona donde confluyen multiples plots hay que meter el remove, para que no se solapen funciones ocultas con mismos nombres
+      # "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.style.display = 'none';"
+      "for (let el of document.querySelectorAll('.wrapperMainSingleResults')) el.remove();"
+      
     )
     
   })
@@ -640,6 +887,9 @@ server <- function(input, output, session){
                                    Please be patient"),
                        color="#0066ff")
     
+    ##remove images generated in previous analyses, if there are
+    deleteImages_Previous_Analyses()
+    
     ##Creating Input Data Frame, to carry on prediction
     patientDataCols<-c("chr_Break1","coord_Break1","chr_Break2",
                        "coord_Break2","TypeSV",
@@ -656,72 +906,165 @@ server <- function(input, output, session){
     patientData$coord_Break2<-as.character(input$bp2_coord)
     
     patientData$Phenotype<-as.character(paste(input$phenoPatient, collapse = ","))
-    patientData$TypeSV<-as.character(input$typeSV)
     
-    # patientData$refGenome<-as.character(input$refGenome)
-    patientData$refGenome<-"hg19"
+    patientData$TypeSV<-as.character(input$typeSV)
     
     ##Capturing runMode
     runMode_single<-as.character(input$runMode_single)
     
     ##Adding RunMode to patient Prediction info
     patientData$runMode<-runMode_single
+    
+    ##Adding Consideration gene-Pheno to output
+    patientData$genePhenoConsideration<-as.character(input$phenoConsideration_singleSubm)
+    
+    ##Dealing with referenceGenome
+    # patientData$refGenome<-as.character(input$refGenome_SingleSV_Subm)
+    patientData$refGenome<-"hg19"
+    
+    ##Default option for ownTAD, will be changed if user uploads a TAD map
+    patientData$userTADmap<-"no"##Default option, used for UCSC warning, upload TAD coord
+    user_tadMapInfo<-list()##It will be kept empty unless user provides its own TADmap
+    
+    ##Then maybe filter output of the patientData table
     ###############################
     ## Computing Prediction
     ###############################
     
+    patientResults<-list() ##It will host multiplePhenotypes predictions at once
     
-    patientResults<-list()
     
-    #############################
-    ## Try to get the prediction
-    patientInfo<-patientData
-    #When want to see error mssg uncomment the following line
-    #patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore)
-    patientResults<-tryCatch({
-      ##If there is an error the following instruction will not be terminated
+    userTadProcessed<-FALSE ##To track if own TAD has to be processed and doing it only once
+    for(patientPhenotype in input$phenoPatient){
       
-      patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore, runMode = runMode_single)
-      ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
-    },error = function(err){
-      patientResults$Status<-"ERROR"
-      return(patientResults)
+      patientResults_singlePhenoPrediction<-list()
       
-    })
-    
-    ############################################
-    #If status error, generate the error html
-    #We can be more specific in the future if we are interested
-    ##If status = "OK, but NO genes associated with SV" generate HTML of NO genes found associated
-    
-    if(patientResults$Status=="ERROR"){
-      #generate Error html
-      ##output html in object$errorReport
-      patientResults<-error_Report(patientResults = patientResults)
+      ##Assigning invidivual phenotype
+      patientData$Phenotype<-patientPhenotype
       
-    }else if(patientResults$Status=="OK, but NO genes associated with SV"){
-      ##For any of the dev stages of the phenotype, a gene was found.
-      ##If a gene had been found for at least 1 devStage, there would appear a heatmap, but here makes no sense, nothing to sho
-      ##Generate report No genes found html, located in object$statusReport
-      ##output html in object$noGenesFoundReport
-      patientResults<-noGenesFound_Report(patientResults = patientResults)
+      #############################
+      ## Try to get the prediction
+      
+      #When want to see error mssg uncomment the following line
+      #patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore)
+      patientResults_singlePhenoPrediction<-tryCatch({
+        
+        ##########################################################################################
+        ##Liftovering patient Coordinates if necessary, it will only be done once per patient
+        # if(patientData$refGenome!="hg19"){
+        #   patientData<-processing_GenomicCoordinates(patientInfo = patientData)
+        #   patientData$refGenome<-"hg19" ##To inform that coordinates have been changed to hg19 and are those
+        # }
+        
+        ##Check if user has selected its own TAD map for the analysis
+        ##When TRUE is because NO TAD map selected
+        ##For between TAD map generation the reference genome is taken into consideration for chr sizes
+        ##So doing this after coordinates liftover
+        
+        if(is.null(rv_singleSVsubm$data) == FALSE){
+          ##So, user selected TAD map
+          ##Check that TADmap NOT already processed
+          if(userTadProcessed == FALSE){
+            
+            ##So, not processed yet
+            ##Do processing
+            
+            ##Reading TAD map in bed format
+            
+            ##Retrieving dataframe for processing
+            userTADmapMetaData<-rv_singleSVsubm$data
+            userTADmap<-read.delim(file = userTADmapMetaData$datapath,
+                                  header = FALSE,
+                                  sep="\t",
+                                  stringsAsFactors = FALSE)
+            
+            colnames(userTADmap)<-c("chr","start","end") ##For internal usage, patientID, for frontEnd SV_ID. To clearly show that a patient can carry multiple SVs
+            
+            ##Filter for chromosomes of interest
+            patientBreakpoints<-unique(c(patientData$chr_Break1, patientData$chr_Break2))
+            
+            ##We are not going to use info for other chr than the ones affected by the SV
+            ##If it is Translocation will be 2 but if it is INV DEL DUP, it will only be one
+            ##Thus to speed computations, skiping info of non required chromosomes
+            
+            userTADmap<-userTADmap[userTADmap$chr %in% patientBreakpoints,]
+            
+            
+            ##Getting between TAD map
+            userBetweenTADmap<-getBetweenTADmap(TADmap=userTADmap)
+          
+            ##Capturing processed information  
+            user_tadMapInfo$TAD_map<-userTADmap
+            user_tadMapInfo$Between_TAD_map<-userBetweenTADmap
+            
+            ##Recording that TAD map has already been processed
+            userTadProcessed<-TRUE
+          }
+          
+          ##To track wehter user_tadMapInfo must be used or not in downstream functions
+          patientData$userTADmap<-"yes"
+
+          
+        }
+       
+        ##If there is an error the following instruction will not be terminated
+        # browser()
+        patientResults_singlePhenoPrediction<-masterWrapperSinglePrediction(patientInfo = patientData , minScore = minScore, 
+                                                                            highScore = highScore, runMode = runMode_single,
+                                                                            user_tadMapInfo = user_tadMapInfo,
+                                                                            MultiDataList = MultiDataList)
+        ##If there was no error patientResults_singlePhenoPrediction$Status == "OK" or "OK, but NO genes associated with SV"
+      },error = function(err){
+        patientResults_singlePhenoPrediction$Status<-"ERROR"
+        return(patientResults_singlePhenoPrediction)
+        
+      })
+      
+      ############################################
+      #If status error, generate the error html
+      #We can be more specific in the future if we are interested
+      ##If status = "OK, but NO genes associated with SV" generate HTML of NO genes found associated
+      
+      if(patientResults_singlePhenoPrediction$Status=="ERROR"){
+        #generate Error html
+        ##output html in object$errorReport
+        patientResults_singlePhenoPrediction<-error_Report(patientResults = patientResults_singlePhenoPrediction)
+        
+      }else if(patientResults_singlePhenoPrediction$Status=="OK, but NO genes associated with SV"){
+        ##For any of the dev stages of the phenotype, a gene was found.
+        ##If a gene had been found for at least 1 devStage, there would appear a heatmap, but here makes no sense, nothing to sho
+        ##Generate report No genes found html, located in object$statusReport
+        ##output html in object$noGenesFoundReport
+        patientResults_singlePhenoPrediction<-noGenesFound_Report(patientResults = patientResults_singlePhenoPrediction)
+        
+      }
+      
+      patientResults[[patientPhenotype]]<-patientResults_singlePhenoPrediction
       
     }
     
+    ###Merge results from the different phenotypes to create the master Output HTML
+    ##input$phenoPatient and patientResults, objects to be passed as parameters
+    # heatmapSummary
+    # patientResults$`Head & Neck`$heatmapSummary
+    patientResults<-mergingMultiPhenoPredictions(patientResults = patientResults, selectedPheno = input$phenoPatient, allPostreAvailablePheno = consideredPheno)
+ 
     ##Stoping waiter
     remove_modal_spinner()
-    #removeModal()
-    
     return(patientResults)
   })
   
   #########################################################################
   ## Single SV submission From User Guide
+  ## Here, as a proof of concept, only dealing with 1 phenotype per patient
   patientResults_2<-eventReactive(input$click_SingleSubmissionUserGuide, {
     ###Adding-Initializing waiter
     show_modal_spinner(text = HTML("Running Prediction <br>
                                    Please be patient"),
                        color="#0066ff")
+    
+    ##remove images generated in previous analyses, if there are
+    deleteImages_Previous_Analyses()
     
     targetPatient<-input$singlePatientId
     filt_positive<-subset(usrGuide_SingleSubmTable, patientID == targetPatient)
@@ -734,17 +1077,24 @@ server <- function(input, output, session){
                              "Phenotype","SV_ID","refGenome")
     
     ##Capturing runMode
-    runMode_single<-as.character(input$runMode_UserGuide_SingleSubmPat)
+    runMode_single<-"Standard"
     
     ##Adding RunMode to patient Prediction info
     patientData$runMode<-runMode_single
+    
+    ##Adding Consideration gene-Pheno to output
+    patientData$genePhenoConsideration<-"yes"
+    
+    patientData$userTADmap<-"no" ##Default option, used for UCSC warning when yes, upload TAD coord
+    user_tadMapInfo<-list() ##It will be kept empty when no user provided TAD
+    
     
     ###############################
     ## Computing Prediction
     ###############################
     
-    
     patientResults<-list()
+    
     
     #############################
     ## Try to get the prediction
@@ -754,7 +1104,10 @@ server <- function(input, output, session){
     patientResults<-tryCatch({
       ##If there is an error the following instruction will not be terminated
       
-      patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore, runMode = runMode_single)
+      patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore,
+                                                    highScore = highScore, runMode = runMode_single,
+                                                    user_tadMapInfo = user_tadMapInfo,
+                                                    MultiDataList = MultiDataList)
       ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
     },error = function(err){
       patientResults$Status<-"ERROR"
@@ -786,6 +1139,7 @@ server <- function(input, output, session){
     #removeModal()
     
     return(patientResults)
+    
   })
   
   
@@ -793,10 +1147,14 @@ server <- function(input, output, session){
   ## Single Submission from the Explore Previous Patients Section
   ##We need to use the AllPatientsData dataframe used to generate those results
   patientResults_3<-eventReactive(input$click_AggregatedRes_ExplorePreviousPat, {
+    
     ###Adding-Initializing waiter
     show_modal_spinner(text = HTML("Running Prediction <br>
                                    Please be patient"),
                        color="#0066ff")
+    
+    ##remove images generated in previous analyses, if there are
+    deleteImages_Previous_Analyses()
     
     ###############################
     ## Computing Prediction
@@ -807,6 +1165,7 @@ server <- function(input, output, session){
     ## Try to get the prediction
     
     #When want to see error mssg uncomment the following line
+    ##We have error handling at two levels, the intial one, or inside the patient, for a specific phenotype (second level error)
     patientResults<-tryCatch({
       ##If there is an error the following instruction will not be terminated
       
@@ -816,37 +1175,92 @@ server <- function(input, output, session){
       targetPatient<-trimws(input$aggregatedResults_svID_ExplorePreviousPat)
       
       ##Capturing selected phenotype
-      targetPhenoSV<-input$aggregatedResults_phenoId_ExplorePreviousPat
+      # targetPhenoSV<-input$aggregatedResults_phenoId_ExplorePreviousPat
+      ##All phenotypes associated with the patient will be considered
+      
       
       ##Filtering database patients information
       filt_InfoDBsvs<-subset(AllPatientsInfo,patientID == targetPatient )
       ##Ahora mismo los phenos estan entrando aqui con los nombres para filtrar la tabla
       ##Check pheno that user specified is indeed associated with the SV of interest
-      sv_has_The_Pheno<-grepl(pattern = targetPhenoSV, x = filt_InfoDBsvs$Phenotype)
-      
+      #sv_has_The_Pheno<-grepl(pattern = targetPhenoSV, x = filt_InfoDBsvs$Phenotype)
+
       ##Checking data is correct
-      if((nrow(filt_InfoDBsvs)!=1) || (sv_has_The_Pheno == FALSE)){
-        ##Apparently the relation sv-pheno does not exist in the database, or for any reason there is a repeated SVID or the SVid is wrongly introduced
+      if(nrow(filt_InfoDBsvs)!=1){
+        ##For any reason there is a repeated SVID or the SVid is wrongly introduced
         ##Rise error regarding wrong input.
         ##Did you properly introduce the SV ID? Did you properly select the phenotype for the SV ID? Check and re-submit
-        stop("ERRORR WRONG INPUT")
+        stop("ERROR WRONG INPUT")
       }
-      ##Defining only one phenotype
       patientInfo<-filt_InfoDBsvs
-      patientInfo$Phenotype<-targetPhenoSV
       
       ##Capturing runMode
-      runMode_single<-as.character(input$runMode_AggregatedRes_ExplorePreviousPat)
-      
       ##Adding RunMode to patient Prediction info
-      patientInfo$runMode<-runMode_single
+      patientInfo$runMode<-"Standard"
+      
+      ##Adding Consideration gene-Pheno to output
+      patientInfo$genePhenoConsideration<-"yes"
+      
+      patientInfo$userTADmap<-"no" ##Default option, used for UCSC warning when yes, upload TAD coord
+      user_tadMapInfo<-list() ##It will be kept empty when no user provided TAD
+      
       
       ##Changing patientID by SV_ID for the html table output.
       colnames(patientInfo)[colnames(patientInfo)=="patientID"]<-"SV_ID"
       
-      ###Running prediction
-      patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore, runMode = runMode_single)
-      ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
+      ##Iterating over each phenotype
+      patientAllPheno<-unlist(strsplit(x = patientInfo$Phenotype, split = ",", fixed = TRUE))
+      
+      for(patientPhenotype in patientAllPheno){
+        patientResults_singlePhenoPrediction<-list()
+        
+        ##Check that pheno among the ones currently accepted by POSTRE
+        if(patientPhenotype %in% consideredPheno){
+          ##Do prediction
+          ##Assigning invidivual phenotype
+          patientInfo$Phenotype<-patientPhenotype
+          
+          ###Running prediction
+          patientResults_singlePhenoPrediction<-tryCatch({
+            ##If there is an error the following instruction will not be terminated
+            patientResults_singlePhenoPrediction<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, 
+                                                                                highScore = highScore, runMode = patientInfo$runMode,
+                                                                                user_tadMapInfo = user_tadMapInfo,
+                                                                                MultiDataList = MultiDataList)
+            ##If there was no error patientResults_singlePhenoPrediction$Status == "OK" or "OK, but NO genes associated with SV"
+          },error = function(err){
+            patientResults_singlePhenoPrediction$Status<-"ERROR"
+            return(patientResults_singlePhenoPrediction)
+            
+          })
+          
+          ############################################
+          #If status error, generate the error html
+          #We can be more specific in the future if we are interested
+          ##If status = "OK, but NO genes associated with SV" generate HTML of NO genes found associated
+          
+          if(patientResults_singlePhenoPrediction$Status=="ERROR"){
+            #generate Error html
+            ##output html in object$errorReport
+            patientResults_singlePhenoPrediction<-error_Report(patientResults = patientResults_singlePhenoPrediction)
+            
+          }else if(patientResults_singlePhenoPrediction$Status=="OK, but NO genes associated with SV"){
+            ##For any of the dev stages of the phenotype, a gene was found.
+            ##If a gene had been found for at least 1 devStage, there would appear a heatmap, but here makes no sense, nothing to sho
+            ##Generate report No genes found html, located in object$statusReport
+            ##output html in object$noGenesFoundReport
+            patientResults_singlePhenoPrediction<-noGenesFound_Report(patientResults = patientResults_singlePhenoPrediction)
+            
+          }
+          
+          patientResults[[patientPhenotype]]<-patientResults_singlePhenoPrediction
+          
+        }
+      }
+      
+      ###Merge results from the different phenotypes to create the master Output HTML
+      patientResults<-mergingMultiPhenoPredictions(patientResults = patientResults, selectedPheno = patientAllPheno, allPostreAvailablePheno = consideredPheno)
+      
     },error = function(err){
       patientResults$Status<-"ERROR"
       return(patientResults)
@@ -874,19 +1288,23 @@ server <- function(input, output, session){
     
     ##Stoping waiter
     remove_modal_spinner()
-    #removeModal()
-    
     return(patientResults)
   })
   
   #################################################################################################
-  ## Submission from the Multiple SV Submission
+  ## Submission of single SV from the Multiple SV Submission Results Section
   ## We need to use the Dataframe generated upon loading file to run Multiple Patients Submission
+  ## And to extract the defined configuration (the one in the multiple patients df)
+  
   patientResults_4<-eventReactive(input$click_AggregatedRes_MultipleSVSubmission, {
     ###Adding-Initializing waiter
     show_modal_spinner(text = HTML("Running Prediction <br>
                                    Please be patient"),
                        color="#0066ff")
+    
+    ##remove images generated in previous analyses, if there are
+    deleteImages_Previous_Analyses()
+    
     
     ###############################
     ## Computing Prediction
@@ -899,7 +1317,9 @@ server <- function(input, output, session){
     #When want to see error mssg uncomment the following line
     ##DF with all SV uploaded, retrieving from the previously created object when handling Multiple SV Submission
     multiSV_uploadedFile_AllPatientsInfo<-multiple_patientResults()$patientsInfo
+    user_tadMapInfo<-multiple_patientResults()$user_tadMapInfo
     
+    ##We have error handling at two levels, the intial one, or inside the patient, for a specific phenotype (second level error)
     patientResults<-tryCatch({
       ##If there is an error the following instruction will not be terminated
       
@@ -909,37 +1329,91 @@ server <- function(input, output, session){
       targetPatient<-trimws(input$aggregatedResults_svID_MultipleSVSubmission)
       
       ##Capturing selected phenotype
-      targetPhenoSV<-input$aggregatedResults_phenoId_MultipleSVSubmission
+      # targetPhenoSV<-input$aggregatedResults_phenoId_MultipleSVSubmission
+      ##All phenotypes associated with the patient will be considered
       
       ##Filtering database patients information
       filt_InfoDBsvs<-subset(multiSV_uploadedFile_AllPatientsInfo,patientID == targetPatient )
       ##Ahora mismo los phenos estan entrando aqui con los nombres para filtrar la tabla
       ##Check pheno that user specified is indeed associated with the SV of interest
-      sv_has_The_Pheno<-grepl(pattern = targetPhenoSV, x = filt_InfoDBsvs$Phenotype)
+      # sv_has_The_Pheno<-grepl(pattern = targetPhenoSV, x = filt_InfoDBsvs$Phenotype)
       
       ##Checking data is correct
-      if((nrow(filt_InfoDBsvs)!=1) || (sv_has_The_Pheno == FALSE)){
+      if(nrow(filt_InfoDBsvs)!=1){
         ##Apparently the relation sv-pheno does not exist in the database, or for any reason there is a repeated SVID or the SVid is wrongly introduced
         ##Rise error regarding wrong input.
         ##Did you properly introduce the SV ID? Did you properly select the phenotype for the SV ID? Check and re-submit
         stop("ERRORR WRONG INPUT")
       }
-      ##Defining only one phenotype
       patientInfo<-filt_InfoDBsvs
-      patientInfo$Phenotype<-targetPhenoSV
       
-      ##Capturing runMode
-      runMode_single<-as.character(input$runMode_AggregatedRes_MultipleSVSubmission)
-      
-      ##Adding RunMode to patient Prediction info
-      patientInfo$runMode<-runMode_single
+      ###
+      ##Running configuration as runMode etc is already recorded on the patient Info from the multipleSV submission
+      ##Regarding refGenome it was necessary liftover, here the coordinates already liftovered
+      #browser()
+      patientInfo$runMode
+      patientInfo$genePhenoConsideration
+      patientInfo$userTADmap
       
       ##Changing patientID by SV_ID for the html table output.
       colnames(patientInfo)[colnames(patientInfo)=="patientID"]<-"SV_ID"
       
-      ###Running prediction
-      patientResults<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore, highScore = highScore, runMode = runMode_single)
-      ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
+      ##Iterating over each phenotype
+      patientAllPheno<-unlist(strsplit(x = patientInfo$Phenotype, split = ",", fixed = TRUE))
+      
+      for(patientPhenotype in patientAllPheno){
+        
+        patientResults_singlePhenoPrediction<-list()
+        
+        ##Check that pheno among the ones currently accepted by POSTRE
+        if(patientPhenotype %in% consideredPheno){
+          ##Do prediction
+          ##Assigning invidivual phenotype
+          patientInfo$Phenotype<-patientPhenotype
+          
+          ###Running prediction
+          patientResults_singlePhenoPrediction<-tryCatch({
+            
+            ##If there is an error the following instruction will not be terminated
+            patientResults_singlePhenoPrediction<-masterWrapperSinglePrediction(patientInfo = patientInfo , minScore = minScore,
+                                                                                highScore = highScore, runMode = patientInfo$runMode,
+                                                                                user_tadMapInfo = user_tadMapInfo,
+                                                                                MultiDataList = MultiDataList)
+            ##If there was no error patientResults_singlePhenoPrediction$Status == "OK" or "OK, but NO genes associated with SV"
+          },error = function(err){
+            patientResults_singlePhenoPrediction$Status<-"ERROR"
+            return(patientResults_singlePhenoPrediction)
+            
+          })
+          
+          
+          
+          ############################################
+          #If status error, generate the error html
+          #We can be more specific in the future if we are interested
+          ##If status = "OK, but NO genes associated with SV" generate HTML of NO genes found associated
+          
+          if(patientResults_singlePhenoPrediction$Status=="ERROR"){
+            #generate Error html
+            ##output html in object$errorReport
+            patientResults_singlePhenoPrediction<-error_Report(patientResults = patientResults_singlePhenoPrediction)
+            
+          }else if(patientResults_singlePhenoPrediction$Status=="OK, but NO genes associated with SV"){
+            ##For any of the dev stages of the phenotype, a gene was found.
+            ##If a gene had been found for at least 1 devStage, there would appear a heatmap, but here makes no sense, nothing to sho
+            ##Generate report No genes found html, located in object$statusReport
+            ##output html in object$noGenesFoundReport
+            patientResults_singlePhenoPrediction<-noGenesFound_Report(patientResults = patientResults_singlePhenoPrediction)
+            
+          }
+          
+          patientResults[[patientPhenotype]]<-patientResults_singlePhenoPrediction
+        }
+      }
+      
+      ###Merge results from the different phenotypes to create the master Output HTML
+      patientResults<-mergingMultiPhenoPredictions(patientResults = patientResults, selectedPheno = patientAllPheno, allPostreAvailablePheno = consideredPheno)
+      
     },error = function(err){
       patientResults$Status<-"ERROR"
       return(patientResults)
@@ -967,12 +1441,8 @@ server <- function(input, output, session){
     
     ##Stoping waiter
     remove_modal_spinner()
-    #removeModal()
-    
     return(patientResults)
   })
-  
-  
   
   ####################################################
   ## Managing, creating Output for Single Submission
@@ -989,45 +1459,23 @@ server <- function(input, output, session){
   ##results coming from MAIN MENU, SINGLE SUBMISSION
   
   output$masterSummary_result<-renderUI(
-    if(patientResults()$Status=="OK"){
-      HTML(patientResults()$heatmapSummary)
-      
-    }else if(patientResults()$Status=="OK, but NO genes associated with SV"){
-      HTML(patientResults()$noGenesFoundReport)
-      
-    }else if(patientResults()$Status=="ERROR"){
-      HTML(patientResults()$errorReport)
-    }
+    HTML(patientResults()$heatmapSummary)
+    
   )
   
   ##############################################################
   ##results coming from USER GUIDE, SINGLE SUBMISSION SECTION
   
   output$masterSummary_result_usrGuide_SingleSubmission<-renderUI(
-    if(patientResults_2()$Status=="OK"){
-      HTML(patientResults_2()$heatmapSummary)
-      
-    }else if(patientResults_2()$Status=="OK, but NO genes associated with SV"){
-      HTML(patientResults_2()$noGenesFoundReport)
-      
-    }else if(patientResults_2()$Status=="ERROR"){
-      HTML(patientResults_2()$errorReport)
-    }
+    HTML(patientResults_2()$heatmapSummary)
   )
   
   ##############################################################
   ##results coming from Explore Previous Patient single submission section
   
   output$masterSummary_result_explorePreviousPatient_SingleSubmission<-renderUI(
-    if(patientResults_3()$Status=="OK"){
-      HTML(patientResults_3()$heatmapSummary)
-      
-    }else if(patientResults_3()$Status=="OK, but NO genes associated with SV"){
-      HTML(patientResults_3()$noGenesFoundReport)
-      
-    }else if(patientResults_3()$Status=="ERROR"){
-      HTML(patientResults_3()$errorReport)
-    }
+    HTML(patientResults_3()$heatmapSummary)
+    
   )
   
   
@@ -1035,31 +1483,11 @@ server <- function(input, output, session){
   ##results coming from Multiple SV Submission Window, from the single submission section
   
   output$masterSummary_result_MultipleSVSubmission_SingleSubmission<-renderUI(
-    if(patientResults_4()$Status=="OK"){
-      HTML(patientResults_4()$heatmapSummary)
-      
-    }else if(patientResults_4()$Status=="OK, but NO genes associated with SV"){
-      HTML(patientResults_4()$noGenesFoundReport)
-      
-    }else if(patientResults_4()$Status=="ERROR"){
-      HTML(patientResults_4()$errorReport)
-    }
+    HTML(patientResults_4()$heatmapSummary)
   )
   
-  
-  ##############################################################################
-  ##############################################################################
-  ##Waiting for submission of multiple patient | SV
-  
-  ##When doing multiple patient and pheno analysis, considered pheno
-  ##If not here,  not do prediction
-  consideredPheno<-c("head_neck",
-                     "cardiovascular",
-                     "limbs",
-                     "neurodevelopmental")##As more phenos considered they will appear here
-  
   ############################################################
-  ## Computing prediction for MULTIPLE Condition Submission
+  ## Computing prediction for MULTIPLE SV Submission PAGE
   ############################################################
   multiple_patientResults<-eventReactive(input$clickMultiple, {
     
@@ -1096,7 +1524,7 @@ server <- function(input, output, session){
       #######################################
       #multiple_patientResults<-list()
       
-      multiple_patientResults$patientsInfo<-multiData
+      # multiple_patientResults$patientsInfo<-multiData ##At the end, with the resulting df upon editing patients info if liftover required
       
       ##Capturing runMode
       runMode_Multiple<-as.character(input$runMode_Multiple)
@@ -1106,10 +1534,23 @@ server <- function(input, output, session){
       ##############################
       multiSV_uploadedFile_AllPatientsInfo<-multiData
       
-      all_patientResults<-list()
+      ##Adding RunMode info
+      multiSV_uploadedFile_AllPatientsInfo$runMode<-runMode_Multiple
+      
+      ##Adding Consideration gene-Pheno to output
+      multiSV_uploadedFile_AllPatientsInfo$genePhenoConsideration<-as.character(input$phenoConsideration_multipleSubm)
+      
+      ##Dealing with referenceGenome IF NOT HG19, LIFTOVER to it. We will do it on each patient screen
+      # multiSV_uploadedFile_AllPatientsInfo$refGenome<-as.character(input$refGenome_MultiSV_Subm)
+      multiSV_uploadedFile_AllPatientsInfo$refGenome<-"hg19"
+      
+      ##Default option for ownTAD, will be changed if user uploads a TAD map
+      multiSV_uploadedFile_AllPatientsInfo$userTADmap<-"no"##Default option, used for UCSC warning, upload TAD coord
+      user_tadMapInfo<-list()##It will be kept empty unless user provides its own TADmap
       
       ###############################
       ## Computing Prediction
+      all_patientResults<-list()
       
       ###Adding Prediction Progress bar
       ##The class of the notifier is 'shiny-notification' important to relocate it with css
@@ -1122,6 +1563,9 @@ server <- function(input, output, session){
         nPatient<-0  ##Tracking Status
         cohortTractablePhenos<-character() ##To track patient provided phenotypes, only sections related to patient phenotypes will be shown. No sense on showing cardiovascular, if no cardiovascular.
         ##Phenos considered when we also have data form them (eg if patient limb but yet no limb data also not section)
+        
+        userTadProcessed<-FALSE ##To track if own TAD has to be processed and doing it only once 
+        start.time<-Sys.time()
         for(patient in rownames(multiSV_uploadedFile_AllPatientsInfo)){
           print("                   ")
           print(patient)
@@ -1138,31 +1582,92 @@ server <- function(input, output, session){
           ## Selecting Patient Info
           patientInfo<-multiSV_uploadedFile_AllPatientsInfo[patient,]
           
+          
           all_patientPheno<-unlist(strsplit(x = patientInfo$Phenotype, split = ",", fixed = TRUE))
+          
           for(pheno in all_patientPheno){
             print("                   ")
             print(pheno)
-            
-            ##Working on each pheno separately, running prediction
-            monoPheno_patientInfo<-patientInfo
-            monoPheno_patientInfo$Phenotype<-pheno 
-            print(monoPheno_patientInfo)
             
             ##If pheno among the ones considered in the app, run prediction
             if(pheno %in% consideredPheno){
               ############################
               ## Carrying prediction #####
               ############################
-              
               cohortTractablePhenos<-c(cohortTractablePhenos, pheno)##We track this phenotype, and we will provide information for it in the multi pat section
-              
+      
               patientResults<-list()
               
               patientResults<-tryCatch({
-                ##If there is an error the following instruction will not be terminated
                 
+                ##If patient has the coordinates in refGenome different than hg19, the first time 
+                ##The tool enters here, that info will be modified
+                # if(patientInfo$refGenome!="hg19"){
+                #   patientInfo<-processing_GenomicCoordinates(patientInfo = patientInfo)
+                #   patientInfo$refGenome<-"hg19" ##To inform that coordinates have been changed to hg19 and are those
+                #   
+                #   ##Updating patientInfo with hg19 coordinates, so that it is clarified to which coordinates are converted
+                #   multiSV_uploadedFile_AllPatientsInfo[patient,]<-patientInfo
+                # }
+                
+                ##Check if user has selected its own TAD map for the analysis
+                ##When TRUE is because NO TAD map selected
+                ##For between TAD map generation the reference genome is taken into consideration for chr sizes
+                ##So doing this after coordinates liftover
+                
+                if(is.null(rv_multiSVsubm$data) == FALSE){
+                  
+                  ##So, user selected TAD map
+                  ##Check that TADmap NOT already processed
+                  if(userTadProcessed == FALSE){
+                    
+                    ##So, not processed yet
+                    ##Do processing
+                    
+                    ##Reading TAD map in bed format
+                    ##Retrieving dataframe for processing
+                    userTADmapMetaData<-rv_multiSVsubm$data
+                    userTADmap<-read.delim(file = userTADmapMetaData$datapath,
+                                           header = FALSE,
+                                           sep="\t",
+                                           stringsAsFactors = FALSE)
+                    
+                    colnames(userTADmap)<-c("chr","start","end") ##For internal usage, patientID, for frontEnd SV_ID. To clearly show that a patient can carry multiple SVs
+                    
+                    ##Filter for chromosomes of interest
+                    ## Consider all chr among all patients
+                    patientBreakpoints<-unique(c(multiSV_uploadedFile_AllPatientsInfo$chr_Break1,
+                                                 multiSV_uploadedFile_AllPatientsInfo$chr_Break2))
+                    
+                    ##Thus to speed computations, skiping info of non required chromosomes
+                    
+                    userTADmap<-userTADmap[userTADmap$chr %in% patientBreakpoints,]
+                    
+                    ##Getting between TAD map
+                    userBetweenTADmap<-getBetweenTADmap(TADmap=userTADmap)
+                    
+                    ##Capturing processed information  
+                    user_tadMapInfo$TAD_map<-userTADmap
+                    user_tadMapInfo$Between_TAD_map<-userBetweenTADmap
+                    
+                    ##Recording that TAD map has already been processed
+                    userTadProcessed<-TRUE
+                  }
+                  
+                  ##To track wether user_tadMapInfo must be used or not in downstream functions
+                  patientInfo$userTADmap<-"yes"
+                  
+                  ##Updating patientInfo with userTADmap "yes", so that it is clarified that the user tad map has been used for the prediction
+                  multiSV_uploadedFile_AllPatientsInfo$userTADmap<-"yes" 
+                }
+                
+                ##Working on each pheno separately, running prediction
+                monoPheno_patientInfo<-patientInfo
+                monoPheno_patientInfo$Phenotype<-pheno 
+                
+                ##If there is an error the following instruction will not be terminated
                 ##In multiple screening we do not generate graphics,so only master_scoring_function used, and not the wrapper for graphics one
-                patientResults<-master_scoring_function(patientInfo = monoPheno_patientInfo, runMode = runMode_Multiple)              
+                patientResults<-master_scoring_function(patientInfo = monoPheno_patientInfo, runMode = runMode_Multiple, user_tadMapInfo=user_tadMapInfo, MultiDataList = MultiDataList)   
                 ##If there was no error patientResults$Status == "OK" or "OK, but NO genes associated with SV"
               },error = function(err){
                 patientResults$Status<-"ERROR"
@@ -1188,7 +1693,9 @@ server <- function(input, output, session){
           }
           
         }
-        
+        end.time<-Sys.time()
+        time.taken <- end.time - start.time
+        print(time.taken)
         
         
         ###################################################
@@ -1201,7 +1708,22 @@ server <- function(input, output, session){
                                              consideredPheno = cohortTractablePhenos,
                                              discardRelevantByBrokenGene = FALSE,
                                              AllPatientsInfo = multiSV_uploadedFile_AllPatientsInfo)
+
+        # browser() ##To store some table output
+        # candidateGenesInfo<-cohort_results$candidateGenesInfo
         
+        #Esta para guardar positive controls del table2 con Standard Mode
+        # save(candidateGenesInfo,
+        #      file = "~/Dropbox/Cantabria/PhD_Project/Resultados/softwareObjects/Robjects/candidateGenesInfo_PositiveControls_Table2_StandardMode.RData")
+        
+        #Esta para guardar positive controls del table2 con High Specificity Mode
+        # save(candidateGenesInfo,
+        #      file = "~/Dropbox/Cantabria/PhD_Project/Resultados/softwareObjects/Robjects/candidateGenesInfo_PositiveControls_Table2_HighSpecificityMode.RData")
+        
+        #Esta fue para guardar los positive controls table 1 and 2
+        # save(candidateGenesInfo,
+        #      file = "~/Dropbox/Cantabria/PhD_Project/Resultados/softwareObjects/Robjects/candidateGenesInfo_PositiveControls_Table1and2.RData")
+
         #########################################
         ## Generating HTML from Parsed results
         #########################################
@@ -1218,9 +1740,14 @@ server <- function(input, output, session){
       ##anyadir resultados de pacientes para los tests, para ver que el correo depende del input
       multiple_patientResults$patientSpecificResults<-all_patientResults
       
+      ##Storing the final resulting object with patients info with liftovered data if required
+      multiple_patientResults$patientsInfo<-multiSV_uploadedFile_AllPatientsInfo
+      
       ##If the code reaches this point, no global error, due to file format or anything arised
-      ##browser()
       multiple_patientResults$Status<-"OK"
+      
+      ##Adding the userTADinfo since it will be used in the MultiSVsubmission results page
+      multiple_patientResults$user_tadMapInfo<-user_tadMapInfo
       
       ##Lets assign to the variable associated with tryCatch (variable<-tryCatch) the content of interest: 
       ##In this case, the multiple_patientResults object
@@ -1229,7 +1756,7 @@ server <- function(input, output, session){
       
       multiple_patientResults
       
-      },error = function(err){
+    },error = function(err){
       ##A global error arised (not during the processing of a particular SV)
       multiple_patientResults$Status<-"ERROR"
       multiple_patientResults<-error_Report_multiSVsubm(multiple_patientResults = multiple_patientResults)

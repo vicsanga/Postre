@@ -4,12 +4,12 @@
 ## Report it as a matrix
 
 ###Function to calculate the nr of enh kept and gained
-source(file = "functions/CalculatingNrEnhBeforeAndAfter.R",local = TRUE)
+# source(file = "functions/CalculatingNrEnhBeforeAndAfter.R",local = TRUE)
 
 
 ##We can add more variables if we want in the future
 ##################################################
-evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatient, humanPhenotype, micePhenotype,
+evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhancersInfo,dataPatient, humanPhenotype, micePhenotype,
                                    polyCombGenes,##genes with H3K27me3 
                                    enhMap,
                                    tau_exp_scores,
@@ -17,14 +17,19 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
                                    natureLof,##natureLofScores //HI score for genes
                                    huangLof,##huang Hi scores
                                    clinGen_hiInfo,##clinGene HI info
-                                   geneExp,##genesExpresion
+                                   cellHi,
+                                   cellTriplo,
+                                   Master_GeneExpression,##genesExpresion
                                    mainPatientPhenotype,##Patient considered phenotype to carry on analysis
-                                   phasesVector)##vector holding the name of the different considered and studied phases 
-  {
+                                   phase,
+                                   centromerePos)##vector holding the name of the different considered and studied phases 
+
+{
   typeSV<-dataPatient$TypeSV
   
-  source("scripts_To_Load_Data/ExpressionThresholds_ForGofAndLof.R",
-         local = TRUE)
+  # ##Carga de datos, no funciones, por eso no lo pongo en el script de metaFunctionLoad
+  # source("scripts_To_Load_Data/ExpressionThresholds_ForGofAndLof.R",
+  #        local = TRUE)
   
   PoorlyExpThresh<-threshold_MinExpresion
   ConsiderablyExpThresh<-threshold_MaxExpresion 
@@ -33,17 +38,17 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
   ##Preparing Result Matrix
   ####la result matrix tiene una fila por gene afectado
   ##Y una columna por variable a estudio
-  affectedGenes<-unique(genesInfo$genesPosition$geneSymbol)
-  brokenGenes<-unique(genesInfo$brokenGenes)
-  genesInUncertaintyRegions<-unique(genesInfo$genesInUncertainty)
+  affectedGenes<-unique(info_affectedGenes$genesPosition$geneSymbol)
+  brokenGenes<-unique(info_affectedGenes$brokenGenes)
+  genesInUncertaintyRegions<-unique(info_affectedGenes$genesInUncertainty)
   #In case there are
-  deletedGenes<-unique(genesInfo$deletedGenes)
-  duplicatedGenes<-unique(genesInfo$duplicatedGenes)
+  deletedGenes<-unique(info_affectedGenes$deletedGenes)
+  duplicatedGenes<-unique(info_affectedGenes$duplicatedGenes)
   
   ##For now we only compute enh statistics for genes that are in a TAD which is partially disrupted
   ## For the genes that are located in a TAD entirely deleted or duplicated we do not want enhancer info
   ## If it is expressed... expression boost, if it is not... duplicating the TAD not apparent consecuences
-  genesInDisruptedTAD<-unique(c(genesInfo$genesInDomain$domain_breakpoint_1, genesInfo$genesInDomain$domain_breakpoint_2))
+  genesInDisruptedTAD<-unique(c(info_affectedGenes$genesInDomain$domain_breakpoint_1, info_affectedGenes$genesInDomain$domain_breakpoint_2))
   
   ##Studied Features to appear in evaluation matrices
   studiedFeatures<-c("associatedPhenotypeIn_OMIM",
@@ -54,13 +59,16 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
                      "mainPhenotype_Through_OMIM_Human",##TRUE,FALSE #MainPhenotype is the one selected by the user (the one used to load enh, exp and TAD data)
                      "mainPhenotype_Through_MGI_Mice",##TRUE,FALSE
                      
-                    
+                     
                      #####################################################
                      ##Gain of Function, Loss of Function candidates
                      ##Nature LOF scores "the probability of being loss-of-function intolerant (intolerant of both heterozygous and homozygous lof variants)"
                      "nature_HI_score",
                      "huang_HI_score",
                      "clinGene_HI_score",
+                     
+                     "cell_HI_score",
+                     "cell_TriploSense_score",
                      
                      ##TAU_exp score
                      ##For consistently expressed genes
@@ -77,46 +85,46 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
                      "RegulatoryMechanism",## Direct_geneTruncation, Direct_geneDeletion, direct_geneDuplication(for genes active), longRange_GeneDuplication... This column updated when predictions done | indirect_geneIntact indirect_geneDuplication
                      "TypeDomainInitial",##TAD or between_TAD
                      "TypeDomainMixedWith",##TAD or between_TAD (if it is something in between, not defined if merging a TAD with an interTAD)
-
+                     
                      "InitialDomain_ID",##To track if is the same or not for the different breakpoints. The id of the inital domain
                      
                      ##track enhancers of each type
                      ##GAINED is restricted to enh coming from gene-different Regulatory Domain (so in duplication (only tricky case) enh duplicated in the same tad not considered as gained but as "double" kept)
-                     paste0("nEnhancers_initial_",phasesVector),
-                     paste0("nEnhancers_kept_",phasesVector),
-                     paste0("nEnhancers_gained_",phasesVector),
-                     paste0("nEnhancers_maxAvailableInTheOtherDomain_",phasesVector),
+                     paste0("nEnhancers_initial_",phase),
+                     paste0("nEnhancers_kept_",phase),
+                     paste0("nEnhancers_gained_",phase),
+                     paste0("nEnhancers_maxAvailableInTheOtherDomain_",phase),
                      
                      ###To retrieve fpkm for the different stages
                      ##AQUI MEJOR FPKM Y PHASES
-                     paste0("FPKM_",phasesVector),
+                     paste0("FPKM_",phase),
                      
                      ####To track the initial acetilation levels on the enh, how much acetilation is lost and gained on the SV
-                     paste0("enhancers_acetilation_initial_",phasesVector),
-                     paste0("enhancers_acetilation_kept_",phasesVector),
-                     paste0("enhancers_acetilation_gained_",phasesVector),
-                     paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_",phasesVector),
+                     paste0("enhancers_acetilation_initial_",phase),
+                     paste0("enhancers_acetilation_kept_",phase),
+                     paste0("enhancers_acetilation_gained_",phase),
+                     paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_",phase),
                      
                      
                      ##To track the number of enhancers toward the upper and lower TAD border with respect to each gene
                      ##Useful for graphical displays
-                     paste0("nEnh_ToTheLeft_initial_",phasesVector),
-                     paste0("nEnh_ToTheRight_initial_",phasesVector),
-                     paste0("nEnh_ToTheLeft_kept_",phasesVector),
-                     paste0("nEnh_ToTheRight_kept_",phasesVector),
-                     # paste0("nEnh_ToTheLeft_gained_",phasesVector),
-                     # paste0("nEnh_ToTheRight_gained_",phasesVector),
+                     paste0("nEnh_ToTheLeft_initial_",phase),
+                     paste0("nEnh_ToTheRight_initial_",phase),
+                     paste0("nEnh_ToTheLeft_kept_",phase),
+                     paste0("nEnh_ToTheRight_kept_",phase),
+                     # paste0("nEnh_ToTheLeft_gained_",phase),
+                     # paste0("nEnh_ToTheRight_gained_",phase),
                      
                      ##To track the number of enhancers toward the upper and lower TAD border with respect to each gene
                      ##Useful for graphical displays
-                     paste0("enhancers_acetilation_ToTheLeft_initial_",phasesVector),
-                     paste0("enhancers_acetilation_ToTheRight_initial_",phasesVector),
-                     paste0("enhancers_acetilation_ToTheLeft_kept_",phasesVector),
-                     paste0("enhancers_acetilation_ToTheRight_kept_",phasesVector),
+                     paste0("enhancers_acetilation_ToTheLeft_initial_",phase),
+                     paste0("enhancers_acetilation_ToTheRight_initial_",phase),
+                     paste0("enhancers_acetilation_ToTheLeft_kept_",phase),
+                     paste0("enhancers_acetilation_ToTheRight_kept_",phase),
                      
                      ###Gene breakpoint
                      "gene_Breakpoint"##To track whether gene is associated with breakpoint 1 or 2
-                     )
+  )
   
   resultMatrix<-as.data.frame(matrix(data = NA, nrow =length(affectedGenes), 
                                      ncol= 1 + length(studiedFeatures)))##+1 for the affected gene column
@@ -134,13 +142,13 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
     
     ####################################
     ## Gene associated breakpoint
-    if((gene %in% genesInfo$genesInDomain$domain_breakpoint_1)
-       && (gene %in% genesInfo$genesInDomain$domain_breakpoint_2)){
+    if((gene %in% info_affectedGenes$genesInDomain$domain_breakpoint_1)
+       && (gene %in% info_affectedGenes$genesInDomain$domain_breakpoint_2)){
       ##So the gene is associated to both breakpoints (can occur if intraTAD SV)
       resultMatrix[gene,"gene_Breakpoint"]<-"Break1&2"
-    }else if(gene %in% genesInfo$genesInDomain$domain_breakpoint_1){
+    }else if(gene %in% info_affectedGenes$genesInDomain$domain_breakpoint_1){
       resultMatrix[gene,"gene_Breakpoint"]<-"Break1"
-    }else if (gene %in% genesInfo$genesInDomain$domain_breakpoint_2){
+    }else if (gene %in% info_affectedGenes$genesInDomain$domain_breakpoint_2){
       resultMatrix[gene,"gene_Breakpoint"]<-"Break2"
     }
     
@@ -200,9 +208,9 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       resultMatrix[gene,"RegulatoryMechanism"]<-"Direct_geneTruncation"
       
     }else if(gene %in% genesInUncertaintyRegions){
-        ##if it is entirely in the uncertainty region of the breakpoint
-        resultMatrix[gene,"RegulatoryMechanism"]<-"Direct_uncertaintyRegion"
-        
+      ##if it is entirely in the uncertainty region of the breakpoint
+      resultMatrix[gene,"RegulatoryMechanism"]<-"Direct_uncertaintyRegion"
+      
     }else if(gene %in% deletedGenes){
       resultMatrix[gene,"RegulatoryMechanism"]<-"Direct_geneDeletion"
       
@@ -214,63 +222,62 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       resultMatrix[gene,"RegulatoryMechanism"]<-"Direct_LongRange_geneDuplication"
       
     }else{
-        ##Esto es el final else
-        ##LONG RANGE EFFECT
-        resultMatrix[gene,"RegulatoryMechanism"]<-"LongRange" 
+      ##Esto es el final else
+      ##LONG RANGE EFFECT
+      resultMatrix[gene,"RegulatoryMechanism"]<-"LongRange" 
     }
     
     ##########################
     ## GENE FPKMs Retrieval
     ##########################
-    if((gene %in% Master_GeneExpression$gene_name) && (phasesVector !="phaseFree")){
+    if((gene %in% Master_GeneExpression$gene_name) && (phase !="phaseFree")){
       ##Because we do not have expression data for phaseFree
       
       fpkms_list<-list()
       
-      for(phase in phasesVector){
-        phaseExpression<-Master_GeneExpression[[phase]][Master_GeneExpression$gene_name==gene]
-        
-        if(length(phaseExpression)==1){
-          ##So it is not repeated the gene name
-          ##Hence, just one expression value
-          resultMatrix[gene,paste0("FPKM_",phase)]<-phaseExpression
+      phaseExpression<-Master_GeneExpression[[phase]][Master_GeneExpression$gene_name==gene]
+      
+      if(length(phaseExpression)==1){
+        ##So it is not repeated the gene name
+        ##Hence, just one expression value
+        resultMatrix[gene,paste0("FPKM_",phase)]<-phaseExpression
+      }else{
+        ##So the same gene name has >1 expression value
+        ##If all above or below thresholds, do the average. If they cross thresholds set as -2. Do not handle for the moment
+        if((all(phaseExpression<=PoorlyExpThresh)) || (all(phaseExpression>=ConsiderablyExpThresh))){
+          resultMatrix[gene,paste0("FPKM_",phase)]<-mean(phaseExpression)
         }else{
-          ##So the same gene name has >1 expression value
-          ##If all above or below thresholds, do the average. If they cross thresholds set as -2. Do not handle for the moment
-          if((all(phaseExpression<=PoorlyExpThresh)) || (all(phaseExpression>=ConsiderablyExpThresh))){
-            resultMatrix[gene,paste0("FPKM_",phase)]<-mean(phaseExpression)
-          }else{
-            resultMatrix[gene,paste0("FPKM_",phase)]<-(-2)##Disparity expression values
-          }
+          resultMatrix[gene,paste0("FPKM_",phase)]<-(-2)##Disparity expression values
         }
       }
+      
     }else{
       ###assign -1 if expression not measured
       ##pa que no meta un NA y luego lo haga como factor... y convierta algun nro a factor...
-      resultMatrix[gene,c(paste0("FPKM_",phasesVector))]<-(-1)
+      resultMatrix[gene,c(paste0("FPKM_",phase))]<-(-1)
     }
-
+    
     #####################################
     ##Filling Polycomb score column
     #####################################
     
-    ##Get max in case 1 gene symbol repeated, to avoid bugs there
-    polycScore<-unlist(polyCombGenes[polyCombGenes$`#Gene`==gene,"PolyC_score"])
-    
-    if(is.null(polycScore)){
-      ##So not computed
-      polycScore <- -1
+    if(!(gene %in% polyCombGenes$`#Gene`)){
+      ##So polyC score not computed or 
+      ##Simply not a polycomb gene
+      polycScore <- 0
     }else{
       ##Get max value, in case some gene symbol repeated, to avoid bugs here
+      ##But it is unique
+      polycScore<-unlist(polyCombGenes[polyCombGenes$`#Gene`==gene,"PolyC_score"])
       polycScore <- max(polycScore)
     }
     
     resultMatrix[gene,"polyComb_score"]<-polycScore
-      
-
-    ####################################
-    ## Filling column HI scores
-    ####################################
+    
+    
+    ###################################################
+    ## Filling column HI and Triplosensitivity scores
+    ###################################################
     
     if(gene %in% rownames(natureLof)){
       resultMatrix[gene,"nature_HI_score"]<-natureLof[gene,"pLI"]
@@ -294,6 +301,22 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
     }else{
       ##We put -1 same criteria as for other HI datasets
       resultMatrix[gene,"clinGene_HI_score"]<-(-1)
+    }
+    
+    if(gene %in% rownames(cellHi)){
+      resultMatrix[gene,"cell_HI_score"]<-cellHi[gene,"pHaplo"]
+    }else{
+      ##We put -1, so it means, no reported score
+      ##It is not the same an NA (-1 the way we define them) that a 0, que significa que se ha estudiado y la probabilidad es baja
+      resultMatrix[gene,"cell_HI_score"]<-(-1)
+    }
+    
+    if(gene %in% rownames(cellTriplo)){
+      resultMatrix[gene,"cell_TriploSense_score"]<-cellTriplo[gene,"pTriplo"]
+    }else{
+      ##We put -1, so it means, no reported score
+      ##It is not the same an NA (-1 the way we define them) that a 0, que significa que se ha estudiado y la probabilidad es baja
+      resultMatrix[gene,"cell_TriploSense_score"]<-(-1)
     }
     
     #######################################
@@ -334,7 +357,7 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       
       ###With respect to each gene, as it can vary, number of enhancer to the left and number of enhancers to the right 
       ##Initially
-      if(gene %in% genesInfo$genesInDomain$domain_breakpoint_1){
+      if(gene %in% info_affectedGenes$genesInDomain$domain_breakpoint_1){
         ##So the gene is in the breakpoint 1 Domain
         currentGeneDomain<-"domain_breakpoint_1"
       }else{
@@ -345,44 +368,44 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       matrix_enhInDomain<-enhancersInfo$enhancersInDomain[[currentGeneDomain]]
       geneTSS<-info_affectedGenes$genesPosition[gene,"TSS"]
       
-      for(sourceEnh in phasesVector){
-        
-        subs_enh<-subset(matrix_enhInDomain,source==sourceEnh)
-        
-        nEnhInitiallyToThe_Right<-sum(subs_enh$start > geneTSS) #take as reference the enh start
-        nEnhInitiallyToThe_Left<-sum(subs_enh$start < geneTSS)
-        
-        acetilationEnhInitiallyToThe_Right<-sum(subs_enh$acetilation[subs_enh$start > geneTSS])
-        acetilationEnhInitiallyToThe_Left<-sum(subs_enh$acetilation[subs_enh$start < geneTSS])
-
-        ###########################################
-        ####Adding numbers to the results matrix
-        
-        ###For the Right Side
-        ###Colname in the results matrix
-        colId<-paste0("nEnh_ToTheRight_initial_",sourceEnh)
-        ##Add to all the genes in the domain the n enh for this stage
-        resultMatrix[gene,colId]<-nEnhInitiallyToThe_Right
-        
-        ###For the Left Side
-        ###Colname in the results matrix
-        colId<-paste0("nEnh_ToTheLeft_initial_",sourceEnh)
-        ##Add to all the genes in the domain the n enh for this stage
-        resultMatrix[gene,colId]<-nEnhInitiallyToThe_Left
-        
-        ######For the acetilation enh levels
-        ###For the Right Side
-        ###Colname in the results matrix
-        colId<-paste0("enhancers_acetilation_ToTheRight_initial_",sourceEnh)
-        ##Add to all the genes in the domain the n enh for this stage
-        resultMatrix[gene,colId]<-acetilationEnhInitiallyToThe_Right
-        
-        ###For the Left Side
-        ###Colname in the results matrix
-        colId<-paste0("enhancers_acetilation_ToTheLeft_initial_",sourceEnh)
-        ##Add to all the genes in the domain the n enh for this stage
-        resultMatrix[gene,colId]<-acetilationEnhInitiallyToThe_Left
-      }
+      sourceEnh<-phase
+      
+      subs_enh<-subset(matrix_enhInDomain,source==sourceEnh)
+      
+      nEnhInitiallyToThe_Right<-sum(subs_enh$start > geneTSS) #take as reference the enh start
+      nEnhInitiallyToThe_Left<-sum(subs_enh$start < geneTSS)
+      
+      acetilationEnhInitiallyToThe_Right<-sum(subs_enh$acetilation[subs_enh$start > geneTSS])
+      acetilationEnhInitiallyToThe_Left<-sum(subs_enh$acetilation[subs_enh$start < geneTSS])
+      
+      ###########################################
+      ####Adding numbers to the results matrix
+      
+      ###For the Right Side
+      ###Colname in the results matrix
+      colId<-paste0("nEnh_ToTheRight_initial_",sourceEnh)
+      ##Add to all the genes in the domain the n enh for this stage
+      resultMatrix[gene,colId]<-nEnhInitiallyToThe_Right
+      
+      ###For the Left Side
+      ###Colname in the results matrix
+      colId<-paste0("nEnh_ToTheLeft_initial_",sourceEnh)
+      ##Add to all the genes in the domain the n enh for this stage
+      resultMatrix[gene,colId]<-nEnhInitiallyToThe_Left
+      
+      ######For the acetilation enh levels
+      ###For the Right Side
+      ###Colname in the results matrix
+      colId<-paste0("enhancers_acetilation_ToTheRight_initial_",sourceEnh)
+      ##Add to all the genes in the domain the n enh for this stage
+      resultMatrix[gene,colId]<-acetilationEnhInitiallyToThe_Right
+      
+      ###For the Left Side
+      ###Colname in the results matrix
+      colId<-paste0("enhancers_acetilation_ToTheLeft_initial_",sourceEnh)
+      ##Add to all the genes in the domain the n enh for this stage
+      resultMatrix[gene,colId]<-acetilationEnhInitiallyToThe_Left
+      
     }
     
   }
@@ -414,30 +437,30 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
     
     ###Enhancers in the domain
     matrix_enhInDomain<-enhancersInfo$enhancersInDomain[[domain]]
-    # phasesVector<-unique(matrix_enhInDomain$source)
-    phasesVector<-phasesVector
+    # phase<-unique(matrix_enhInDomain$source)
+    phase<-phase
     
     ##Genes in the Domain
     
-    genesInDomain<-genesInfo$genesInDomain[[domain]]
+    genesInDomain<-info_affectedGenes$genesInDomain[[domain]]
     
-    for(sourceEnh in phasesVector){
-      # print(sourceEnh)
-      subs_enh<-subset(matrix_enhInDomain,source==sourceEnh)
-      
-      n_enh<-nrow(subs_enh)#number of enhancers 
-      totalAcetilation<-sum(subs_enh$acetilation)#total acetilation of the enhancers
-      
-      ###Colname in the results matrix
-      colId<-paste0("nEnhancers_initial_",sourceEnh)
-      ##Add to all the genes in the domain the n enh for this stage
-      resultMatrix[genesInDomain,colId]<-n_enh
-      
-      ##Add acetilation levels info
-      colAcetilLevelId<-paste0("enhancers_acetilation_initial_",sourceEnh)
-      resultMatrix[genesInDomain,colAcetilLevelId]<-totalAcetilation
-      
-    }
+    sourceEnh<-phase
+    
+    # print(sourceEnh)
+    subs_enh<-subset(matrix_enhInDomain,source==sourceEnh)
+    
+    n_enh<-nrow(subs_enh)#number of enhancers 
+    totalAcetilation<-sum(subs_enh$acetilation)#total acetilation of the enhancers
+    
+    ###Colname in the results matrix
+    colId<-paste0("nEnhancers_initial_",sourceEnh)
+    ##Add to all the genes in the domain the n enh for this stage
+    resultMatrix[genesInDomain,colId]<-n_enh
+    
+    ##Add acetilation levels info
+    colAcetilLevelId<-paste0("enhancers_acetilation_initial_",sourceEnh)
+    resultMatrix[genesInDomain,colAcetilLevelId]<-totalAcetilation
+    
   }
   
   #########################################
@@ -447,33 +470,33 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
   ##"nEnhancers_maxAvailableInTheOtherDomain_"
   for(domain in names(enhancersInfo$enhancersInDomain)){
     
-    pos_name_oppositeDomain<-which(names(genesInfo$genesInDomain)!=domain)
+    pos_name_oppositeDomain<-which(names(info_affectedGenes$genesInDomain)!=domain)
     
-    # genesInOppositeDomain<-genesInfo$genesInDomain[[pos_name_oppositeDomain]]
+    # genesInOppositeDomain<-info_affectedGenes$genesInDomain[[pos_name_oppositeDomain]]
     
     ##Genes in Domain
-    genesInDomain<-genesInfo$genesInDomain[[domain]]
+    genesInDomain<-info_affectedGenes$genesInDomain[[domain]]
     
     ###Enhancers in the Opposite domain
     matrix_enhInOppositeDomain<-enhancersInfo$enhancersInDomain[[pos_name_oppositeDomain]]
     
-    for(sourceEnh in phasesVector){
-      # print(sourceEnh)
-      subs_enh<-subset(matrix_enhInOppositeDomain,source==sourceEnh)
-      
-      n_enh<-nrow(subs_enh)#number of enhancers 
-      totalAcetilation<-sum(subs_enh$acetilation)#total acetilation of the enhancers, in the OPPOSITE DOMAIN in this case
-      
-      ###Colname in the results matrix
-      colId<-paste0("nEnhancers_maxAvailableInTheOtherDomain_",sourceEnh)
-      ##Add to all the genes in the domain the n enh for this stage
-      resultMatrix[genesInDomain,colId]<-n_enh
-      
-      ##Add acetilation levels info
-      colAcetilLevelId<-paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_",sourceEnh)
-      resultMatrix[genesInDomain,colAcetilLevelId]<-totalAcetilation
-      
-    }
+    sourceEnh<-phase
+    
+    # print(sourceEnh)
+    subs_enh<-subset(matrix_enhInOppositeDomain,source==sourceEnh)
+    
+    n_enh<-nrow(subs_enh)#number of enhancers 
+    totalAcetilation<-sum(subs_enh$acetilation)#total acetilation of the enhancers, in the OPPOSITE DOMAIN in this case
+    
+    ###Colname in the results matrix
+    colId<-paste0("nEnhancers_maxAvailableInTheOtherDomain_",sourceEnh)
+    ##Add to all the genes in the domain the n enh for this stage
+    resultMatrix[genesInDomain,colId]<-n_enh
+    
+    ##Add acetilation levels info
+    colAcetilLevelId<-paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_",sourceEnh)
+    resultMatrix[genesInDomain,colAcetilLevelId]<-totalAcetilation
+    
   }
   
   #############################################
@@ -490,7 +513,7 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
     
     ###retrieve genes in that domain
     ##Genes in Domain
-    genesInDomain<-genesInfo$genesInDomain[[domain]]
+    genesInDomain<-info_affectedGenes$genesInDomain[[domain]]
     
     ####Add in the matrix for the genes in the domain
     ##its domain type, and the identifier of the domain
@@ -514,7 +537,7 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
   
   ##Not used for now, I think, so just comment it
   # ## MIXED WITH
-  # initialDomains<-unique(domainsInfo$domainsAffected$domainType)
+  # initialDomains<-unique(info_affectedRegions$domainsAffected$domainType)
   # 
   # if(length(initialDomains)==1){
   #   ##then either both bp are in TADs or both bp are in between_TADs
@@ -546,94 +569,94 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
   if(typeSV=="Inversion"){
     ##We  need to differentiate between intra TAD or between TADs // combining TADs
     ##Because modelling differs
-    if(length(unique(domainsInfo$domainsAffected$domainId))>1){
+    if(length(unique(info_affectedRegions$domainsAffected$domainId))>1){
       ##So there is more than one affected TAD, hence the SV is inter-TADs or inter-regulatory domains
       #####################################################
       ##after the inversion, lefts segments go together
       ##and right segments go together
       
       ##For genes(if there are) in breakp1 leftSegment
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_left_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_left_segment,
                                    keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##For genes in breakp2 leftSegment
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_left_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_left_segment,
                                    keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##For genes in breakp1 rightSegment
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_right_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_right_segment,
                                    keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##For genes in breakp2 rightSegment
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_right_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_right_segment,
                                    keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
-    }else if(length(unique(domainsInfo$domainsAffected$domainId))==1){
+    }else if(length(unique(info_affectedRegions$domainsAffected$domainId))==1){
       ##So, it is an inversion strictyly occurring intra TAD, so unless gene or enh broken, no relevant change
       ##For now, that's our current view
       
       ##With only one calculation enough
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInDomain$domain_breakpoint_1,##domain is the same, so does not matter which we choose
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInDomain$domain_breakpoint_1,##domain is the same, so does not matter which we choose
                                    keptEnh = unique(rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
-                                                   enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
-                                                   enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
-                                                   enhancersInfo$enhancersInSegment$breakpoint_2_right_segment)),#Here we do not take all into account all enh in the domain
-                                                     ##because maybe some enh is broken
-                                                     #And by looking at the enh per segment, if a enh is broken it will not be counted
-                                                     #Because we associate an enh to a segment if it entirely falls inside
-                                                     #And hence it will not be considered
+                                                          enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
+                                                          enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
+                                                          enhancersInfo$enhancersInSegment$breakpoint_2_right_segment)),#Here we do not take all into account all enh in the domain
+                                   ##because maybe some enh is broken
+                                   #And by looking at the enh per segment, if a enh is broken it will not be counted
+                                   #Because we associate an enh to a segment if it entirely falls inside
+                                   #And hence it will not be considered
                                    gainedEnh = NULL,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
     }
-
-
+    
+    
   }else if(typeSV=="Deletion"){
     
     ##We  need to differentiate between intra TAD or between TADs // combining TADs
     ##Because modelling differs 
     
-    if(length(unique(domainsInfo$domainsAffected$domainId))>1){
+    if(length(unique(info_affectedRegions$domainsAffected$domainId))>1){
       ##So there is more than one affected TAD, hence the SV is inter-TADs or inter-regulatory domains
       #####################################################
       
       ##Genes that are in bkp1 left segment, lose what is on bkp1 right, and gain what is in bkp2 right
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_left_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_left_segment,
                                    keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##For genes in breakp2 rightSegment
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_right_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_right_segment,
                                    keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##Genes that are in bkp1 right segm or bkp2 left segm are deleted, so directly affected
       ##Hence we do not consider enhancer situation for them
       
-    }else if(length(unique(domainsInfo$domainsAffected$domainId))==1){
+    }else if(length(unique(info_affectedRegions$domainsAffected$domainId))==1){
       ##So, it is an deletion strictyly occurring intra TAD
       ##In this context,and attending to the data we have, there can not be a GOF, so gained enh NULL. (unless some silencers deleted... but we don't have them annotated)
       
@@ -641,26 +664,26 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       ##For the long-range candidates. LEFT side
       ##On the one hand Genes that are to the LEFT of breakpoint1 
       
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_left_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_left_segment,
                                    keptEnh =rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                                   enhancersInfo$enhancersInSegment$breakpoint_2_right_segment),
                                    gainedEnh = NULL,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       
       ############################################
       ##For the long-range candidates. RIGHT side
       ##On the one hand Genes that are to the RIGHT of breakpoint2 
       
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_right_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_right_segment,
                                    keptEnh =rbind(enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                                   enhancersInfo$enhancersInSegment$breakpoint_1_left_segment),
                                    gainedEnh = NULL,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ###############################################################
       ##Genes that are in betweenn are deleted
@@ -674,28 +697,28 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
     ##We  need to differentiate between intra TAD or between TADs // combining TADs
     ##Because modelling differs 
     
-    if(length(unique(domainsInfo$domainsAffected$domainId))>1){
+    if(length(unique(info_affectedRegions$domainsAffected$domainId))>1){
       ##So there is more than one affected TAD, hence the SV is inter-TADs or inter-regulatory domains
       #####################################################
       
       ##Genes that are in bkp1 left segment, stay in an identical condition than in the WT 
       ##Unless an enhancer is broken by the breakpoint
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_left_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_left_segment,
                                    keptEnh = rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                                    enhancersInfo$enhancersInSegment$breakpoint_1_right_segment),
                                    gainedEnh = NULL,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##The same applies for genes in breakp2 rightSegment
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_right_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_right_segment,
                                    keptEnh = rbind(enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                                    enhancersInfo$enhancersInSegment$breakpoint_2_right_segment),
                                    gainedEnh = NULL,
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##Genes that are in bkp1 right segm are, on the one hand duplicated
       ##But in addition, they gain interactions with what is located on the left side of the breakpoint 2
@@ -704,14 +727,14 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       ##because there is a copy of its tad remaining exactly the same
       ##And the enhancers that are located on their segment are also duplicated
       
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_right_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_right_segment,
                                    keptEnh = rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                                    enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                                    enhancersInfo$enhancersInSegment$breakpoint_1_right_segment),
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,##Gained enh reserved For NEW ENHANCERS (from different RegDomain)
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
       ##Genes that are in bkp2 left segm are, on the one hand duplicated
       ##But in addition, they gain interactions with what is located on the right side of the breakpoint 1
@@ -720,20 +743,20 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       ##because there is a copy of its tad remaining exactly the same
       ##And the enhancers that are located on their segment are also duplicated
       
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_left_segment,
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_left_segment,
                                    keptEnh = rbind(enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                                    enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                                    enhancersInfo$enhancersInSegment$breakpoint_2_right_segment),
                                    gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment, ##Gained enh reserved For NEW ENHANCERS ((from different RegDomain))
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
-  
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
       
-    }else if(length(unique(domainsInfo$domainsAffected$domainId))==1){
+      
+    }else if(length(unique(info_affectedRegions$domainsAffected$domainId))==1){
       ##So, it is a duplication strictly occurring intra TAD
       ##In this context,and attending to the data we have, there can only be a GOF. (unless some silencers are duplicated... but we don't have them annotated)
-
+      
       ###All genes keep all the enhancers (except if any enh is broken by a breakpoint, that is why we select them by segments which entirely contain them)
       ##Gained enhancers:Those which are in the intersection between bkp1 right segment and bkp2 left segment (duplication area)
       
@@ -746,16 +769,16 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
       #Perfect, we only want to capture one instance of the repeated ones in the duplicatedEnh dframe.Which are the enh in the duplication area.
       duplicatedEnh<-duplicatedEnh[duplicated(duplicatedEnh),]
       
-      resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInDomain$domain_breakpoint_1,##domain is the same, so does not matter which we choose
+      resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInDomain$domain_breakpoint_1,##domain is the same, so does not matter which we choose
                                    keptEnh = rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                                    duplicatedEnh,##enh located in the duplication area, counted only once
                                                    duplicatedEnh,
                                                    enhancersInfo$enhancersInSegment$breakpoint_2_right_segment),
                                    gainedEnh = NULL,##Gained enh reserved For NEW ENHANCERS ((from different RegDomain))
                                    matrixRes = resultMatrix,
-                                   enhOrigin = phasesVector,
-                                   genesInfo = genesInfo)
-
+                                   enhOrigin = phase,
+                                   info_affectedGenes = info_affectedGenes)
+      
     }
     
   }else if(typeSV=="Translocation"){
@@ -763,7 +786,7 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
     ###Loading centromere locations for hg19   
     ####load centromere positions
     ##R object generated in script: /home/victor/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/CentromeresPosition/processingCentromereData.R
-    load(file = "data/hg19_centromerePositions.RData")
+    # load(file = "data/hg19_centromerePositions.RData")
     
     ##We consider left coords as the smaller of the breakpoints coord, and right coord the bigger
     
@@ -826,36 +849,36 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
         
         ##For genes(if there are) in breakp1 leftSegment
         ##They gain enh from right segment of the other breakpoint
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_left_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_left_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
         
         ##For genes in breakp2 leftSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_left_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_left_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
         
         ##For genes in breakp1 rightSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_right_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_right_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
         
         ##For genes in breakp2 rightSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_right_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_right_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
       }
       
       ############################################################
@@ -868,40 +891,40 @@ evaluatingGenesSituation<-function(genesInfo,domainsInfo,enhancersInfo,dataPatie
         ##and the other way round
         
         ##For genes(if there are) in breakp1 leftSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_left_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_left_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
         
         ##For genes in breakp2 leftSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_left_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_left_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
         
         ##For genes in breakp1 rightSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_1_right_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_1_right_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
         
         ##For genes in breakp2 rightSegment
-        resultMatrix<-calculatingEnh(targetGenes = genesInfo$genesInSegment$breakpoint_2_right_segment,
+        resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInSegment$breakpoint_2_right_segment,
                                      keptEnh = enhancersInfo$enhancersInSegment$breakpoint_2_right_segment,
                                      gainedEnh = enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
                                      matrixRes = resultMatrix,
-                                     enhOrigin = phasesVector,
-                                     genesInfo = genesInfo)
+                                     enhOrigin = phase,
+                                     info_affectedGenes = info_affectedGenes)
       }
     }
   }
-
+  
   ######################################
   ## Return matrix with the information
   ######################################

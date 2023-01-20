@@ -25,18 +25,18 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
   ##To track genes & conditions for which report will be generated
   patientResults$genesConditions_ToReport<-character()
   
-  ################
-  # WATCHOUT
-  #For now, each time this function is called it is removed the current content of graphSummary folder
-  #But for future take into account if this is problematic, when multiple users simultaneously connected
-  #For now is not rising problems on shiny server
-  
-  ##check if any image present in the folder, if there are, delete them
-  files_paths<-list.files(path = 'www/graphicalSummaries/')
-  if(length(files_paths) !=0){
-    ##Hence there is at least an image to delete
-    system('rm www/graphicalSummaries/*')  
-  }
+  # ################
+  # # WATCHOUT
+  # #For now, each time this function is called it is removed the current content of graphSummary folder
+  # #But for future take into account if this is problematic, when multiple users simultaneously connected
+  # #For now is not rising problems on shiny server
+  # 
+  # ##check if any image present in the folder, if there are, delete them
+  # files_paths<-list.files(path = 'www/graphicalSummaries/')
+  # if(length(files_paths) !=0){
+  #   ##Hence there is at least an image to delete
+  #   system('rm www/graphicalSummaries/*')  
+  # }
   
   allGenes<-patientResults$allAffectedGenes_positionalInfo$geneSymbol
   allPhases<-names(patientResults$resultsPerPhase)

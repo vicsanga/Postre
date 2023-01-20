@@ -10,12 +10,27 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
                                                 phase,
                                                 phasesVector,
                                                 formatedPhenotype,
-                                                runMode){
-  ######################################
-  ##Loading required functions
-  ######################################
-  source("scripts_To_Load_Data/cargarFunciones.R",local = TRUE)
-  source("functions/RankingGenes_Deciphering_etiology.R", local = TRUE)
+                                                runMode, 
+                                                MultiDataList = MultiDataList){
+  
+  ##Convert MultiDataList into independent variables
+  cellInfo_hi<-MultiDataList$cellInfo_hi
+  cellInfo_triploSens<-MultiDataList$cellInfo_triploSens
+  clinGen_hiInfo<-MultiDataList$clinGen_hiInfo
+  gtf_annotation<-MultiDataList$gtf_annotation
+  huangScores<-MultiDataList$huangScores
+  humanBased_genePhenotype<-MultiDataList$humanBased_genePhenotype
+  miceBased_genePhenotype<-MultiDataList$miceBased_genePhenotype
+  nature_lof_scores<-MultiDataList$nature_lof_scores
+  rts_allGenes<-MultiDataList$rts_allGenes
+  tau_exp_scores<-MultiDataList$tau_exp_scores
+  centromerePos<-MultiDataList$centromerePos
+
+  #################################################################################
+  ##Loading required functions, loaded in previous level, to not reload per phase
+  #################################################################################
+  # source("scripts_To_Load_Data/cargarFunciones.R",local = TRUE)
+  # source("functions/RankingGenes_Deciphering_etiology.R", local = TRUE)
 
   ##Function required to load gene expression and enh data
   # source("functions/GeneExpression_AndEnhancerData_Loader.R")
@@ -23,12 +38,7 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
   #####################################
   ##Loading required data
   #####################################
-  source("scripts_To_Load_Data/cargaDatos.R",local = TRUE)
-  
-
-  #phasesVector<-enh_and_exp_data$phasesVector ##Contains the name of the different developmental stages, or phases considered
-  #phasesVector<-phase##I think I need to do this
-
+  # source("scripts_To_Load_Data/cargaDatos.R",local = TRUE)
   
   #####################################
   ## Predicting
@@ -42,7 +52,7 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
   ##################
   ##Define Locations Affected: Either TADs or TAD boundaries
   ##mensajes informativos quitarlos, dejarlos para el report no por consola ahora dando pc
-  info_affectedRegions<-affectedRegions(dataPatient = patientInfo, tadsMap = mapTads, regionsBetweenTADs = betweenTads)
+  info_affectedRegions<-affectedRegions(dataPatient = patientInfo, mapTads = mapTads, regionsBetweenTADs = betweenTads)
   
   ###################
   ##Retrieve Genes in the affected Locations
@@ -68,14 +78,13 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
     ###Since at least a gene potentially affected
     ##Let's continue with the analysis
     
-    
     ##############
     ##function to compute score matrices for affected genes
     ####Constructing rearrangement
     ####And evaluating the genes situation
     ##We introduce the type of SV, in this first case inversion
-    matrixesGenesEvaluation<-evaluatingGenesSituation(genesInfo = info_affectedGenes,
-                                                      domainsInfo = info_affectedRegions,
+    matrixesGenesEvaluation<-evaluatingGenesSituation(info_affectedGenes = info_affectedGenes,
+                                                      info_affectedRegions = info_affectedRegions,
                                                       enhancersInfo = info_affectedEnhancers,
                                                       dataPatient = patientInfo,
                                                       humanPhenotype = humanBased_genePhenotype,
@@ -87,9 +96,12 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
                                                       natureLof = nature_lof_scores,##HI scores nature 2016
                                                       huangLof = huangScores,##Huang Hi scores 2010,
                                                       clinGen_hiInfo = clinGen_hiInfo, ##ClinGene HI info
-                                                      geneExp = Master_GeneExpression,##fpkm for the genes for the different stages
+                                                      cellHi = cellInfo_hi,
+                                                      cellTriplo = cellInfo_triploSens,
+                                                      Master_GeneExpression = Master_GeneExpression,##fpkm for the genes for the different stages
                                                       mainPatientPhenotype = formatedPhenotype,
-                                                      phasesVector = phase)##Modification, now we want to create the matrixesGeneEvaluationFocuse on Just one gene
+                                                      phase = phase,
+                                                      centromerePos = centromerePos)##Modification, now we want to create the matrixesGeneEvaluationFocuse on Just one gene
     
     ## Up to here if we have a gene in the uncertainty region the balance of kept gain enh for it corresponds with NA
     ## In addition if enh in uncertainty, the are not considered for the kept or gained categories, they are treated
@@ -102,8 +114,9 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
 
     ##Running prediction
     resultsRankingPrediction<-rankingGenes(genesData = matrixesGenesEvaluation,
-                                    phasesVector = phase,
-                                    runMode = runMode)
+                                    phase = phase,
+                                    runMode = runMode,
+                                    patientInfo = patientInfo)
     
     ##Genes Scoring
     scoresDisease<-resultsRankingPrediction$ScoresResults
@@ -132,13 +145,12 @@ patientPrediction_basedOnSingleTADmap<-function(patientInfo,##patient breakpoint
     ########
     ## Record matrixes genes evaluation in the output
     resultsData$matrixesGenesEvaluation<-matrixesGenesEvaluation
-    
+
     ###store genes scores sorted from higher to smaller
-    for(phase in names(scoresDisease)){
-      matrixPhase<-scoresDisease[[phase]]
-      matrixPhase<-matrixPhase[order(matrixPhase$Max_Score,decreasing = TRUE),]
-      resultsData[[phase]]<-matrixPhase
-    }
+    matrixPhase<-scoresDisease[[phase]]
+    matrixPhase<-matrixPhase[order(matrixPhase$Max_Score,decreasing = TRUE),]
+    resultsData[[phase]]<-matrixPhase
+    
   }
   
   

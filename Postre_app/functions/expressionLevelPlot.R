@@ -17,9 +17,10 @@ expressionLevelPlot<-function(targetExpression, targetGene, targetPhase, maxExpr
     
     proportionalValue<-(targetExpression - minExpression)/(maxExpression-minExpression)
   
-   ##1+ because starting point in the Y axis for this category is 1
+   ##1+ because starting point in the Y axis for this category is 1 (1.8 on latest version)
    ##9* because the max point is 10 in the Y axis, so the difference between start and end are 9 points
-   barplotHeight<-1+9*proportionalValue
+   #On latest version 9.2 -1.8 = 7.4 
+   barplotHeight<-1.8 + 7.4*proportionalValue
   }
   
   maxBarplotValue<-maxBarHeight + 3 ##space for additional tags
@@ -59,32 +60,32 @@ expressionLevelPlot<-function(targetExpression, targetGene, targetPhase, maxExpr
   
   ##Add horizontal bars Expression Thresholds
   ##1fpkm
-  lines(x = c(2.5,9.5),y = c(1,1), lty = 3, lwd=1)
+  lines(x = c(2.5,9.5),y = c(1.8,1.8), lty = 3, lwd=1)
 
   #10fpkm
-  lines(x = c(2.5,9.5),y = c(10,10), lty = 3, lwd=1)
+  lines(x = c(2.5,9.5),y = c(9.2,9.2), lty = 3, lwd=1)
   
   ##Poner leyenda de que indican las lineas
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=9.5, y=10, label=paste(">",maxExpression," FPKM", sep="", collapse=""), cex = 2.5, pos = 4, font = 2)
+  text(x=9.5, y=9.2, label=paste(">",maxExpression," FPKM", sep="", collapse=""), cex = 2.5, pos = 4, font = 2)
   
   ##Adding tags
-  text(x=9.5, y=1, label=paste(">",minExpression," FPKM", sep="", collapse=""), cex = 2.5, pos = 4, font = 2)
+  text(x=9.5, y=1.8, label=paste(">",minExpression," FPKM", sep="", collapse=""), cex = 2.5, pos = 4, font = 2)
   
   
   
   ##Poner en negrita la que corresponda
   
   ##Adding tags
-  text(x=-2.2, y=11, label=paste0("High"), cex = 3, pos = 4, font = 2)
+  text(x=-3.2, y=11, label=paste0("Expressed"), cex = 3, pos = 4, font = 2)
   
   ##Adding tags
-  text(x=-2.2, y=5, label=paste0("Medium"), cex = 3, pos = 4, font = 2)
+  text(x=-3.2, y=5, label=paste0("    Lowly\nExpressed"), cex = 3, pos = 4, font = 2)
 
   ##Adding tags
-  text(x=-2.2, y=0, label=paste0("Low"), cex = 3, pos = 4, font = 2)  
+  text(x=-3.2, y=0, label=paste0("      Not\nExpressed"), cex = 3, pos = 4, font = 2)  
   
    ##Adding "axes" inssided of canvas
   #Y axes

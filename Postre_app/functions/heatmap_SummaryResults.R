@@ -6,6 +6,7 @@
 
 ##Required Function to plot number behind heatmap Table Generation
 source(file = "functions/generic_html_table_Generation.R", local = TRUE)
+source(file = "functions/pathogenicScore_tableHtmlGeneration.R", local = TRUE)
 
 heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##highScore deprecated, whtvr above the minRequiredScore gets top intensity color
@@ -35,10 +36,11 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##Let's remove all line breaks, introduced from internet copypaste java & html code
   header_html<-gsub("[\r\n]", "", header_html)
   
-  
   ##Adding Title
   header_html<-paste(header_html,"<div class='heatmapSection'>",
-                     "<h1 id='mainResults'>Results Overview</h1>",
+                     "<h1 id='mainResults'>Results Overview ",
+                     patientResults$patientInfo$Phenotype,
+                     "</h1>",
                      sep = "",
                      collapse = "")
   
@@ -507,26 +509,44 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   }
   heatm_targetMatrix$GeneImpact<-NULL
   
-  numbersHeat_html<-generic_table_html_generation(targetMatrix = heatm_targetMatrix)
+  
+  ##  ###HERE IT GOES THE GENERATION OF THE NICE HTML TABLE
+  ## JUST CHANGE THE FUNCTION GENERIC TABLE HTML GENERATION FOR PATHOGENICscoretableHTMLgeneration
+  numbersHeat_html<-pathogenicScore_tableHtmlGeneration(patientResults = patientResults,
+                                                        targetMatrix = heatm_targetMatrix)
   
   ##Adding heatmap numbers section
   ##Avoiding h123... tags wrapping button because was affecting JS associated functions response
   ##And not recommended to put them inside
+
   whole_html<-paste(whole_html,
                     "<div class='numbersHeatmap'>",
-                    "<button type='button' class='collapsible_subsectionMainResults'>",
+                    ##The first class,  collapsible_subsectionMainResults a secas, es para el estilo del boton, la segunda ,que integra el fenotipo para el responsiveness
+                    "<button type='button' class='collapsible_subsectionMainResults collapsible_subsectionMainResults_",
+                    patientResults$patientInfo$Phenotype,
+                    "'>",
                     "<span style='font-size:22px'>Pathogenic Scores</span>",
                     "</button>",
                     "<div class='content_subsectionMainResults'>",
+                    
+                    ##First sentence to direct the reader to the userGuide if needed
+                    "<p>To know more about the pathogenic score calculation and the meaning of the different subscores, please visit the ",
+                    "'Pathogenic score calculation' section in the User Guide, or",
+                    "<a href='PathogenicScoreCalculation.html' target='_blank'> open the explanation in a new tab </a>. ",
+                    "</p>",
+                    
+                    ##Adding html table
                     numbersHeat_html,
                     "</div>",
                     "</div>",
                     "<br>",
                     sep="",
                     collapse="")
-  
-  javaScript_collapsible<-"<script>
-    var coll = document.getElementsByClassName('collapsible_subsectionMainResults');
+
+  javaScript_collapsible<-paste("<script>
+    var coll = document.getElementsByClassName('collapsible_subsectionMainResults_",
+    patientResults$patientInfo$Phenotype,
+    "');
     var i;
 
     for (i = 0; i < coll.length; i++) {
@@ -540,8 +560,9 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
     }
     });
     }
-    
-    </script>"
+    </script>",
+    sep="",
+    collapse="")
   
   ##Let's remove all line breaks, introduced from internet copypaste java & html code
   javaScript_collapsible<-gsub("[\r\n]", "", javaScript_collapsible)
@@ -570,7 +591,10 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##Adding heatmap numbers section
   whole_html<-paste(whole_html,
                     "<div class='numbersHeatmap'>",
-                    "<button type='button' class='collapsible_subsectionMainResults'>",
+                    ##The first class,  collapsible_subsectionMainResults a secas, es para el estilo del boton, la segunda ,que integra el fenotipo para el responsiveness
+                    "<button type='button' class='collapsible_subsectionMainResults collapsible_subsectionMainResults_",
+                    patientResults$patientInfo$Phenotype,
+                    "'>",
                     "<span style='font-size:22px'>Prediction Considered Information</span>",
                     "</button>",
                     "<div class='content_subsectionMainResults'>",
@@ -724,7 +748,7 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
     sep = "",
     collapse = ""
   )
-  
+
   return(whole_html)
 }
 

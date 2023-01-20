@@ -18,19 +18,16 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
   headerPart<-paste("<html>
   <head>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <style>
-  /*Style information in MainInterfaceStyling html file*/
-  </style>
   </head>
   <body>
   ",
   ##Adding wrapper of the whole document to be able to modify it and clean results upon resubmission when performing Multiple SV analysis
   if(explPreviousPatSection == FALSE){
     ##So, multipleSV submission from user
-    "<div class= 'wrapperMultipleSVSubmission'>"
+    "<div class='wrapperMultipleSVSubmission'>"
   }else{
     #So, explore previous SV html generation
-    "<div class= 'wrapperExplorePreviousPat'>"
+    "<div class='wrapperExplorePreviousPat'>"
   },
   sep="",
   collapse = "")
@@ -48,41 +45,40 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
   allPhenoInfoHtml<-""##To append info from all phenotypes
 
   ##Adding sections in the HTML, one per phenotype + the How to navigate results section + Submitting prediction section
-  for(targetPheno in c("HowToNavigateResults",sort(consideredPheno),"SubmittingPrediction")){
-    print(targetPheno)
+
+  docSections<-c("HowToNavigateResults","resultsPerSV","resultsPerGene","patientsInformation","SubmittingPrediction")
+  
+  for(targetSection in docSections){
+    print(targetSection)
     
-    phenoResults<-cohort_results[[targetPheno]]
+    # phenoResults<-cohort_results[[targetSection]]
     
     ###We need to do each of the following sections collapsible
     
     ##To plot nice header
-    if(targetPheno=="head_neck"){
-      phenoTag<-"Head & Neck SVs"
-    }else if(targetPheno=="cardiovascular"){
-      phenoTag<-"Cardiovascular SVs"
-    }else if(targetPheno=="limbs"){
-      phenoTag<-"Limbs SVs"
-    }else if(targetPheno=="neurodevelopmental"){
-      phenoTag<-"Neurodevelopmental SVs"
-    }else if(targetPheno=="nervous_system"){
-      phenoTag<-"Nervous System - Brain"
-    }else if(targetPheno=="HowToNavigateResults"){
-      phenoTag<-"How to navigate this section?"
-    }else if(targetPheno=="SubmittingPrediction"){
-      phenoTag<-"Submit SV for prediction"
+    if(targetSection=="HowToNavigateResults"){
+      sectionTag<-"How to navigate this section?"
+    }else if(targetSection=="resultsPerSV"){
+      sectionTag<-"Results per SV and phenotype"
+    }else if(targetSection=="resultsPerGene"){
+      sectionTag<-"Results per gene and phenotype"
+    }else if(targetSection=="patientsInformation"){
+      sectionTag<-"SVs Information (coordinates, type and associated phenotype)"
+    }else if(targetSection=="SubmittingPrediction"){
+      sectionTag<-"Submit SV for prediction"
     }
     
     # https://www.w3schools.com/howto/howto_js_collapsible.asp
     pheno_html<-paste("<div class='phenoRecurrencyStats'>",
                       "<button type='button' class=",
                       if(explPreviousPatSection==TRUE){
-                        "'collapsibleExplorePrev_mainSection'"
+                        "'collapsibleExplorePrev_mainSection' "
                       }else{
-                        "'collapsibleMainSection'"
+                        "'collapsibleMainSection' "
                       },
                       ##Assignar aqui el color del boton para que canvie segun si es phenotype data o otro tipo de dato
                       
-                      if(targetPheno == "HowToNavigateResults"|| targetPheno == "SubmittingPrediction"){
+                      if(targetSection == "HowToNavigateResults"|| targetSection == "SubmittingPrediction"){
                         "style='background-color:#1D3354;'"
                       }else{
                         ##So aggregated information of SVs for different phenotypes
@@ -91,7 +87,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
                       ,
                       ">",
                       "<h2 style='color:#FFFFFF;font-size: 40px; font-weight: bold' >",
-                      phenoTag,
+                      sectionTag,
                       "</h2>",
                       "</button>",
                       sep = "",
@@ -105,7 +101,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
                       collapse = "")
     
     
-    if(targetPheno == "HowToNavigateResults"){
+    if(targetSection == "HowToNavigateResults"){
       
       ################## 
       ## Here provide info on how to navigate the patient cohort results
@@ -120,7 +116,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       contentExplorePreviousPat<-paste(c("<div class = 'explanationExplorePreviousPat'>",
                                          "<p style = 'font-size: 20px;'> In the video below there is an explanation about how to navigate the current page. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualitzation. </p>",
                                          "<div class ='videotutorialExplPreviousPat'>",##div used to center video
-                                         '<p align="center"><iframe width="640" height="360" src="https://www.youtube.com/embed/movwXisGsmM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>',
+                                         "<p align='center'><iframe width='640' height='360' src='https://www.youtube.com/embed/movwXisGsmM' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></p>",
                                          "</div>",
                                          "</div>"),
                                        sep=" ",
@@ -131,7 +127,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
                         sep="")
       
       
-    }else if(targetPheno == "SubmittingPrediction" ){
+    }else if(targetSection == "SubmittingPrediction"){
       
       ##########################################################
       ##Information for patient submission with simple button
@@ -140,42 +136,15 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       ##Aqui va a haber un boton para el que va a cambiar el id segon si es true o false el parametro de previous pat
       ##explPreviousPatSection = TRUE
       ##Y para el pheno of INterest too
+      ##Part1, 2 and 3 dpeprecated, they were used on previous version to set the pheno of interest. Now, is that automatically recognized from database
+
+      htmlSubmissionSection_part1<-""
       
-      htmlSubmissionSection_part1<-paste(
-      '
-      <div class="phenoID well">
-      <div class="form-group shiny-input-container">
-      <label class="control-label" id="Pheno of Interest" for="Pheno of Interest">Select phenotype</label>
-      <div>
-<select id=',
-        if(explPreviousPatSection == TRUE){
-          '"aggregatedResults_phenoId_ExplorePreviousPat">' 
-        }else{
-          '"aggregatedResults_phenoId_MultipleSVSubmission">'
-        },
-        sep = "",
-        collapse = ""
-      )
-      
-    ##Building part 2
+      ##Building part 2
       htmlSubmissionSection_part2<-""
-        ##Metemos las options
-        for(pheno in consideredPheno){
-          #print(pheno)
-          ##Mirar a ver si mete el string?? igual que el ifelse de arriba, probar
-          ##Poner niceEquivalent, si phenoTal, nice string = tal con una tabla o algo
-          htmlSubmissionSection_part2<-paste(htmlSubmissionSection_part2,
-                '<option value="',pheno,'">',pheno,'</option>',
-                sep="",
-                collapse="")
-        }
-      
+
       ##Building part 3
-      htmlSubmissionSection_part3<-        '</select>
-    </div>
-    </div>
-    </div>
-    '
+      htmlSubmissionSection_part3<-""
     
       ##Part 4 with introuce patient ID box
       htmlSubmissionSection_part4<- paste('
@@ -196,24 +165,13 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
        collapse = ""
       )
       
-      ##Choosing Running Mode
+      ##ADVANCED FEATURES MENU
+      ##Putting whole chunk of code to facilitate maintenance. Is sth not dinamic
+      ##NO LONGER CONSIDERED NECESSARY, SO EMPTY ADDED INFO
+      
       htmlSubmissionSection_part5<-paste(
-'
-<div class="runMode_aggregatedRes_SubmBox well">
-    <div class="form-group shiny-input-container">
-      <label class="control-label" id="runMode_Aggregated-label" for="runMode_Aggregated">Running mode</label>
-      <div>
-        <select id=',
-        if(explPreviousPatSection == TRUE){
-          '"runMode_AggregatedRes_ExplorePreviousPat"'                            
-        }else{
-          '"runMode_AggregatedRes_MultipleSVSubmission"'                             
-        },
-        '><option value="Standard" selected>Standard</option>
-<option value="High-Specificity">High-Specificity</option></select>
-    </div>
-  </div>
-</div>',
+        
+        if(explPreviousPatSection == TRUE){}else{},
         sep = "",
         collapse = ""
       )
@@ -259,170 +217,289 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
                         htmlSubmissionSection_Full,
                         sep="")
       
+    }else if(targetSection == "resultsPerSV"){
       
+      resultsPerSV<-cohort_results$candidateGenesInfo
+
+      ##Quitamos cols que no me interesan ahora mismo
+      resultsPerSV$Ncandidates<-NULL
+      resultsPerSV$Ncausative<-NULL
+      resultsPerSV$TypeSV<-NULL
+      resultsPerSV$N_LR_Mech<-NULL
+      resultsPerSV$N_Direct_Mech<-NULL
       
+      ##Renombramos alguna columna para que el output sea mas legible
+      colnames(resultsPerSV)[which(colnames(resultsPerSV)=="SVid")]<-"SV ID"
+      colnames(resultsPerSV)[which(colnames(resultsPerSV)=="PathogenicScore")]<-"Pathogenic Score"
       
-    }else{
-      
-      ################################################################
-      ##Hence here we are working with the Phenotypes Cohort results
-      ################################################################
-      
-      targetNamesMatrixes<-names(phenoResults)
-      #Excluding noGeneFoundInfo, we are going to do nothing with it regarding the html, and if we leave it it triggers an error
-      targetNamesMatrixes<-targetNamesMatrixes[targetNamesMatrixes!="noGeneFoundInfo"]
-      
-      for(name_targetMatrix in targetNamesMatrixes){
+      ##Filter only for pathogenic predictions if processing the explore previous patient section
+      ##Only storing there pathogenic predictions
+      if(ids_append=="PreviousPat"){
+        ##Database of predictions, leaving only the pathogenic predictions
+        #Lo puedo hacer aqui
+        resultsPerSV<-subset(resultsPerSV, Pathogenic == "Yes")
         
-        ##Customize collapsible names to make them nicer
-        h1_tag_name_targetMatrix<-name_targetMatrix
-        
-        if(h1_tag_name_targetMatrix == "anyMechanism"){
-          h1_tag_name_targetMatrix<-"Overview | Any Pathological Mechanism"
-          
-        }else if(h1_tag_name_targetMatrix == "DirectEffectLOF"){
-          h1_tag_name_targetMatrix<-"Coding Effect | Loss of Function"
-          
-        }else if(h1_tag_name_targetMatrix == "DirectEffectGOF"){
-          h1_tag_name_targetMatrix<-"Coding Effect | Gain of Function"
-          
-        }else if(h1_tag_name_targetMatrix == "LongRangeLOF"){
-          h1_tag_name_targetMatrix<-"Long-Range Effect | Loss of Function"
-          
-        }else if(h1_tag_name_targetMatrix == "LongRangeGOF"){
-          h1_tag_name_targetMatrix<-"Long-Range Effect | Gain of Function"
-          
-        }else if(h1_tag_name_targetMatrix == "errorInfo"){
-          h1_tag_name_targetMatrix<-"Unresolved SVs"
-          
-        }else if(h1_tag_name_targetMatrix == "patientsInfo"){
-          h1_tag_name_targetMatrix<-"SVs Information"
-          
-        }
-        
-        ##Starting collapsible section
-        pheno_html<-paste(pheno_html,"<div class='",
-                          name_targetMatrix,
-                          "'>",
-                          "<button type='button' class='",
-                          if(explPreviousPatSection == TRUE){
-                            "collapsibleExplorePrev"
-                          }else{
-                            "collapsible"
-                          },
-                          "'>",
-                          "<h1>",
-                          h1_tag_name_targetMatrix,
-                          "</h1>",
-                          "</button>",
-                          sep = "",
-                          collapse = "")
-        
-        
-        if((name_targetMatrix != "errorInfo") && (name_targetMatrix != "patientsInfo")){
-          #source(file = "functions/multiple_SV_Functions/table_html_generation.R")
-          ##So generating table with recurrency pathological mechanisms per Target Pathomechanism
-          targetMatrix<-phenoResults[[name_targetMatrix]]
-          
-          ##If targetMatrix has 0 rows, do not add it
-          ##Instead, add, no Info for this section
-          
-          if(nrow(targetMatrix)>0){
-            ##So there is information in the matrix, hence add it
-            
-            if("phaseFree" %in% colnames(targetMatrix)){
-              colnames(targetMatrix)[colnames(targetMatrix)=="phaseFree"]<-"Cell Type Independent"  
-            }
-            
-            ##Renaming "patient" by "SV_ID" and "patients" by "SV_IDs"
-            ##Renaming columns now that we want to represent their information more clearly
-            if("patients" %in% colnames(targetMatrix)){
-              colnames(targetMatrix)[colnames(targetMatrix)=="patients"]<-"SV_IDs"  
-            }
-            
-            if("Num_Patients" %in% colnames(targetMatrix)){
-              colnames(targetMatrix)[colnames(targetMatrix)=="Num_Patients"]<-"Num_SVs"  
-            }
-            
-            table_html<-table_html_generation(targetMatrix = targetMatrix ,
-                                              name_targetMatrix = name_targetMatrix,
-                                              ids_append = ids_append,
-                                              targetPheno= targetPheno)
-            
-            pheno_html<-paste(pheno_html,
-                              "<div class='content'>",
-                              table_html,
-                              "</div>",
-                              sep="") 
-          }else{
-            #####################################
-            ##Hence there is no info to display
-            #####################################
-            pheno_html<-paste(pheno_html,
-                              "<div class='content'>",
-                              "<p>No data to display</p>",
-                              "</div>",
-                              sep="") 
-          }
-          
-        }else if(name_targetMatrix == "patientsInfo"){
-          
-          targetMatrix<-phenoResults[[name_targetMatrix]]
-          
-          ##Rename patientID column by SV_ID since 1 patient can have >1 SV
-          if("patientID" %in% colnames(targetMatrix)){
-            colnames(targetMatrix)[colnames(targetMatrix)=="patientID"]<-"SV_ID"  
-          }
-          
-          ##source(file = "functions/multiple_SV_Functions/table_html_generation.R")
-          ##source(file = "functions/multiple_SV_Functions/patientTable_html_generation.R")
-          table_html<-table_html_generation(targetMatrix = targetMatrix,
-                                            name_targetMatrix=name_targetMatrix,
-                                            ids_append = ids_append,
-                                            targetPheno= targetPheno)
-          
-          pheno_html<-paste(pheno_html,
-                            "<div class='content'>",
-                            table_html,
-                            "</div>",
-                            sep="")
-          
-        }else if(name_targetMatrix == "errorInfo"){
-          ##so in the error info section
-          if(length(phenoResults[["errorInfo"]])>0){
-            patientsError<-paste(c("<div class='content'>",
-                                   "<p>We are sorry to inform you that a problem occurred while predicting the impact of the structural variants with the identifiers: ",
-                                   paste0(as.character(unlist(phenoResults[["errorInfo"]])),
-                                          collapse=", "),
-                                   "due to biological limitations or technical issues related with the structural variants information and affected loci. Please check if the data introduced for them is correct and visit the User Guide if you have any doubt.
-       If the problem persists contact us through sv_radalab@gmail.com to provide you more information about the particularities of these genetic rearrangements.",
-                                   "</p>",
-                                   "</div>"),
-                                 sep=" ",
-                                 collapse=" ") 
-            
-          }else{
-            ##No problems found, indicate
-            patientsError<-paste(c("<div class='content'>",
-                                   "<p>No problems encountered when processing the structural variants.</p>",
-                                   "</div>"),
-                                 sep=" ",
-                                 collapse=" ") 
-          }
-          
-          pheno_html<-paste(pheno_html,
-                            patientsError,
-                            sep="")
-          
-          
-        }
-        ###########################################
-        ##Closing Table//Pathomechanism Div Section
-        pheno_html<-paste(pheno_html,
-                          "</div>",
-                          sep="")
       }
-    }
+      
+      ###############################################
+      
+      #Guardamos tabla para poder descargar
+      #Saving table on outpFolder
+      write.table(x=resultsPerSV,
+                  file = paste0("www/tablesDownload/table_ResultsPerSV", ids_append,".txt"),
+                  sep="\t",
+                  row.names = FALSE,
+                  quote = FALSE)
+      
+      textTableDownload<-paste0("<p>Download Table ",
+                                "<a href='",
+                                paste0("tablesDownload/table_ResultsPerSV", ids_append,".txt"),
+                                "' download='ResultsPerSV.txt'>here</a></p>",
+                                collapse = "",
+      sep="")
+      
+      
+      table_html<-table_html_generation(targetMatrix = resultsPerSV ,
+                                        name_targetMatrix = "resultsPerSV",
+                                        ids_append = ids_append,
+                                        targetPheno= "")
+      
+      
+      pheno_html<-paste(pheno_html,
+                        textTableDownload,
+                        table_html,
+                        sep="")
+      
+    }else if(targetSection == "resultsPerGene"){
+      # browser()
+      resultsPerGene<-cohort_results$geneRecurrencyInfo
+      
+      ##Quitamos cols que no me interesan ahora mismo
+
+      ###############################################
+      write.table(x=resultsPerGene,
+                  file = paste0("www/tablesDownload/table_ResultsPerGene", ids_append,".txt"),
+                  sep="\t",
+                  row.names = FALSE,
+                  quote = FALSE)
+      
+      textTableDownload<-paste0("<p>Download Table ",
+                                "<a href='",
+                                paste0("tablesDownload/table_ResultsPerGene", ids_append,".txt"),
+                                "' download='ResultsPerGene.txt'>here</a></p>",
+                                collapse = "",
+                                sep="")
+      
+      
+      
+      table_html<-table_html_generation(targetMatrix = resultsPerGene ,
+                                        name_targetMatrix = "resultsPerGene",
+                                        ids_append = ids_append,
+                                        targetPheno= "")
+      
+      pheno_html<-paste(pheno_html,
+                        textTableDownload,
+                        table_html,
+                        sep="")
+      
+    }else if(targetSection == "patientsInformation"){
+      
+      # AllPatientsInfo
+      targetMatrix<-AllPatientsInfo
+      
+      if("patientID" %in% colnames(targetMatrix)){
+        colnames(targetMatrix)[colnames(targetMatrix)=="patientID"]<-"SV_ID"
+      }
+      
+      write.table(x=targetMatrix,
+                  file = paste0("www/tablesDownload/table_PatientsInfo", ids_append,".txt"),
+                  sep="\t",
+                  row.names = FALSE,
+                  quote = FALSE)
+      
+      textTableDownload<-paste0("<p>Download Table ",
+                                "<a href='",
+                                paste0("tablesDownload/table_PatientsInfo", ids_append,".txt"),
+                                "' download='PatientsInfo.txt'>here</a></p>",
+                                collapse = "",
+                                sep="")
+      
+      
+      
+      table_html<-table_html_generation(targetMatrix = targetMatrix ,
+                                        name_targetMatrix = "PatientsInfo",
+                                        ids_append = ids_append,
+                                        targetPheno= "")
+      
+      pheno_html<-paste(pheno_html,
+                        textTableDownload,
+                        table_html,
+                        sep="")
+      
+      
+    }##El error info integrarlo tb..?
+    
+    # else{
+    #   
+    #   ################################################################
+    #   ##Hence here we are working with the Phenotypes Cohort results
+    #   ################################################################
+    #   
+    #   targetNamesMatrixes<-names(phenoResults)
+    #   #Excluding noGeneFoundInfo, we are going to do nothing with it regarding the html, and if we leave it it triggers an error
+    #   targetNamesMatrixes<-targetNamesMatrixes[targetNamesMatrixes!="noGeneFoundInfo"]
+    #   
+    #   for(name_targetMatrix in targetNamesMatrixes){
+    #     
+    #     ##Customize collapsible names to make them nicer
+    #     h1_tag_name_targetMatrix<-name_targetMatrix
+    #     
+    #     if(h1_tag_name_targetMatrix == "anyMechanism"){
+    #       h1_tag_name_targetMatrix<-"Overview | Any Pathological Mechanism"
+    #       
+    #     }else if(h1_tag_name_targetMatrix == "DirectEffectLOF"){
+    #       h1_tag_name_targetMatrix<-"Coding Effect | Loss of Function"
+    #       
+    #     }else if(h1_tag_name_targetMatrix == "DirectEffectGOF"){
+    #       h1_tag_name_targetMatrix<-"Coding Effect | Gain of Function"
+    #       
+    #     }else if(h1_tag_name_targetMatrix == "LongRangeLOF"){
+    #       h1_tag_name_targetMatrix<-"Long-Range Effect | Loss of Function"
+    #       
+    #     }else if(h1_tag_name_targetMatrix == "LongRangeGOF"){
+    #       h1_tag_name_targetMatrix<-"Long-Range Effect | Gain of Function"
+    #       
+    #     }else if(h1_tag_name_targetMatrix == "errorInfo"){
+    #       h1_tag_name_targetMatrix<-"Unresolved SVs"
+    #       
+    #     }else if(h1_tag_name_targetMatrix == "patientsInfo"){
+    #       h1_tag_name_targetMatrix<-"SVs Information"
+    #       
+    #     }
+    #     
+    #     ##Starting collapsible section
+    #     pheno_html<-paste(pheno_html,"<div class='",
+    #                       name_targetMatrix,
+    #                       "'>",
+    #                       "<button type='button' class='",
+    #                       if(explPreviousPatSection == TRUE){
+    #                         "collapsibleExplorePrev"
+    #                       }else{
+    #                         "collapsible"
+    #                       },
+    #                       "'>",
+    #                       "<h1>",
+    #                       h1_tag_name_targetMatrix,
+    #                       "</h1>",
+    #                       "</button>",
+    #                       sep = "",
+    #                       collapse = "")
+    #     
+    #     
+    #     if((name_targetMatrix != "errorInfo") && (name_targetMatrix != "patientsInfo")){
+    #       #source(file = "functions/multiple_SV_Functions/table_html_generation.R")
+    #       ##So generating table with recurrency pathological mechanisms per Target Pathomechanism
+    #       targetMatrix<-phenoResults[[name_targetMatrix]]
+    #       
+    #       ##If targetMatrix has 0 rows, do not add it
+    #       ##Instead, add, no Info for this section
+    #       
+    #       if(nrow(targetMatrix)>0){
+    #         ##So there is information in the matrix, hence add it
+    #         
+    #         if("phaseFree" %in% colnames(targetMatrix)){
+    #           colnames(targetMatrix)[colnames(targetMatrix)=="phaseFree"]<-"Cell Type Independent"  
+    #         }
+    #         
+    #         ##Renaming "patient" by "SV_ID" and "patients" by "SV_IDs"
+    #         ##Renaming columns now that we want to represent their information more clearly
+    #         if("patients" %in% colnames(targetMatrix)){
+    #           colnames(targetMatrix)[colnames(targetMatrix)=="patients"]<-"SV_IDs"  
+    #         }
+    #         
+    #         if("Num_Patients" %in% colnames(targetMatrix)){
+    #           colnames(targetMatrix)[colnames(targetMatrix)=="Num_Patients"]<-"Num_SVs"  
+    #         }
+    #         
+    #         table_html<-table_html_generation(targetMatrix = targetMatrix ,
+    #                                           name_targetMatrix = name_targetMatrix,
+    #                                           ids_append = ids_append,
+    #                                           targetPheno= targetPheno)
+    #         
+    #         pheno_html<-paste(pheno_html,
+    #                           "<div class='content'>",
+    #                           table_html,
+    #                           "</div>",
+    #                           sep="") 
+    #       }else{
+    #         #####################################
+    #         ##Hence there is no info to display
+    #         #####################################
+    #         pheno_html<-paste(pheno_html,
+    #                           "<div class='content'>",
+    #                           "<p>No data to display</p>",
+    #                           "</div>",
+    #                           sep="") 
+    #       }
+    #       
+    #     }else if(name_targetMatrix == "patientsInfo"){
+    #       
+    #       targetMatrix<-phenoResults[[name_targetMatrix]]
+    #       
+    #       ##Rename patientID column by SV_ID since 1 patient can have >1 SV
+    #       if("patientID" %in% colnames(targetMatrix)){
+    #         colnames(targetMatrix)[colnames(targetMatrix)=="patientID"]<-"SV_ID"  
+    #       }
+    #       
+    #       ##source(file = "functions/multiple_SV_Functions/table_html_generation.R")
+    #       ##source(file = "functions/multiple_SV_Functions/patientTable_html_generation.R")
+    #       table_html<-table_html_generation(targetMatrix = targetMatrix,
+    #                                         name_targetMatrix=name_targetMatrix,
+    #                                         ids_append = ids_append,
+    #                                         targetPheno= targetPheno)
+    #       
+    #       pheno_html<-paste(pheno_html,
+    #                         "<div class='content'>",
+    #                         table_html,
+    #                         "</div>",
+    #                         sep="")
+    #       
+    #     }else if(name_targetMatrix == "errorInfo"){
+    #       ##so in the error info section
+    #       if(length(phenoResults[["errorInfo"]])>0){
+    #         patientsError<-paste(c("<div class='content'>",
+    #                                "<p>We are sorry to inform you that a problem occurred while predicting the impact of the structural variants with the identifiers: ",
+    #                                paste0(as.character(unlist(phenoResults[["errorInfo"]])),
+    #                                       collapse=", "),
+    #                                "due to biological limitations or technical issues related with the structural variants information and affected loci. Please check if the data introduced for them is correct and visit the User Guide if you have any doubt.
+    #    If the problem persists contact us through postre.radaiglesiaslab@gmail.com to provide you more information about the particularities of these genetic rearrangements.",
+    #                                "</p>",
+    #                                "</div>"),
+    #                              sep=" ",
+    #                              collapse=" ") 
+    #         
+    #       }else{
+    #         ##No problems found, indicate
+    #         patientsError<-paste(c("<div class='content'>",
+    #                                "<p>No problems encountered when processing the structural variants.</p>",
+    #                                "</div>"),
+    #                              sep=" ",
+    #                              collapse=" ") 
+    #       }
+    #       
+    #       pheno_html<-paste(pheno_html,
+    #                         patientsError,
+    #                         sep="")
+    #       
+    #       
+    #     }
+    #     ###########################################
+    #     ##Closing Table//Pathomechanism Div Section
+    #     pheno_html<-paste(pheno_html,
+    #                       "</div>",
+    #                       sep="")
+    #   }
+    # }
 
     
     #########################
@@ -440,6 +517,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
                             pheno_html,
                             sep="")
     
+
   }
   
   ######################

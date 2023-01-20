@@ -16,6 +16,16 @@ noGenesFound_Report<-function(patientResults){
   </body>
   </html>"
   
+  patientResults$heatmapSummary<-"<html>
+  <body>
+  <div class='wrapperMainSingleResults'>
+  <h1>No gene associated with the structural variant</h1>
+  <p style='font-size:25px' align='justify'>Based on currently used regulatory domain maps, no gene was found to be affected by the structural variant, either directly or by long-range mechanisms.</p>
+  <p style='font-size:25px' align='justify'>Hence, pathogenic evidence is not found for this structural variant.</p>
+  </div>
+  </body>
+  </html>"
+  
   return(patientResults)
   
 }

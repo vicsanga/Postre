@@ -2,7 +2,7 @@
 ## Root Function designed  to compute patient prediction, based only on patient information
 ############################################################################################
 
-master_scoring_function<-function(patientInfo,runMode){
+master_scoring_function<-function(patientInfo,runMode, user_tadMapInfo, MultiDataList){
   
   ###For the Studied Phenotype. For each of the Developmental Stages or Phases. 
   ##We need to load TAD its corresponding TAD maps and run predictions
@@ -11,7 +11,7 @@ master_scoring_function<-function(patientInfo,runMode){
   ## LOADING GENOMIC DATA specific for the phenotype of interest
   ## Expression Data, Enhancers Data, TADs data for the different developmental phases
   ########################################################################################
-  source("functions/GenomicData_Loader.R")
+  # source("functions/GenomicData_Loader.R")
   
   genomic_data<-genomic_data_loader(patientPheno = patientInfo$Phenotype)
 
@@ -21,11 +21,36 @@ master_scoring_function<-function(patientInfo,runMode){
   phasesVector<-genomic_data$phasesVector ##Contains the name of the different developmental stages, or phases considered
   formatedPhenotype<-genomic_data$formatedPhenotype
   genomeBrowser_links<-genomic_data$genomeBrowser_links
+  
+  ########################################################
+  #Modifying here TAD info if user using its own TAD map
+  ########################################################
+  
+  if(patientInfo$userTADmap=="yes"){
+
+    ##Update TAD map info, modify it for the user one
+    for(targetPhase in phasesVector){
+      ##Erase previous info
+      Master_RegulatoryDomains$TADs[[targetPhase]]<-NULL
+      Master_RegulatoryDomains$betweenTADs[[targetPhase]]<-NULL
+      
+      ##Record new info
+      Master_RegulatoryDomains$TADs[[targetPhase]][["TADmapUser"]]<-user_tadMapInfo$TAD_map
+      Master_RegulatoryDomains$betweenTADs[[targetPhase]][["betweenTADs_TADmapUser"]]<-user_tadMapInfo$Between_TAD_map
+    }
+    
+  }
+  
   ##############
   ##Function predicting etiology based on a SINGLE tad map && patient info
   ###############
-  source("functions/PatientPrediction_basedOnSingleTADmap.R", 
-         local = TRUE)
+  # source("functions/PatientPrediction_basedOnSingleTADmap.R", 
+  #        local = TRUE)
+  # 
+  # ##Try to put it here to avoid massive reloading
+  # source("scripts_To_Load_Data/cargarFunciones.R",local = TRUE)
+  # source("functions/RankingGenes_Deciphering_etiology.R", local = TRUE)
+
   
   ##############################################
   ##Carrying prediction per Developmental Stage
@@ -34,42 +59,44 @@ master_scoring_function<-function(patientInfo,runMode){
   resultsPerPhase<-list()##To store MAIN results per phase
   resultsPerPhase_secondaryInfo<-list()##To store additional information such as evaluationMatrixes per TAD map per Phase
   for(phase in phasesVector){
-    print(phase)
+    # print(phase) ##Line commented 11/09/2022
     resultsPerTADmap<-list()
-    for(nameMap in names(Master_RegulatoryDomains$TADs[[phase]])){
-      ##Here we are dealing with the regulatory domain maps associated to each developmental condition
-      #Which can be the same for all stages (if no specific data available).
-      #OR stage specific. The best, as regulatory domains can vary in time and space
-      ##In principle there would be just one TAD map per developmental stage, if there are >1 we average the predictions attending to all of them
-      
-      #print(nameMap)
-      ##change mapTADs
-      mapTads<-Master_RegulatoryDomains$TADs[[phase]][[nameMap]]
-      
-      ##change mapBetweenTads domains
-      nameBetweenTadsMap<-paste0("betweenTADs_",nameMap)
-      betweenTads<-Master_RegulatoryDomains$betweenTADs[[phase]][[nameBetweenTadsMap]]
+    # browser()
+    ##Only 1 tadmap per phase, so remove for loop
+    nameMap<-names(Master_RegulatoryDomains$TADs[[phase]])[1]
+    
+    ##Here we are dealing with the regulatory domain maps associated to each developmental condition
+    #Which can be the same for all stages (if no specific data available).
+    #OR stage specific. The best, as regulatory domains can vary in time and space
 
-      #####Computing prediction per Patient
-      ##This function needs to get the expression data,enhancer data AND PHASE to focus on it for the prediction
-
-      patientAnalysis<-patientPrediction_basedOnSingleTADmap(patientInfo = patientInfo,
-                                                             mapTads = mapTads,
-                                                             betweenTads = betweenTads,
-                                                             Master_GeneExpression = Master_GeneExpression,
-                                                             MasterEnh_map = MasterEnh_map,
-                                                             phase=phase,
-                                                             phasesVector=phasesVector,
-                                                             formatedPhenotype = formatedPhenotype,
-                                                             runMode = runMode)
-      resultsPerTADmap[[nameMap]]<-patientAnalysis
-    }
+    ##change mapTADs
+    mapTads<-Master_RegulatoryDomains$TADs[[phase]][[nameMap]]
+    
+    ##change mapBetweenTads domains
+    nameBetweenTadsMap<-paste0("betweenTADs_",nameMap)
+    betweenTads<-Master_RegulatoryDomains$betweenTADs[[phase]][[nameBetweenTadsMap]]
+    
+    #####Computing prediction per Patient
+    ##This function needs to get the expression data,enhancer data AND PHASE to focus on it for the prediction
+    
+    patientAnalysis<-patientPrediction_basedOnSingleTADmap(patientInfo = patientInfo,
+                                                           mapTads = mapTads,
+                                                           betweenTads = betweenTads,
+                                                           Master_GeneExpression = Master_GeneExpression,
+                                                           MasterEnh_map = MasterEnh_map,
+                                                           phase=phase, ##IsOnly1Phase
+                                                           phasesVector=phasesVector,##Not removed in case captured somewhere for some output
+                                                           formatedPhenotype = formatedPhenotype,
+                                                           runMode = runMode,
+                                                           MultiDataList = MultiDataList)
+    resultsPerTADmap[[nameMap]]<-patientAnalysis
+    
     ####################################
     ## Integrating results per TAD map
     ####################################
 
-    source("functions/Integrating_TAD_Predictions.R",
-           local = TRUE)
+    # source("functions/Integrating_TAD_Predictions.R",
+    #        local = TRUE)
     ##Attending to the current phase, integrate the results of the different TAD maps
     ##In case there is more than one TAD map used
     resultsIntegratingTADs<-integratingTAD_predictions(resultsPerTADmap = resultsPerTADmap,
@@ -87,9 +114,10 @@ master_scoring_function<-function(patientInfo,runMode){
   }
   
   ##Summary, of all affected genes, where are they located (used for graphical display)
-  source("functions/summary_positionalInfoGenes.R")
+  # source("functions/summary_positionalInfoGenes.R")
   allAffectedGenes_positionalInfo<-summary_positionalInfoGenes(resultsPerPhase = resultsPerPhase,
-                                                               onlyProteinCoding = TRUE)
+                                                               onlyProteinCoding = TRUE,
+                                                               gtf_annotation = MultiDataList$gtf_annotation)
   
   patientResults<-list("patientInfo" = patientInfo,
                        "resultsPerPhase_secondaryInfo" = resultsPerPhase_secondaryInfo,##Aqui poner el results per secondary TADmap
@@ -101,8 +129,8 @@ master_scoring_function<-function(patientInfo,runMode){
   #######################################
   ## Getting masterSummaryResultsMatrix
   #######################################
-  source("functions/Master_Summary_Matrix_IntegratesMainPhaseResults.R",
-         local = TRUE)
+  # source("functions/Master_Summary_Matrix_IntegratesMainPhaseResults.R",
+  #        local = TRUE)
   
   patientResults$masterSummaryResultsMatrix<-master_Summary_resultsMatrix(patientResults = patientResults)
   
@@ -118,22 +146,25 @@ master_scoring_function<-function(patientInfo,runMode){
   #So if when re-submitting, anything changes on the input from the last submission
   #The image will be reloaded
   #####################################
-  job_UniCode<-paste0(patientInfo$chr_Break1,
-                      "_",
-                      patientInfo$coord_Break1,
-                      "_",
-                      patientInfo$chr_Break2,
-                      "_",
-                      patientInfo$coord_Break2,
+
+  ##Build with time stamp to be sure 100% is unique because when allowing tad upload this problem appeared again
+  #this will change each second
+  job_UniCode<-Sys.time()
+  job_UniCode<-gsub(pattern = ",",replacement = "", x=job_UniCode)
+  job_UniCode<-gsub(pattern = "-",replacement = "", x=job_UniCode)
+  job_UniCode<-gsub(pattern = " ",replacement = "", x=job_UniCode)
+  job_UniCode<-gsub(pattern = ":",replacement = "", x=job_UniCode)
+  
+  ##Now to formatted time stamp adding type SV and formated Phenotype, with that more than enough
+  job_UniCode<-paste0(job_UniCode,
                       "_",
                       patientInfo$TypeSV,
                       "_",
-                      patientResults$resultsPerPhase_secondaryInfo[[1]][[1]]$formatedPhenotype, ##WithoutSpaces
-                      collapse=""
-  )
-  
+                      patientResults$resultsPerPhase_secondaryInfo[[1]][[1]]$formatedPhenotype,
+                      collapse = "")
+
   ##Remove ","
-  job_UniCode<-gsub(pattern = ",",replacement = "", x=job_UniCode)
+  # job_UniCode<-gsub(pattern = ",",replacement = "", x=job_UniCode)
   
   #Adding jobUnicode to patient results
   patientResults$job_UniCode<-job_UniCode

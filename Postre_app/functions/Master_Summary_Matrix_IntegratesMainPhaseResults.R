@@ -136,6 +136,9 @@ master_Summary_resultsMatrix<-function(patientResults){
     ##Ordering per MaxScore column
     Matrix_integratedResults<-Matrix_integratedResults[order(Matrix_integratedResults$maxScore, decreasing = TRUE),]
     
+    ##MaxScores smaller than 0,  set to 0
+    Matrix_integratedResults$maxScore[Matrix_integratedResults$maxScore<0]<-0
+    
     # #Once sorted per MaxScore, remove MaxScore column
     # Matrix_integratedResults$maxScore<-NULL
     # I need it to filter for genes to do the report

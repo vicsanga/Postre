@@ -1,0 +1,6 @@
+chr6	10355280	chr6	99103873	Inversion	head_neck	Patient_Nr1
+chr17	68663405	chr17	68738405	Deletion	head_neck	Patient_Nr2
+chr17	68020547	chr17	70038208	Duplication	limbs	Patient_Nr3
+chr2	221278232	chr2	223014332	Deletion	limbs	Patient_Nr4
+chr2	219907598	chr2	220954793	Duplication	limbs	Patient_Nr5
+chr7	156437229	chr7	156692706	Duplication	limbs	Patient_Nr6

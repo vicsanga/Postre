@@ -16,6 +16,8 @@ plots_geneSusceptibility<-function(patientResults){
   
   ##HI plot is done just Once per gene, since it is the same, so get all relevant genes upon parsing and then parse again doing the HI score plot
   alreadyHI_plotted<-character() ##To track if plot already done
+  ##For GOF now plot will be done with TS score
+  ##Por tanto hemos de combinar aqui el gene name + GOF-LOF
   
   ##Same applies for polycomb score
   already_PolyCscore_plotted<-character()
@@ -80,10 +82,14 @@ plots_geneSusceptibility<-function(patientResults){
     
     ########################################################################
     ###DOING Haploinsufficiency Plot (SecondaryPlot Gene Susceptibility)
+    ## OR TS score plot
     ## Plot for Dosage sensitivity study
     ########################################################################
     
-    if(!(targetGene %in% alreadyHI_plotted)){
+    combiGeneMech<-paste0(targetGene,"_" ,pathoMechanism)
+    if(!(combiGeneMech %in% alreadyHI_plotted)){
+      ##We differentiate between gof and lof
+
       ##Doing HI score plot
       ##If a gene do not have HI score, think about how to do plot
       ##Be sure the gene is on the TAD map we are assessing, so screen them
@@ -97,45 +103,83 @@ plots_geneSusceptibility<-function(patientResults){
           ##Hence we have the info we need from it
           targetHI_score<-evaluationMatrix[targetGene,
                                            c("nature_HI_score",
-                                             "huang_HI_score","clinGene_HI_score")] ##-1 when no score assigned
+                                             "huang_HI_score",
+                                             "clinGene_HI_score",
+                                             "cell_HI_score")] ##-1 when no score assigned
+          
+          targetTS_score<-evaluationMatrix[targetGene,"cell_TriploSense_score"]
+          
           break
         }
       }
       
       targetHI_score<-max(targetHI_score)##if it is -1, it is because no HI score assigned
       
-      ##Plotting Haploinsufficiency score info (if there is)
-      if(targetHI_score>-1){ ##So as one hi score !=-1 there is one assigned
+      
+      if(pathoMechanism=="LOF"){
+        ##Plotting Haploinsufficiency score info (if there is)
+        if(targetHI_score>-1){ ##So as one hi score !=-1 there is one assigned
+          
+          # ##Plotting HI score
+          # source("functions/haploinsufficiencyScorePlot.R", local = TRUE)
+          
+          outpPath<-"www/graphicalSummaries/"
+          ##outpPath<-"graphicalSummaries/"
+          fullOutpPath<-paste0(outpPath,targetGene,"_", patientResults$job_UniCode, "_HI_plot.png")
+          
+          ####################################
+          ##png with maximum resolution 300dpi
+          # png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
+          png(filename = fullOutpPath, width = 480, height = 480, res = 300, pointsize = 2 )
+          ##Jugar con dimensiones, y con tamanyo de labels que asi como esta no se van a ver en el html
+          
+          
+          ##Adjust image, to exclude spaces outside canvas (drawing area)
+          par(mar = c(0,0,0,0))
+          
+          haploinsufficiencyScorePlot(targetGene = targetGene,
+                                      targetHI_score = targetHI_score)
+          
+          dev.off()##Saving Graph
+          
+          #############################
+          ##add to already HI plotted, with pathomech TAG
+          alreadyHI_plotted<-c(alreadyHI_plotted, combiGeneMech)
+          
+        }
+      }else if(pathoMechanism=="GOF"){
         
-        # ##Plotting HI score
-        # source("functions/haploinsufficiencyScorePlot.R", local = TRUE)
-        
-        outpPath<-"www/graphicalSummaries/"
-        ##outpPath<-"graphicalSummaries/"
-        fullOutpPath<-paste0(outpPath,targetGene,"_", patientResults$job_UniCode, "_HI_plot.png")
-        
-        ####################################
-        ##png with maximum resolution 300dpi
-        # png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
-        png(filename = fullOutpPath, width = 480, height = 480, res = 300, pointsize = 2 )
-        ##Jugar con dimensiones, y con tamanyo de labels que asi como esta no se van a ver en el html
-        
-        
-        ##Adjust image, to exclude spaces outside canvas (drawing area)
-        par(mar = c(0,0,0,0))
-        
-        haploinsufficiencyScorePlot(targetGene = targetGene,
-                            targetHI_score = targetHI_score)
-        
-        dev.off()##Saving Graph
-        
-        
+        ##Plotting Haploinsufficiency score info (if there is)
+        if(targetTS_score>-1){ ##So as one hi score !=-1 there is one assigned
+          
+          # ##Plotting HI score
+          # source("functions/haploinsufficiencyScorePlot.R", local = TRUE)
+          
+          outpPath<-"www/graphicalSummaries/"
+          ##outpPath<-"graphicalSummaries/"
+          fullOutpPath<-paste0(outpPath,targetGene,"_", patientResults$job_UniCode, "_TS_plot.png")
+          
+          ####################################
+          ##png with maximum resolution 300dpi
+          # png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
+          png(filename = fullOutpPath, width = 480, height = 480, res = 300, pointsize = 2 )
+          ##Jugar con dimensiones, y con tamanyo de labels que asi como esta no se van a ver en el html
+          
+          
+          ##Adjust image, to exclude spaces outside canvas (drawing area)
+          par(mar = c(0,0,0,0))
+          
+          haploinsufficiencyScorePlot(targetGene = targetGene,
+                                      targetHI_score = targetTS_score)
+          
+          dev.off()##Saving Graph
+          
+          #############################
+          ##add to already HI plotted, with pathomech TAG
+          alreadyHI_plotted<-c(alreadyHI_plotted, combiGeneMech)
+          
+        }
       }
-      
-      #############################
-      ##add to already HI plotted
-      alreadyHI_plotted<-c(alreadyHI_plotted, targetGene)
-      
     }
     
     

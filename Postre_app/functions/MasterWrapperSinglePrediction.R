@@ -17,10 +17,10 @@ source(file = "functions/plots_RegulatoryEnvironmentChanges.R",local = TRUE)
 source(file = "functions/plots_geneSusceptibility.R",local = TRUE)
 
 
-masterWrapperSinglePrediction<-function(patientInfo,minScore, highScore, runMode){
+masterWrapperSinglePrediction<-function(patientInfo,minScore, highScore, runMode, user_tadMapInfo, MultiDataList){
   
   ##Initial Prediction
-  patientResults<-master_scoring_function(patientInfo = patientInfo, runMode = runMode)
+  patientResults<-master_scoring_function(patientInfo = patientInfo, runMode = runMode, user_tadMapInfo = user_tadMapInfo, MultiDataList = MultiDataList)
 
   #############################################################
   ## Check whether there are genes associated with the SV

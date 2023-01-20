@@ -1,10 +1,10 @@
 ##########################################################
 ## Retrieval Positional info All Affected Genes ##########
 ##########################################################
-summary_positionalInfoGenes<-function(resultsPerPhase, onlyProteinCoding){
+summary_positionalInfoGenes<-function(resultsPerPhase, onlyProteinCoding, gtf_annotation){
   
   ##We need gtf_annotation info to prepare the all genes coordinate object
-  load("data/genesAnnotation.RData")
+  # load("data/genesAnnotation.RData")
   
   ##Filtering gtf_annotation info
   if(onlyProteinCoding == TRUE){

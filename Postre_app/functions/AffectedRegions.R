@@ -6,7 +6,7 @@
 ##function to retrieve the domain where the breakpoint is located
 ##and in case that the breakpoint is given by a region insted of by a point that the whole region falls in the same domain
 
-affectedRegions<-function(dataPatient, tadsMap, regionsBetweenTADs){
+affectedRegions<-function(dataPatient, mapTads, regionsBetweenTADs){
   # print("AND FOR BREAKPOINTS OCCURRING IN DIFFERENT TADS")
   # print("------------------------------------------------")
   
@@ -22,7 +22,7 @@ affectedRegions<-function(dataPatient, tadsMap, regionsBetweenTADs){
   ##To retrieve the TADs
   ##In mind to have two options, TAD, betweenTAD
   
-  source("functions/CheckSameDomain.R", local = TRUE)
+  # source("functions/CheckSameDomain.R", local = TRUE)
   
   ##function to check that both coordinates for a breakpoint fall in the same Domain, and report it
   ##if there is just one coordinate, the result will be TRUE, and sure a domain will be reported
@@ -96,7 +96,7 @@ affectedRegions<-function(dataPatient, tadsMap, regionsBetweenTADs){
   #############################
   ##Let's get uncertainty regions
   ######UP TO HERE SEGUIR POR AQUI
-  source("functions/GetUncertainty.R",local = TRUE)
+  # source("functions/GetUncertainty.R",local = TRUE)
   
   bp1_uncertaintyRegion<-getUncertainty(breakpInfo = breakpData$breakpoint_1)##Return the coord or NULL if there isn't
   bp2_uncertaintyRegion<-getUncertainty(breakpInfo = breakpData$breakpoint_2)

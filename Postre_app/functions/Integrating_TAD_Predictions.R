@@ -1,5 +1,6 @@
 ###################################################################
 ## Function to integrate predictions after Single TAD predictions
+## Simplifying because in the end only 1 TAD per phase considered
 ###################################################################
 integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
   
@@ -8,13 +9,10 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
   #getting also the landing of SV tendency, if is IntraTAD in all or InterTAD or Uncertain(if for some intraTAD and for others inter)
   SV_landing_tendency<-character()
   
-  for(tadMap in names(resultsPerTADmap)){
-    genesAffectedInMap<-rownames(resultsPerTADmap[[tadMap]]$matrixesGenesEvaluation)
-    genesInvolved<-unique(c(genesInvolved,genesAffectedInMap))
-    
-    SV_landing_tendency<-c(SV_landing_tendency, resultsPerTADmap[[tadMap]]$affectedRegions$SV_landing)  
-    
-  }
+  tadMap<-names(resultsPerTADmap)[1]
+  genesAffectedInMap<-rownames(resultsPerTADmap[[tadMap]]$matrixesGenesEvaluation)
+  genesInvolved<-unique(c(genesInvolved,genesAffectedInMap))
+  SV_landing_tendency<-c(SV_landing_tendency, resultsPerTADmap[[tadMap]]$affectedRegions$SV_landing)  
   
   ##Object to return results
   list_integratedResults<-list()
@@ -121,113 +119,116 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
       acetilationEnh_kept_RIGHT<-numeric()
       acetilationEnh_gained_OtherDOMAIN<-numeric()
       
-      for(tadMap in names(resultsPerTADmap)){
-        ##tadMap<-"H1-ESC_Dixon2015-raw_TADs.txt"
-        resultsPhase<-resultsPerTADmap[[tadMap]][[targetPhase]]
+      ##Iterations removed  because only 1 tad map used in the end
+      # for(tadMap in names(resultsPerTADmap)){}
+      
+      ##tadMap<-"H1-ESC_Dixon2015-raw_TADs.txt"
+      resultsPhase<-resultsPerTADmap[[tadMap]][[targetPhase]]
+      
+      ##getting MatrixesGeneEvaluation info
+      geneEvaluationMatrix_phase<-resultsPerTADmap[[tadMap]]$matrixesGenesEvaluation
+      
+      #######################################################################################
+      ##subset for the genes
+      ##if it is found affected in this TADs map
+      ##Affected genes considered based on 1 tad map currently, so they are going to appear
+      #######################################################################################
+      
+      # if(gene %in% rownames(resultsPhase)){}
+      
+      resultsPhase<-resultsPhase[gene,]
+      
+      ##nTads it Appears involved
+      nTADmapsAffected<-nTADmapsAffected+1
+      
+      geneImpacts<-unique(c(geneImpacts, resultsPhase$type))
+      
+      ###Working for each mechanism, per separte, GOF and LOF, so forget about Max_Types. We record information per separate
+      ##So forget about Maxs, which imply merging info GOF-LOF and we decided to keep them per separate
+      # mechanisms<-unique(c(mechanisms,resultsPhase$Max_type))
+      mechanisms<-unique(c(mechanisms,targetMech))
+      
+      geneBreakp<-unique(c(geneBreakp, geneEvaluationMatrix_phase[gene,"gene_Breakpoint"]))
+      
+      ##It can occur a tad map slightly bigger so a gene not previously associated to a breakpoint (hence its breakpoint was NA) 
+      ##now it is...
+      ##Or lets imagine two consecutive TADs one small deletion, depending if tad maps change or no maybe we associate first a
+      ##gene in the border of a tad to a breakpoint, and with another tad map we associate it to another breakpoint
+      ##Hence we can have >1 "breakpoint" associated to a gene.If that occur, lets assign "notClear_BreakpointAssociation"
+      
+      
+      ##not unique here, we want to do the average afterwards
+      ##Again, forgetting about maxScores, we want to work with both LOF and GOF scores per separate
+      # maxScores<-c(maxScores, resultsPhase$Max_Score)
+      
+      maxScores<-c(maxScores, resultsPhase[[paste(targetMech,"_score", sep="")]])
+      
+      if(targetPhase != "phaseFree"){
+        ##Because for this phase we do not take into account enh info as we do not have
+        ##########################################
+        ## Gett matrixesGeneEvaluation for plots
+        #nEnhInitialLeft id column
+        idCol<-paste0("nEnh_ToTheLeft_initial_", targetPhase)
+        nEnh_initial_LEFT<-c(nEnh_initial_LEFT, 
+                             geneEvaluationMatrix_phase[gene,idCol])
         
-        ##getting MatrixesGeneEvaluation info
-        geneEvaluationMatrix_phase<-resultsPerTADmap[[tadMap]]$matrixesGenesEvaluation
-        
-        ##subset for the gene
-        ##if it is found affected in this TADs map
-        if(gene %in% rownames(resultsPhase)){
-          resultsPhase<-resultsPhase[gene,]
-          
-          ##nTads it Appears involved
-          nTADmapsAffected<-nTADmapsAffected+1
-          
-          geneImpacts<-unique(c(geneImpacts, resultsPhase$type))
-          
-          ###Working for each mechanism, per separte, GOF and LOF, so forget about Max_Types. We record information per separate
-          ##So forget about Maxs, which imply merging info GOF-LOF and we decided to keep them per separate
-          # mechanisms<-unique(c(mechanisms,resultsPhase$Max_type))
-          mechanisms<-unique(c(mechanisms,targetMech))
-          
-          geneBreakp<-unique(c(geneBreakp, geneEvaluationMatrix_phase[gene,"gene_Breakpoint"]))
-          
-          ##It can occur a tad map slightly bigger so a gene not previously associated to a breakpoint (hence its breakpoint was NA) 
-          ##now it is...
-          ##Or lets imagine two consecutive TADs one small deletion, depending if tad maps change or no maybe we associate first a
-          ##gene in the border of a tad to a breakpoint, and with another tad map we associate it to another breakpoint
-          ##Hence we can have >1 "breakpoint" associated to a gene.If that occur, lets assign "notClear_BreakpointAssociation"
-          
-          
-          ##not unique here, we want to do the average afterwards
-          ##Again, forgetting about maxScores, we want to work with both LOF and GOF scores per separate
-          # maxScores<-c(maxScores, resultsPhase$Max_Score)
-          
-          maxScores<-c(maxScores, resultsPhase[[paste(targetMech,"_score", sep="")]])
-          
-          if(targetPhase != "phaseFree"){
-            ##Because for this phase we do not take into account enh info as we do not have
-            ##########################################
-            ## Gett matrixesGeneEvaluation for plots
-            #nEnhInitialLeft id column
-            idCol<-paste0("nEnh_ToTheLeft_initial_", targetPhase)
-            nEnh_initial_LEFT<-c(nEnh_initial_LEFT, 
-                                 geneEvaluationMatrix_phase[gene,idCol])
-            
-            #nEnhInitialRight id column
-            idCol<-paste0("nEnh_ToTheRight_initial_", targetPhase)
-            nEnh_initial_RIGHT<-c(nEnh_initial_RIGHT, 
-                                  geneEvaluationMatrix_phase[gene,idCol])
-            
-            #nEnhInTheOtherDomain
-            idCol<-paste0("nEnhancers_maxAvailableInTheOtherDomain_", targetPhase)
-            nEnh_initial_OtherDOMAIN<-c(nEnh_initial_OtherDOMAIN, 
-                                        geneEvaluationMatrix_phase[gene,idCol])
-            
-            #nEnhKeptLeft id column
-            idCol<-paste0("nEnh_ToTheLeft_kept_", targetPhase)
-            nEnh_kept_LEFT<-c(nEnh_kept_LEFT, 
+        #nEnhInitialRight id column
+        idCol<-paste0("nEnh_ToTheRight_initial_", targetPhase)
+        nEnh_initial_RIGHT<-c(nEnh_initial_RIGHT, 
                               geneEvaluationMatrix_phase[gene,idCol])
-            
-            #nEnhkeptRight id column
-            idCol<-paste0("nEnh_ToTheRight_kept_", targetPhase)
-            nEnh_kept_RIGHT<-c(nEnh_kept_RIGHT, 
-                               geneEvaluationMatrix_phase[gene,idCol])
-            
-            #nEnhInTheOtherDomain
-            idCol<-paste0("nEnhancers_gained_", targetPhase)
-            nEnh_gained_OtherDOMAIN<-c(nEnh_gained_OtherDOMAIN, 
+        
+        #nEnhInTheOtherDomain
+        idCol<-paste0("nEnhancers_maxAvailableInTheOtherDomain_", targetPhase)
+        nEnh_initial_OtherDOMAIN<-c(nEnh_initial_OtherDOMAIN, 
+                                    geneEvaluationMatrix_phase[gene,idCol])
+        
+        #nEnhKeptLeft id column
+        idCol<-paste0("nEnh_ToTheLeft_kept_", targetPhase)
+        nEnh_kept_LEFT<-c(nEnh_kept_LEFT, 
+                          geneEvaluationMatrix_phase[gene,idCol])
+        
+        #nEnhkeptRight id column
+        idCol<-paste0("nEnh_ToTheRight_kept_", targetPhase)
+        nEnh_kept_RIGHT<-c(nEnh_kept_RIGHT, 
+                           geneEvaluationMatrix_phase[gene,idCol])
+        
+        #nEnhInTheOtherDomain
+        idCol<-paste0("nEnhancers_gained_", targetPhase)
+        nEnh_gained_OtherDOMAIN<-c(nEnh_gained_OtherDOMAIN, 
+                                   geneEvaluationMatrix_phase[gene,idCol])
+        
+        ###########################################
+        ## For enhancer acetilation levels
+        ###########################################
+        ###Info enhancer Acetilation levels
+        idCol<-paste0("enhancers_acetilation_ToTheLeft_initial_", targetPhase)
+        acetilationEnh_initial_LEFT<-c(acetilationEnh_initial_LEFT, 
                                        geneEvaluationMatrix_phase[gene,idCol])
-            
-            ###########################################
-            ## For enhancer acetilation levels
-            ###########################################
-            ###Info enhancer Acetilation levels
-            idCol<-paste0("enhancers_acetilation_ToTheLeft_initial_", targetPhase)
-            acetilationEnh_initial_LEFT<-c(acetilationEnh_initial_LEFT, 
-                                           geneEvaluationMatrix_phase[gene,idCol])
-            
-            #acetilation EnhInitialRight id column
-            idCol<-paste0("enhancers_acetilation_ToTheRight_initial_", targetPhase)
-            acetilationEnh_initial_RIGHT<-c(acetilationEnh_initial_RIGHT, 
-                                            geneEvaluationMatrix_phase[gene,idCol])
-            
-            #acetilation EnhInTheOtherDomain
-            idCol<-paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_", targetPhase)
-            acetilationEnh_initial_OtherDOMAIN<-c(acetilationEnh_initial_OtherDOMAIN, 
-                                                  geneEvaluationMatrix_phase[gene,idCol])
-            
-            #acetilation EnhKeptLeft id column
-            idCol<-paste0("enhancers_acetilation_ToTheLeft_kept_", targetPhase)
-            acetilationEnh_kept_LEFT<-c(acetilationEnh_kept_LEFT, 
+        
+        #acetilation EnhInitialRight id column
+        idCol<-paste0("enhancers_acetilation_ToTheRight_initial_", targetPhase)
+        acetilationEnh_initial_RIGHT<-c(acetilationEnh_initial_RIGHT, 
                                         geneEvaluationMatrix_phase[gene,idCol])
-            
-            #acetilation EnhkeptRight id column
-            idCol<-paste0("enhancers_acetilation_ToTheRight_kept_", targetPhase)
-            acetilationEnh_kept_RIGHT<-c(acetilationEnh_kept_RIGHT, 
-                                         geneEvaluationMatrix_phase[gene,idCol])
-            
-            #acetilation EnhInTheOtherDomain
-            idCol<-paste0("enhancers_acetilation_gained_", targetPhase)
-            acetilationEnh_gained_OtherDOMAIN<-c(acetilationEnh_gained_OtherDOMAIN, 
-                                                 geneEvaluationMatrix_phase[gene,idCol])
-          }
-        }
         
+        #acetilation EnhInTheOtherDomain
+        idCol<-paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_", targetPhase)
+        acetilationEnh_initial_OtherDOMAIN<-c(acetilationEnh_initial_OtherDOMAIN, 
+                                              geneEvaluationMatrix_phase[gene,idCol])
         
+        #acetilation EnhKeptLeft id column
+        idCol<-paste0("enhancers_acetilation_ToTheLeft_kept_", targetPhase)
+        acetilationEnh_kept_LEFT<-c(acetilationEnh_kept_LEFT, 
+                                    geneEvaluationMatrix_phase[gene,idCol])
+        
+        #acetilation EnhkeptRight id column
+        idCol<-paste0("enhancers_acetilation_ToTheRight_kept_", targetPhase)
+        acetilationEnh_kept_RIGHT<-c(acetilationEnh_kept_RIGHT, 
+                                     geneEvaluationMatrix_phase[gene,idCol])
+        
+        #acetilation EnhInTheOtherDomain
+        idCol<-paste0("enhancers_acetilation_gained_", targetPhase)
+        acetilationEnh_gained_OtherDOMAIN<-c(acetilationEnh_gained_OtherDOMAIN, 
+                                             geneEvaluationMatrix_phase[gene,idCol])
       }
       
       ######################################################################################
@@ -239,43 +240,31 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
       ###UP to here, we have the info to fill the matrix for this gene for this phase
       ##Average, over the total number of TAD maps considered
       
-      averageMaxScores<-sum(maxScores)/length(names(resultsPerTADmap))
+      averageMaxScores<-maxScores
       
       ##WT situation
-      average_nEnh_Initial_LEFT<-round2(sum(nEnh_initial_LEFT)/length(names(resultsPerTADmap))
-                                        ,digits = 0)
-      average_nEnh_Initial_RIGHT<-round2(sum(nEnh_initial_RIGHT)/length(names(resultsPerTADmap)),
-                                         digits = 0)
-      average_nEnh_Initial_OtherDOMAIN<-round2(sum(nEnh_initial_OtherDOMAIN)/length(names(resultsPerTADmap)),
-                                               digits = 0)
+      average_nEnh_Initial_LEFT<-nEnh_initial_LEFT
+      average_nEnh_Initial_RIGHT<-nEnh_initial_RIGHT
+      average_nEnh_Initial_OtherDOMAIN<-nEnh_initial_OtherDOMAIN
       
       #Rearranged scenario
-      average_nEnh_Kept_LEFT<-round2(sum(nEnh_kept_LEFT)/length(names(resultsPerTADmap))
-                                     ,digits = 0)
-      average_nEnh_Kept_RIGHT<-round2(sum(nEnh_kept_RIGHT)/length(names(resultsPerTADmap)),
-                                      digits = 0)
-      average_nEnh_Gained_OtherDOMAIN<-round2(sum(nEnh_gained_OtherDOMAIN)/length(names(resultsPerTADmap)),
-                                              digits = 0)
+      average_nEnh_Kept_LEFT<-nEnh_kept_LEFT
+      average_nEnh_Kept_RIGHT<-nEnh_kept_RIGHT
+      average_nEnh_Gained_OtherDOMAIN<-nEnh_gained_OtherDOMAIN
       
       ##########################################
       ##For enhancers acetilation levels
       ##########################################
       ##WT situation
-      average_acetilationEnh_Initial_LEFT<-round2(sum(acetilationEnh_initial_LEFT)/length(names(resultsPerTADmap))
-                                                  ,digits = 0)
-      average_acetilationEnh_Initial_RIGHT<-round2(sum(acetilationEnh_initial_RIGHT)/length(names(resultsPerTADmap)),
-                                                   digits = 0)
-      average_acetilationEnh_Initial_OtherDOMAIN<-round2(sum(acetilationEnh_initial_OtherDOMAIN)/length(names(resultsPerTADmap)),
-                                                         digits = 0)
+      average_acetilationEnh_Initial_LEFT<-round2(acetilationEnh_initial_LEFT,digits = 0)
+      average_acetilationEnh_Initial_RIGHT<-round2(acetilationEnh_initial_RIGHT,digits = 0)
+      average_acetilationEnh_Initial_OtherDOMAIN<-round2(acetilationEnh_initial_OtherDOMAIN,digits = 0)
       
       #Rearranged scenario
-      average_acetilationEnh_Kept_LEFT<-round2(sum(acetilationEnh_kept_LEFT)/length(names(resultsPerTADmap))
-                                               ,digits = 0)
-      average_acetilationEnh_Kept_RIGHT<-round2(sum(acetilationEnh_kept_RIGHT)/length(names(resultsPerTADmap)),
-                                                digits = 0)
-      average_acetilationEnh_Gained_OtherDOMAIN<-round2(sum(acetilationEnh_gained_OtherDOMAIN)/length(names(resultsPerTADmap)),
-                                                        digits = 0)
-      
+      average_acetilationEnh_Kept_LEFT<-round2(acetilationEnh_kept_LEFT,digits = 0)
+      average_acetilationEnh_Kept_RIGHT<-round2(acetilationEnh_kept_RIGHT,digits = 0)
+      average_acetilationEnh_Gained_OtherDOMAIN<-round2(acetilationEnh_gained_OtherDOMAIN,digits = 0)
+
       #######################
       ##Filling the matrix
       #######################
@@ -310,6 +299,9 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
       ##Keept track of nTAD maps the gene appears involved
       targetMatrix[geneCond,"N_TAD_maps_AppearInvolved"]<-nTADmapsAffected
       
+      ##From here, could continue removing the averages, because currently based on 1 TAD
+      ##But, no longer loops applying
+      
       ##Gene associated breakpoint
       ##For +info on the options check code coments above
       geneBreakp<-unique(geneBreakp)
@@ -338,7 +330,7 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
       
       if(length(mechanisms)>1 || mechanisms=="equally_likely"){
         ##I think this is not longer possible, the way we are handling the patients
-        stop("ERROR: COULD SHOULD NOT ENTER HERE, BECAUSE WE TREAT PER SEPARATE GOF AND LOF. The aggregated handling is deprecated")
+        stop("ERROR: SHOULD NOT ENTER HERE, BECAUSE WE TREAT PER SEPARATE GOF AND LOF. The aggregated handling is deprecated")
         ##it implies either in some TAD maps for a gene equally likely GOF or LOF
         ##or in a map more likely to be GOF and in another to be LOF
         ##due to enhancers playing around scenario

@@ -1,12 +1,7 @@
 ##########################
 ##Parsing Cohort Results
 ##########################
-# setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/SV_app")
-##Filter for patients with no broken gene considered as harmful
-##So only possible explanation long-range mechanism
-##So if a patient has a gene broken, with a score > minScore. If we set discardRelevantBroken=TRUE
-##The information for that patient will be skipped
-
+##minscore, minimum required score to highlight as pathogenic
 
 cohortResults_Parser<-function(minScore,all_patientResults, consideredPheno, discardRelevantByBrokenGene, AllPatientsInfo){
 
@@ -25,16 +20,32 @@ cohortResults_Parser<-function(minScore,all_patientResults, consideredPheno, dis
   #To track in same way no gene found
   sv_with_NO_geneFound<-character()
   
+  ##To track number of candidate genes per SV and SV pathogenic score
+  ##We can also estimate the %of predictedSV in general afterwards from this object
+  # candidateGenesColumns<-c("SVid","Phenotype","PathogenicScore","Ncandidates","Ncausative","Candidates","Causative","TypeSV","N_LR_Mech","N_Direct_Mech")
+  candidateGenesColumns<-c("SVid","Phenotype","PathogenicScore","Pathogenic","Ncausative","Causative","Ncandidates","Candidates","TypeSV","N_LR_Mech","N_Direct_Mech")
+  ##"N_LR_Mech","N_Direct_Mech" to store the number of times that LR or Direct predicted, eg for 2 genes Direct and 1 LR
+  ##Used for internal analyses
+  candidateGenesInfo<-as.data.frame(matrix(data = NA, nrow = 0, ncol = length(candidateGenesColumns)))
+  colnames(candidateGenesInfo)<-candidateGenesColumns
+
+  
+  ##Aggregate info
+  geneRecurrencyDfColumns<-c("Gene","Phenotype","N SVs", "N Long-Range", "N Coding","SVid","Long-Range","Coding")
+  geneRecurrencyDf<-as.data.frame(matrix(data = NA, nrow = 0, ncol = length(geneRecurrencyDfColumns)))
+  colnames(geneRecurrencyDf)<-geneRecurrencyDfColumns
+  
   ###############################################################
   ## For each of the considered phenotypes the analysis are run
   ###############################################################
+  
   for(target_pheno in consideredPheno){
     ##maybe error rised only at specific phenos
     sv_phenoSpecific_withErrorRised<-character()
     #To track in same way No gene found
     sv_phenoSpecific_with_NO_geneFound<-character()
     
-    #print(target_pheno)
+    # print(target_pheno)
     #target_pheno<-"head_neck"
     ##get considered phases
     ################################
@@ -94,7 +105,208 @@ cohortResults_Parser<-function(minScore,all_patientResults, consideredPheno, dis
           mechOverview<-character() ## DirectEffectLof||DirectEffectGOF||LongRangeLOF||LongRangeGOF
           genePatient_trackingMechOverview<-character() ## DirectEffectLof_Gene||DirectEffectGOF_Gene||LongRangeLOF_Gene||LongRangeGOF_Gene
           
+          ###Getting Candidate Genes
+          masterSummaryResMat<-patientResults$masterSummaryResultsMatrix
+          candidateGenes<-unique(masterSummaryResMat$affected_gene)
+          max_PathoScore<-max(masterSummaryResMat$maxScore, na.rm = TRUE)
+          
+          
+          masterSummaryResMat$combGeneScore<-paste0(masterSummaryResMat$affected_gene,
+                                                    "(",
+                                                    masterSummaryResMat$maxScore,
+                                                    ")")
+          
+          candidateGenesAndPathoScore<-paste0(masterSummaryResMat$combGeneScore,sep="", collapse = ",")
+
+          
+          ##Adding info to candidateGenesInfo Matrix
+          targetRow<-nrow(candidateGenesInfo)+1
+          
+          candidateGenesInfo[targetRow,"SVid"]<-patient
+          candidateGenesInfo[targetRow,"Phenotype"]<-target_pheno
+          candidateGenesInfo[targetRow,"Ncandidates"]<-length(candidateGenes)
+          candidateGenesInfo[targetRow,"Candidates"]<-candidateGenesAndPathoScore
+          candidateGenesInfo[targetRow,"PathogenicScore"]<-max_PathoScore
+          candidateGenesInfo[targetRow,"TypeSV"]<-AllPatientsInfo[patient,"TypeSV"]
+          
+          if(max_PathoScore>=0.8){
+            candidateGenesInfo[targetRow,"Pathogenic"]<-"Yes"  
+          }else{
+            candidateGenesInfo[targetRow,"Pathogenic"]<-"No"  
+          }
+          
+          
+          filt_pathog<-subset(patientResults$masterSummaryResultsMatrix, maxScore>=minScore)
+          causativeGenes<-unique(filt_pathog$affected_gene)
+          
+          ##Adding info causative (if there are not this will be 0 and empty)
+          candidateGenesInfo[targetRow,"Ncausative"]<-length(causativeGenes)
+          candidateGenesInfo[targetRow,"Causative"]<-paste0(causativeGenes, sep="",collapse = "," )
+          
+          ##By default if no pathog mech predicted
+          N_LR_Mech<-0
+          N_Direct_Mech<-0
+          ##CHECK N ROWS WITH AN IF
+          if(nrow(filt_pathog)>=1){
+            ## So, at least 1 disease causative gene predicted
+            ##Getting causative genes and pathomech
+            causativeGenes<-filt_pathog$affected_gene
+            
+            ##Getting pathological mechanisms
+            pathologicalMechanisms<-filt_pathog$GeneImpact
+            ##First part of pathomech terms is either Direct or LongRange
+            pathologicalMechanisms<-unlist(lapply(pathologicalMechanisms,FUN = function(x){
+              return(unlist(strsplit(x=x, split = "_", fixed = TRUE))[1])
+            }))
+            
+            ##Add causative genes, check this after or tomorrow
+            N_LR_Mech<-sum(pathologicalMechanisms == "LongRange")
+            N_Direct_Mech<-sum(pathologicalMechanisms == "Direct")
+            
+          }
+          
+          ##Adding data
+          candidateGenesInfo[targetRow,"N_LR_Mech"]<-N_LR_Mech
+          candidateGenesInfo[targetRow,"N_Direct_Mech"]<-N_Direct_Mech
+          
+          
+          ##########################################################
+          ## Parsing results matrix
+          ######################################################
+          ## Adding info to gene-mech table
+          
+          if(nrow(filt_pathog)>=1){
+            ## So, at least 1 disease causative gene predicted
+            ##Getting causative genes and pathomech
+            causativeGenes<-filt_pathog$affected_gene
+            
+            for(DCgene in causativeGenes){
+              targetInfo_filt_pathog<-filt_pathog[DCgene,]
+              
+              ##Getting pathological mechanisms
+              t_pathoMech<-targetInfo_filt_pathog$GeneImpact
+              
+              
+              ##Check case "Direct_LongRange_geneDuplication", aqui sumaremos en los dos, coding and long.range pq o not sure o ambos predichos
+              
+              if(t_pathoMech != "Direct_LongRange_geneDuplication"){
+                
+                ##Okey, so, only Direct or LongRange will be
+                ##Extraemos esa info
+                ##First part of pathomech terms is either Direct or LongRange
+                t_pathoMech<-unlist(strsplit(x=t_pathoMech, split = "_", fixed = TRUE))[1]
+              }else{
+                ##t_pathomech is Direct_LongRange_geneDuplication
+                ##Desgranar, si patog predicha solo via longRange...
+                
+                # "LongRange_geneDuplication", "Direct_geneDuplication", "Direct_LongRange_geneDuplication"
+                
+                # getPathoMechs
+                
+                process_filt_pathog<-filt_pathog
+                process_filt_pathog$affected_gene<-NULL
+                process_filt_pathog$maxScore<-NULL
+                process_filt_pathog$GeneImpact<-NULL
+                ##Solo quedan las fases
+                trackPathoMech<-character()
+                for(tphase in colnames(process_filt_pathog)){
+                  
+                  tphaseInfo<-process_filt_pathog[[tphase]]
+                  for(tMech in 1:2){
+                    
+                    tInfo<-unlist(strsplit(tphaseInfo, split = "--", fixed = TRUE))[tMech]
+                    tInfo_score<-as.numeric(unlist(strsplit(tInfo, split = ";", fixed = TRUE))[1])
+                    tInfo_mech<-unlist(strsplit(tInfo, split = ";", fixed = TRUE))[3]
+                    
+                    if(!is.na(tInfo_score)){
+                      if(tInfo_score >= minScore){
+                        
+                        trackPathoMech<-c(trackPathoMech, tInfo_mech)
+                        trackPathoMech<-unique(trackPathoMech)
+                      }
+                    }
+                  }
+                }
+                
+                
+                
+                # if(length(trackPathoMech) > 1)){
+                #   ##Two mechs predicted, so. t_mech se queda como esta
+                #   # t_pathoMech <- "Direct_LongRange_geneDuplication"                  
+                # }
+
+                 if (length(trackPathoMech) == 1){
+                  ##Only 1 mech predicted, if it is only direct or only long-range only put direct or long range in output table
+                   if(trackPathoMech=="LongRange_geneDuplication"){
+                     t_pathoMech<-"LongRange"
+                   }else{
+                     t_pathoMech<-"Direct"
+                   }
+                }
+                
+              }
+              
+              rowId<-paste0(DCgene,"_",target_pheno)
+              if(rowId %in% rownames(geneRecurrencyDf)){
+                ##Adding info, over existing, so increasing numbers
+                geneRecurrencyDf[rowId,"N SVs"]<-geneRecurrencyDf[rowId,"N SVs"] + 1
+                geneRecurrencyDf[rowId,"SVid"]<-paste0(c(geneRecurrencyDf[rowId,"SVid"],patient), collapse=",")
+                
+                if(t_pathoMech=="LongRange"){
+                  geneRecurrencyDf[rowId,"Long-Range"]<-paste0(c(na.omit(geneRecurrencyDf[rowId,"Long-Range"]),patient), collapse=",")
+                  geneRecurrencyDf[rowId,"N Long-Range"]<-geneRecurrencyDf[rowId,"N Long-Range"]+1
+                }else if(t_pathoMech=="Direct"){
+                  geneRecurrencyDf[rowId,"Coding"]<-paste0(c(na.omit(geneRecurrencyDf[rowId,"Coding"]),patient), collapse=",")
+                  geneRecurrencyDf[rowId,"N Coding"]<-geneRecurrencyDf[rowId,"N Coding"]+1
+                  
+                }else if(t_pathoMech=="Direct_LongRange_geneDuplication"){
+                  geneRecurrencyDf[rowId,"Long-Range"]<-paste0(c(na.omit(geneRecurrencyDf[rowId,"Long-Range"]),patient), collapse=",")
+                  geneRecurrencyDf[rowId,"Coding"]<-paste0(c(na.omit(geneRecurrencyDf[rowId,"Coding"]),patient), collapse=",")
+                  
+                  geneRecurrencyDf[rowId,"N Long-Range"]<-geneRecurrencyDf[rowId,"N Long-Range"]+1
+                  geneRecurrencyDf[rowId,"N Coding"]<-geneRecurrencyDf[rowId,"N Coding"]+1
+                }
+              
+              }else{
+                # browser()
+                ##Adding de novo
+                ##Adding info to candidateGenesInfo Matrix
+                targetRow<-nrow(geneRecurrencyDf)+1
+                geneRecurrencyDf[targetRow,]<-NA
+                rownames(geneRecurrencyDf)[targetRow]<-rowId
+                
+                geneRecurrencyDf[rowId,"Gene"]<-DCgene                
+                geneRecurrencyDf[rowId,"Phenotype"]<-target_pheno
+                geneRecurrencyDf[rowId,"N SVs"]<-1
+                geneRecurrencyDf[rowId,"SVid"]<-patient
+                
+                if(t_pathoMech=="LongRange"){
+                  geneRecurrencyDf[rowId,"Long-Range"]<-patient
+                  geneRecurrencyDf[rowId,"Coding"]<-NA
+                  geneRecurrencyDf[rowId,"N Long-Range"]<-1
+                  geneRecurrencyDf[rowId,"N Coding"]<-0
+                  
+                }else if(t_pathoMech=="Direct"){
+                  geneRecurrencyDf[rowId,"Coding"]<-patient
+                  geneRecurrencyDf[rowId,"Long-Range"]<-NA
+                  geneRecurrencyDf[rowId,"N Long-Range"]<-0
+                  geneRecurrencyDf[rowId,"N Coding"]<-1
+                  
+                }else if(t_pathoMech=="Direct_LongRange_geneDuplication"){
+                  geneRecurrencyDf[rowId,"Long-Range"]<-patient
+                  geneRecurrencyDf[rowId,"Coding"]<-patient
+                  geneRecurrencyDf[rowId,"N Long-Range"]<-1
+                  geneRecurrencyDf[rowId,"N Coding"]<-1
+                }
+                
+              }
+            }
+          }
+          
+          
           for(phase in namesPhases){
+            # print(phase)
+            # print(patient)
             ##Per phase 
             ##phaseResults<-patientResults$resultsPerPhase[[phase]][[phase]]
             phaseResults<-patientResults$masterSummaryResultsMatrix[,c("affected_gene",phase)]
@@ -359,6 +571,19 @@ cohortResults_Parser<-function(minScore,all_patientResults, consideredPheno, dis
           sv_with_NO_geneFound<-c(sv_with_NO_geneFound,patient)##Not found in General, does not matter at which pheno
           sv_phenoSpecific_with_NO_geneFound<-c(sv_phenoSpecific_with_NO_geneFound, patient)##Not found, specific of a Phenotype
           
+          ##Adding info to candidateGenesInfo Matrix
+          targetRow<-nrow(candidateGenesInfo)+1
+          
+          candidateGenesInfo[targetRow,"SVid"]<-patient
+          candidateGenesInfo[targetRow,"Phenotype"]<-target_pheno
+          candidateGenesInfo[targetRow,"Ncandidates"]<-0
+          candidateGenesInfo[targetRow,"Candidates"]<-""
+          candidateGenesInfo[targetRow,"PathogenicScore"]<-0
+          candidateGenesInfo[targetRow,"TypeSV"]<-AllPatientsInfo[patient,"TypeSV"]
+          
+          candidateGenesInfo[targetRow,"Pathogenic"]<-"No"  
+
+          
         }
       }else{
         ##The current SV do not related with currently studied phenotype so, we do not take it into consideration
@@ -388,6 +613,23 @@ cohortResults_Parser<-function(minScore,all_patientResults, consideredPheno, dis
   
   ##Adding No Gene Found Info
   perPheno_cohortResults[["noGeneFound_General_Info"]]<-unique(sv_with_NO_geneFound)##errors happening wherever, at any phenotype
+  
+  
+  ##Adding Info NCandidate genes per SV
+  #Let's rename the Candidates column, and also the causative genes one
+  colnames(candidateGenesInfo)[which(colnames(candidateGenesInfo)=="Candidates")]<-"Candidate genes (Pathogenic Score)"
+  colnames(candidateGenesInfo)[which(colnames(candidateGenesInfo)=="Causative")]<-"Causative genes"
+  
+  perPheno_cohortResults[["candidateGenesInfo"]]<-candidateGenesInfo
+  
+  ##Adding Info Recurrency Affected genes in different SVs
+  # browser()
+  ##Ordering per Recurrency column
+  geneRecurrencyDf<-geneRecurrencyDf[order(geneRecurrencyDf$`N SVs`, decreasing = TRUE),]
+  #Eliminar NAs
+  geneRecurrencyDf[is.na(geneRecurrencyDf)] <- ""
+  
+  perPheno_cohortResults[["geneRecurrencyInfo"]]<-geneRecurrencyDf
   
   ##Returning patient parsed info
   return(perPheno_cohortResults)

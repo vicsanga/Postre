@@ -4,10 +4,11 @@
 
 #################
 ##Function
-rankingGenes<-function(genesData, phasesVector, runMode){
+rankingGenes<-function(genesData, phase, runMode, patientInfo){
   
   #########################################################################
   ##  Loading required scoring functions depending on the running Mode
+  ## Este source es critico mantenerlo aqui
   #########################################################################
   
   if(runMode == "Standard"){
@@ -20,18 +21,14 @@ rankingGenes<-function(genesData, phasesVector, runMode){
     
   }
   
+  # ##Thresholds de expression para LOF y GOFs
+  # source("scripts_To_Load_Data/ExpressionThresholds_ForGofAndLof.R",
+  #        local = TRUE)
   
   
-  ##phasesVector, only contains now one element
-  phasesVector<-phasesVector[1]
-  
-  
-  ##Thresholds de expression para LOF y GOFs
-  source("scripts_To_Load_Data/ExpressionThresholds_ForGofAndLof.R",
-         local = TRUE)
-  
-  
+  ##############################################
   ###Return matrix with scores per phase
+  ##############################################
   
   matScores<-as.data.frame(matrix(data = NA, nrow = nrow(genesData), ncol = 5))
   rownames(matScores)<-rownames(genesData)
@@ -39,15 +36,36 @@ rankingGenes<-function(genesData, phasesVector, runMode){
   ##Max_Score to hold the max(GOF,LOF)
   ##Max type, to indicate if the most_likely scenario is GOF or LOF (if 0.5 --- 0.5 ) equally_likely
   
+  #########################################
+  ##Adding info about subscores for main scores, so that we can provide also that info
   
+  #GenePhenoScore will be the same, but separate in case this changes in the future
+  matScores$genePhenoScore_GOF<-NA
+  matScores$genePhenoScore_LOF<-NA
+  
+  matScores$geneEnhancerScore_GOF<-NA
+  matScores$geneEnhancerScore_LOF<-NA
+  
+  matScores$geneFeaturesScore_GOF<-NA
+  matScores$geneFeaturesScore_LOF<-NA
+  
+  ##For subscores of the geneFeatures score
+  matScores$dosageSensitivityScore_GOF<-NA
+  matScores$dosageSensitivityScore_LOF<-NA
+  
+  matScores$polycombScore_GOF<-NA
+  matScores$polycombScore_LOF<-NA
+  
+  matScores$geneExpressionScore_GOF<-NA
+  matScores$geneExpressionScore_LOF<-NA
+  
+
   #######################################################################
-  ## We provide results for the different considered phases 
+  ## We provide results for the different considered phases, in the end only 1 phase 
   #######################################################################
   res_scores<-list()
-  for(phase in phasesVector){
-    res_scores[[phase]]<-matScores
-  }
-  
+  res_scores[[phase]]<-matScores
+
   ##In addition, phaseFree
   #res_scores[["phaseFree"]]<-matScores
   
@@ -69,6 +87,8 @@ rankingGenes<-function(genesData, phasesVector, runMode){
                                       "nature_HI_score",
                                       "huang_HI_score",
                                       "clinGene_HI_score",
+                                      "cell_HI_score",
+                                      "cell_TriploSense_score",
                                       "TAU_exp")]
     
     ###Pheno Score, used if required afterwards
@@ -77,8 +97,8 @@ rankingGenes<-function(genesData, phasesVector, runMode){
                                     "mainPhenotype_Through_OMIM_Human","mainPhenotype_Through_MGI_Mice")]
     
     ## phenoScore different for GOF than LOF so computing both, then use the one required depending the prediction
-    phenoScore_LOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = FALSE)
-    phenoScore_GOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = TRUE)
+    phenoScore_LOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = FALSE, patientInfo)
+    phenoScore_GOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = TRUE, patientInfo)
     
     ###############################
     ###Deciphering Etiology
@@ -90,7 +110,7 @@ rankingGenes<-function(genesData, phasesVector, runMode){
     phaseMatrixes<-list()
     
     ##Recall phases vector is now just a one element character vector
-    if(phasesVector != "phaseFree"){
+    if(phase != "phaseFree"){
       
       phaseMatrixes[[phase]]<-info_gene[,c(
         "polyComb_score",
@@ -145,21 +165,25 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ###Evaluate if LOF or GOF is likely
           
           ## LOF evaluation: LONG-RANGE EFFECT
-          lof_score<-eval_lof_indirectEffect_score(matrixPhase = matrixPhase, 
-                                                   geneTransversalData = geneTransversalData,
-                                                   phenoScore = phenoScore_LOF,
-                                                   threshold_MaxExpresion = threshold_MaxExpresion,
-                                                   threshold_MinExpresion = threshold_MinExpresion,
-                                                   minRatioEnhBalance = minRatioEnhBalance,
-                                                   maxRatioEnhBalance = maxRatioEnhBalance_LOF)
+          lof_score_metadata<-eval_lof_indirectEffect_score(matrixPhase = matrixPhase, 
+                                                            geneTransversalData = geneTransversalData,
+                                                            phenoScore = phenoScore_LOF,
+                                                            threshold_MaxExpresion = threshold_MaxExpresion,
+                                                            threshold_MinExpresion = threshold_MinExpresion,
+                                                            minRatioEnhBalance = minRatioEnhBalance,
+                                                            maxRatioEnhBalance = maxRatioEnhBalance_LOF)
+          lof_score<-lof_score_metadata$finalScore
+          
           ## GOF evaluation: LONG-RANGE EFFECT
-          gof_score<-eval_Gof_indirectEffect_score(matrixPhase = matrixPhase, 
-                                                   geneTransversalData = geneTransversalData,
-                                                   phenoScore = phenoScore_GOF,
-                                                   threshold_MaxExpresion = threshold_MaxExpresion,
-                                                   threshold_MinExpresion = threshold_MinExpresion,
-                                                   minRatioEnhBalance = minRatioEnhBalance,
-                                                   maxRatioEnhBalance = maxRatioEnhBalance_GOF)
+          gof_score_metadata<-eval_Gof_indirectEffect_score(matrixPhase = matrixPhase, 
+                                                            geneTransversalData = geneTransversalData,
+                                                            phenoScore = phenoScore_GOF,
+                                                            threshold_MaxExpresion = threshold_MaxExpresion,
+                                                            threshold_MinExpresion = threshold_MinExpresion,
+                                                            minRatioEnhBalance = minRatioEnhBalance,
+                                                            maxRatioEnhBalance = maxRatioEnhBalance_GOF)
+          gof_score<-gof_score_metadata$finalScore
+          
           ##Get max score && type
           Scores<-c(lof_score, gof_score)
           names(Scores)<-c("LOF_score","GOF_score")
@@ -177,22 +201,22 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##if there is no expression data for the gene, we do not compute anything
           ##We put a -1 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-1){
-            max_score<--1
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--1
-            lof_score<--1
+            gof_score<-0
+            lof_score<-0
             
           }
           
           ##if there multiple expression values, distant from them (eg 0.5 and 2 FPKM)
           ##We put a -2 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-2){
-            max_score<--2
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--2
-            lof_score<--2
+            gof_score<-0
+            lof_score<-0
             
           }
           
@@ -207,47 +231,24 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##type mechanism: longrange...
           res_scores[[phase]][gene,"type"]<-"LongRange"
           
-        }else{
-          ##Hence, phase free
-          ############################################################
-          ## Once prediction based on expresion and enhancer activity
-          ## Phase Free Analysis: Long Range
-          ############################################################
+          ##RECORDING METADATA/Additional info pathogenic score
+          res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata$genePhenoScore
+          res_scores[[phase]][gene,"genePhenoScore_LOF"]<-lof_score_metadata$genePhenoScore
           
-          ##Computing info to add to the list
-          # Deprecated for now. If gene Intact, and no enh info... let's not assume long range effect without evidence
-          # That would be kind of a prediction of a prediction (because long range you can not be sure neither). For now let's avoid that
+          res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata$geneEnhancerScore
+          res_scores[[phase]][gene,"geneEnhancerScore_LOF"]<-lof_score_metadata$geneEnhancerScore
           
-          # lof_score<-eval_lof_indirectEffect_phase_FREE_score(info_gene = info_gene,
-          #                                                     geneTransversalData = geneTransversalData,
-          #                                                     phenoScore = phenoScore)
+          res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata$geneFeaturesScore
+          res_scores[[phase]][gene,"geneFeaturesScore_LOF"]<-lof_score_metadata$geneFeaturesScore
           
-          lof_score<-0
-          gof_score<-0 ##For now 0, not implemented, and we are not sure whether it will be or not
+          res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata$dosageSensitivityScore
+          res_scores[[phase]][gene,"dosageSensitivityScore_LOF"]<-lof_score_metadata$dosageSensitivityScore
           
-          ##Get max score && type
-          Scores<-c(lof_score, gof_score)
-          names(Scores)<-c("LOF_score","GOF_score")
+          res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata$polycombScore
+          res_scores[[phase]][gene,"polycombScore_LOF"]<-lof_score_metadata$polycombScore
           
-          max_score<-max(Scores)## (unless both equal check, like 0,0 or 0.8 0.8)
-          
-          if(lof_score==gof_score){
-            typeMax<-"equally_likely"
-          }else{
-            ##one score bigger than the other
-            typeMax<-names(Scores)[which(Scores==max_score)]
-          }
-          
-          ##Add results
-          # colnames(matScores)<-c("GOF_score","LOF_score","Max_type","Max_Score","type")
-          res_scores[[phase]][gene,"GOF_score"]<-gof_score
-          res_scores[[phase]][gene,"LOF_score"]<-lof_score
-          
-          res_scores[[phase]][gene,"Max_type"]<-typeMax       
-          res_scores[[phase]][gene,"Max_Score"]<-max_score 
-          
-          ##type mechanism: longrange...
-          res_scores[[phase]][gene,"type"]<-"LongRange"
+          res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata$geneExpressionScore
+          res_scores[[phase]][gene,"geneExpressionScore_LOF"]<-lof_score_metadata$geneExpressionScore
           
         }
       }
@@ -276,13 +277,26 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##score LOF 
           
           ## LOF evaluation: DIRECT EFFECT
-          lof_score<-eval_lof_directEffect_score(matrixPhase = matrixPhase, 
-                                                 geneTransversalData = geneTransversalData,
-                                                 phenoScore = phenoScore_LOF,
-                                                 threshold_MaxExpresion = threshold_MaxExpresion,
-                                                 threshold_MinExpresion = threshold_MinExpresion)
+          lof_score_metadata<-eval_lof_directEffect_score(matrixPhase = matrixPhase, 
+                                                          geneTransversalData = geneTransversalData,
+                                                          phenoScore = phenoScore_LOF,
+                                                          threshold_MaxExpresion = threshold_MaxExpresion,
+                                                          threshold_MinExpresion = threshold_MinExpresion)
+          lof_score<-lof_score_metadata$finalScore
+          
           ## GOF evaluation
-          gof_score<-0
+          # gof_score<-0
+          gof_score_metadata<-list("finalScore"=0,
+                                   "geneEnhancerScore"=NA,
+                                   "genePhenoScore"=NA,
+                                   "geneFeaturesScore"=NA,
+                                   "dosageSensitivityScore"=NA,
+                                   "polycombScore"=NA,
+                                   "geneExpressionScore"=NA
+          )
+          
+          gof_score<-gof_score_metadata$finalScore
+          
           
           ##Get max score && type
           Scores<-c(lof_score, gof_score)
@@ -300,22 +314,22 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##if there is no expression data for the gene, we do not compute anything
           ##We put a -1 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-1){
-            max_score<--1
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--1
-            lof_score<--1
+            gof_score<-0
+            lof_score<-0
             
           }
           
           ##if there multiple expression values, distant from them (eg 0.5 and 2 FPKM)
           ##We put a -2 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-2){
-            max_score<--2
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--2
-            lof_score<--2
+            gof_score<-0
+            lof_score<-0
             
           }
           
@@ -331,43 +345,24 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##type mechanism:
           res_scores[[phase]][gene,"type"]<-"Direct_geneTruncation"
           
-        }else{
-          ##Hence phase free
-          ############################################################
-          ## Once prediction based on expresion and enhancer activity
-          ## Phase Free Analysis
-          ############################################################
+          ##RECORDING METADATA/Additional info pathogenic score
+          res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata$genePhenoScore
+          res_scores[[phase]][gene,"genePhenoScore_LOF"]<-lof_score_metadata$genePhenoScore
           
-          ##Computing info to add to the list
-          # lof_score<-eval_lof_directEffect_phase_FREE_score(info_gene = info_gene,
-          #                                                   geneTransversalData = geneTransversalData,
-          #                                                   phenoScore = phenoScore_LOF)
-          lof_score<-0 ##As of January 17 2022, test how it performs without predictions for any mech
-          gof_score<-0 ##For now 0, not implemented, and we are not sure whether it will be or not
+          res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata$geneEnhancerScore
+          res_scores[[phase]][gene,"geneEnhancerScore_LOF"]<-lof_score_metadata$geneEnhancerScore
           
-          ##Get max score && type
-          Scores<-c(lof_score, gof_score)
-          names(Scores)<-c("LOF_score","GOF_score")
+          res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata$geneFeaturesScore
+          res_scores[[phase]][gene,"geneFeaturesScore_LOF"]<-lof_score_metadata$geneFeaturesScore
           
-          max_score<-max(Scores)## (unless both equal check, like 0,0 or 0.8 0.8)
+          res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata$dosageSensitivityScore
+          res_scores[[phase]][gene,"dosageSensitivityScore_LOF"]<-lof_score_metadata$dosageSensitivityScore
           
-          if(lof_score==gof_score){
-            typeMax<-"equally_likely"
-          }else{
-            ##one score bigger than the other
-            typeMax<-names(Scores)[which(Scores==max_score)]
-          }
+          res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata$polycombScore
+          res_scores[[phase]][gene,"polycombScore_LOF"]<-lof_score_metadata$polycombScore
           
-          ##Add results
-          # colnames(matScores)<-c("GOF_score","LOF_score","Max_type","Max_Score","type")
-          res_scores[[phase]][gene,"GOF_score"]<-gof_score
-          res_scores[[phase]][gene,"LOF_score"]<-lof_score
-          
-          res_scores[[phase]][gene,"Max_type"]<-typeMax       
-          res_scores[[phase]][gene,"Max_Score"]<-max_score 
-          
-          ##type mechanism: longrange...
-          res_scores[[phase]][gene,"type"]<-"Direct_geneTruncation"
+          res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata$geneExpressionScore
+          res_scores[[phase]][gene,"geneExpressionScore_LOF"]<-lof_score_metadata$geneExpressionScore
           
         }
       }
@@ -394,13 +389,28 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##score LOF 
           
           ## LOF evaluation: DIRECT EFFECT
-          lof_score<-eval_lof_directEffect_score(matrixPhase = matrixPhase, 
-                                                 geneTransversalData = geneTransversalData,
-                                                 phenoScore = phenoScore_LOF,
-                                                 threshold_MaxExpresion = threshold_MaxExpresion,
-                                                 threshold_MinExpresion = threshold_MinExpresion)
+          lof_score_metadata<-eval_lof_directEffect_score(matrixPhase = matrixPhase, 
+                                                          geneTransversalData = geneTransversalData,
+                                                          phenoScore = phenoScore_LOF,
+                                                          threshold_MaxExpresion = threshold_MaxExpresion,
+                                                          threshold_MinExpresion = threshold_MinExpresion)
+          lof_score<-lof_score_metadata$finalScore
+          
           ## GOF evaluation
-          gof_score<-0
+          # gof_score<-0
+          
+          gof_score_metadata<-list("finalScore"=0,
+                                   "geneEnhancerScore"=NA,
+                                   "genePhenoScore"=NA,
+                                   "geneFeaturesScore"=NA,
+                                   "dosageSensitivityScore"=NA,
+                                   "polycombScore"=NA,
+                                   "geneExpressionScore"=NA
+          )
+          
+          gof_score<-gof_score_metadata$finalScore
+          
+          
           
           ##Get max score && type
           Scores<-c(lof_score, gof_score)
@@ -418,22 +428,22 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##if there is no expression data for the gene, we do not compute anything
           ##We put a -1 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-1){
-            max_score<--1
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--1
-            lof_score<--1
+            gof_score<-0
+            lof_score<-0
             
           }
           
           ##if there multiple expression values, distant from them (eg 0.5 and 2 FPKM)
           ##We put a -2 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-2){
-            max_score<--2
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--2
-            lof_score<--2
+            gof_score<-0
+            lof_score<-0
             
           }
           
@@ -449,44 +459,24 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##type mechanism:
           res_scores[[phase]][gene,"type"]<-"Direct_geneDeletion"
           
+          ##RECORDING METADATA/Additional info pathogenic score
+          res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata$genePhenoScore
+          res_scores[[phase]][gene,"genePhenoScore_LOF"]<-lof_score_metadata$genePhenoScore
           
-        }else{
-          ##Hence phase free
-          ############################################################
-          ## Once prediction based on expresion and enhancer activity
-          ## Phase Free Analysis
-          ############################################################
+          res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata$geneEnhancerScore
+          res_scores[[phase]][gene,"geneEnhancerScore_LOF"]<-lof_score_metadata$geneEnhancerScore
           
-          ##Computing info to add to the list
-          # lof_score<-eval_lof_directEffect_phase_FREE_score(info_gene = info_gene,
-          #                                                   geneTransversalData = geneTransversalData,
-          #                                                   phenoScore = phenoScore_LOF)
-          lof_score<-0 ##As of January 17 2022, test how it performs without predictions for any mech
-          gof_score<-0 ##For now 0, not implemented, and we are not sure whether it will be or not
+          res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata$geneFeaturesScore
+          res_scores[[phase]][gene,"geneFeaturesScore_LOF"]<-lof_score_metadata$geneFeaturesScore
           
-          ##Get max score && type
-          Scores<-c(lof_score, gof_score)
-          names(Scores)<-c("LOF_score","GOF_score")
+          res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata$dosageSensitivityScore
+          res_scores[[phase]][gene,"dosageSensitivityScore_LOF"]<-lof_score_metadata$dosageSensitivityScore
           
-          max_score<-max(Scores)## (unless both equal check, like 0,0 or 0.8 0.8)
+          res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata$polycombScore
+          res_scores[[phase]][gene,"polycombScore_LOF"]<-lof_score_metadata$polycombScore
           
-          if(lof_score==gof_score){
-            typeMax<-"equally_likely"
-          }else{
-            ##one score bigger than the other
-            typeMax<-names(Scores)[which(Scores==max_score)]
-          }
-          
-          ##Add results
-          # colnames(matScores)<-c("GOF_score","LOF_score","Max_type","Max_Score","type")
-          res_scores[[phase]][gene,"GOF_score"]<-gof_score
-          res_scores[[phase]][gene,"LOF_score"]<-lof_score
-          
-          res_scores[[phase]][gene,"Max_type"]<-typeMax       
-          res_scores[[phase]][gene,"Max_Score"]<-max_score 
-          
-          ##type mechanism: longrange...
-          res_scores[[phase]][gene,"type"]<-"Direct_geneDeletion"
+          res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata$geneExpressionScore
+          res_scores[[phase]][gene,"geneExpressionScore_LOF"]<-lof_score_metadata$geneExpressionScore
           
         }
       }
@@ -516,7 +506,19 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##score LOF 
           
           ## LOF evaluation:
-          lof_score<-0
+          # lof_score<-0
+          
+          lof_score_metadata<-list("finalScore"=0,
+                                   "geneEnhancerScore"=NA,
+                                   "genePhenoScore"=NA,
+                                   "geneFeaturesScore"=NA,
+                                   "dosageSensitivityScore"=NA,
+                                   "polycombScore"=NA,
+                                   "geneExpressionScore"=NA
+          )
+          
+          lof_score<-lof_score_metadata$finalScore
+          
           
           ## GOF evaluation TWO OPTIONS
           ##By LongRange.Which takes into account poor expressed&enh adoption
@@ -529,26 +531,42 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           
           if(info_gene[,"TypeDomainInitial"]=="TAD_disrupted"){
             ##It will take into account nEnh before and after, as with LongRange translocation, inversion, or deletion
-            gof_score_longRange<-eval_Gof_indirectEffect_score(matrixPhase = matrixPhase, 
-                                                               geneTransversalData = geneTransversalData,
-                                                               phenoScore = phenoScore_GOF,
-                                                               threshold_MaxExpresion = threshold_MaxExpresion,
-                                                               threshold_MinExpresion = threshold_MinExpresion,
-                                                               minRatioEnhBalance = minRatioEnhBalance,
-                                                               maxRatioEnhBalance = maxRatioEnhBalance_GOF)
+            gof_score_metadata_longRange<-eval_Gof_indirectEffect_score(matrixPhase = matrixPhase, 
+                                                                        geneTransversalData = geneTransversalData,
+                                                                        phenoScore = phenoScore_GOF,
+                                                                        threshold_MaxExpresion = threshold_MaxExpresion,
+                                                                        threshold_MinExpresion = threshold_MinExpresion,
+                                                                        minRatioEnhBalance = minRatioEnhBalance,
+                                                                        maxRatioEnhBalance = maxRatioEnhBalance_GOF)
+            
+            gof_score_longRange<-gof_score_metadata_longRange$finalScore
+            
           }else{
             ##We assign this score to 0, so that this can never be higher than the one by direct effect
-            gof_score_longRange<-0
+            # gof_score_longRange<-0
+            ##We assign this score to 0, so that this can never be higher than the one by direct effect
+            gof_score_metadata_longRange<-list("finalScore"=0,
+                                               "geneEnhancerScore"=NA,
+                                               "genePhenoScore"=NA,
+                                               "geneFeaturesScore"=NA,
+                                               "dosageSensitivityScore"=NA,
+                                               "polycombScore"=NA,
+                                               "geneExpressionScore"=NA
+            )
+            gof_score_longRange<-gof_score_metadata_longRange$finalScore
+            
           }
           
-          
-          gof_score_directEffect<-eval_Gof_directEffect_score(matrixPhase = matrixPhase, 
-                                                              geneTransversalData = geneTransversalData,
-                                                              phenoScore = phenoScore_GOF,
-                                                              threshold_MaxExpresion = threshold_MaxExpresion,
-                                                              threshold_MinExpresion = threshold_MinExpresion,
-                                                              minRatioEnhBalance = minRatioEnhBalance,
-                                                              maxRatioEnhBalance = maxRatioEnhBalance_GOF)
+          ###SEGUIR POR AQUI, HE DE METER EL DE _METADATA Y LUEGO PILLAR EL VALOR DEL FINAL SCORE
+          gof_score_metadata_directEffect<-eval_Gof_directEffect_score(matrixPhase = matrixPhase, 
+                                                                       geneTransversalData = geneTransversalData,
+                                                                       phenoScore = phenoScore_GOF,
+                                                                       threshold_MaxExpresion = threshold_MaxExpresion,
+                                                                       threshold_MinExpresion = threshold_MinExpresion,
+                                                                       minRatioEnhBalance = minRatioEnhBalance,
+                                                                       maxRatioEnhBalance = maxRatioEnhBalance_GOF)
+            
+          gof_score_directEffect<-gof_score_metadata_directEffect$finalScore
           
           ##Then we retrieve the maximum score
           ##Afterwards, depending on which one bigger longRange_GeneDuplication or Direct_GeneDuplication
@@ -570,22 +588,22 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##if there is no expression data for the gene, we do not compute anything
           ##We put a -1 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-1){
-            max_score<--1
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--1
-            lof_score<--1
+            gof_score<-0
+            lof_score<-0
             
           }
           
           ##if there multiple expression values, distant from them (eg 0.5 and 2 FPKM)
           ##We put a -2 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-2){
-            max_score<--2
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--2
-            lof_score<--2
+            gof_score<-0
+            lof_score<-0
             
           }
           
@@ -599,64 +617,71 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           res_scores[[phase]][gene,"Max_Score"]<-max_score 
           
           
-          
-          
           ##type mechanism:
           ##Narrow depending if longrange>direct impact
           #gof_score<-max(gof_score_longRange,gof_score_directEffect)
           if(gof_score_longRange > gof_score_directEffect ){
             res_scores[[phase]][gene,"type"]<-"LongRange_geneDuplication" ##This means NeoTAD
             
+            ##So, adding long-range info
+            res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata_longRange$genePhenoScore
+
+            res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata_longRange$geneEnhancerScore
+
+            res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata_longRange$geneFeaturesScore
+
+            res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata_longRange$dosageSensitivityScore
+
+            res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata_longRange$polycombScore
+
+            res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata_longRange$geneExpressionScore
+
           }else if(gof_score_directEffect > gof_score_longRange){
             res_scores[[phase]][gene,"type"]<-"Direct_geneDuplication"
             
+            ##Adding direct-effect info
+            res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata_directEffect$genePhenoScore
+            
+            res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata_directEffect$geneEnhancerScore
+            
+            res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata_directEffect$geneFeaturesScore
+            
+            res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata_directEffect$dosageSensitivityScore
+            
+            res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata_directEffect$polycombScore
+            
+            res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata_directEffect$geneExpressionScore
+            
           }else if(gof_score_directEffect == gof_score_longRange){
             res_scores[[phase]][gene,"type"]<-"Direct_LongRange_geneDuplication"
+            
+            #Since long range also has a high score adding long-range info
+            res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata_longRange$genePhenoScore
+            
+            res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata_longRange$geneEnhancerScore
+            
+            res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata_longRange$geneFeaturesScore
+            
+            res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata_longRange$dosageSensitivityScore
+            
+            res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata_longRange$polycombScore
+            
+            res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata_longRange$geneExpressionScore
           }
           
-        }else{
-          # ##Hence phase free
-          ##Prediction in phase Free, makes no sense at least for LOF (gene not directly truncated or deleted + No Enh Info)
-          ##In a context where there is no enh, neither expression info, and we do not use gen-pheno association 
-          #The direct impact is gene duplications, so only check wheter dup gene is a polycomb one & HI...
-          #But this neither makes sense because, for a deleted gene associated with pheno (in phaseFree), eventhough you dont know where it is expressed, if deleted sure it triggers the disease wherever
-          ##But for polycomb gene dupl... eventhough that can be pathogenic, you have no idea whether it is related with the pheno, because gene-pheno info not considered and expression not considered  in phaseFree
-          ##So the dupl gene may never be expressed in the phenotype of interest
+          ##Only 1 lofscore computed
+          ##RECORDING METADATA/Additional info pathogenic score
+          res_scores[[phase]][gene,"genePhenoScore_LOF"]<-lof_score_metadata$genePhenoScore
           
-          #-----------------
-          ##Computing info to add to the list
-          lof_score<-0 ##No kind of evidence to considere a LOF for the gene (duplicated)
+          res_scores[[phase]][gene,"geneEnhancerScore_LOF"]<-lof_score_metadata$geneEnhancerScore
           
-          # gof_score<-eval_Gof_directEffect_phase_FREE_score(info_gene = info_gene, ##To get polycomb info
-          #                                                   geneTransversalData =  geneTransversalData,
-          #                                                   phenoScore = phenoScore)
+          res_scores[[phase]][gene,"geneFeaturesScore_LOF"]<-lof_score_metadata$geneFeaturesScore
           
-          gof_score<-0 
+          res_scores[[phase]][gene,"dosageSensitivityScore_LOF"]<-lof_score_metadata$dosageSensitivityScore
           
+          res_scores[[phase]][gene,"polycombScore_LOF"]<-lof_score_metadata$polycombScore
           
-          ##Get max score && type
-          Scores<-c(lof_score, gof_score)
-          names(Scores)<-c("LOF_score","GOF_score")
-          
-          max_score<-max(Scores)## (unless both equal check, like 0,0 or 0.8 0.8)
-          
-          if(lof_score==gof_score){
-            typeMax<-"equally_likely"
-          }else{
-            ##one score bigger than the other
-            typeMax<-names(Scores)[which(Scores==max_score)]
-          }
-          
-          ##Add results
-          # colnames(matScores)<-c("GOF_score","LOF_score","Max_type","Max_Score","type")
-          res_scores[[phase]][gene,"GOF_score"]<-gof_score
-          res_scores[[phase]][gene,"LOF_score"]<-lof_score
-          
-          res_scores[[phase]][gene,"Max_type"]<-typeMax       
-          res_scores[[phase]][gene,"Max_Score"]<-max_score          
-          
-          ##type mechanism:
-          res_scores[[phase]][gene,"type"]<-"Direct_geneDuplication"
+          res_scores[[phase]][gene,"geneExpressionScore_LOF"]<-lof_score_metadata$geneExpressionScore
           
         }
       }
@@ -689,13 +714,28 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##Lo tratamos como si estuviera broken
           ##como los direct effects
           ## LOF evaluation: DIRECT EFFECT
-          lof_score<-eval_lof_directEffect_score(matrixPhase = matrixPhase, 
-                                                 geneTransversalData = geneTransversalData,
-                                                 phenoScore = phenoScore_LOF,
-                                                 threshold_MaxExpresion = threshold_MaxExpresion,
-                                                 threshold_MinExpresion = threshold_MinExpresion)
+          lof_score_metadata<-eval_lof_directEffect_score(matrixPhase = matrixPhase, 
+                                                          geneTransversalData = geneTransversalData,
+                                                          phenoScore = phenoScore_LOF,
+                                                          threshold_MaxExpresion = threshold_MaxExpresion,
+                                                          threshold_MinExpresion = threshold_MinExpresion)
+          lof_score<-lof_score_metadata$finalScore
+          
           ## GOF evaluation
-          gof_score<-0
+          # gof_score<-0
+          
+          gof_score_metadata<-list("finalScore"=0,
+                                   "geneEnhancerScore"=NA,
+                                   "genePhenoScore"=NA,
+                                   "geneFeaturesScore"=NA,
+                                   "dosageSensitivityScore"=NA,
+                                   "polycombScore"=NA,
+                                   "geneExpressionScore"=NA
+          )
+          
+          gof_score<-gof_score_metadata$finalScore
+          
+          
           
           ##Get max score && type
           Scores<-c(lof_score, gof_score)
@@ -713,22 +753,22 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##if there is no expression data for the gene, we do not compute anything
           ##We put a -1 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-1){
-            max_score<--1
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--1
-            lof_score<--1
+            gof_score<-0
+            lof_score<-0
             
           }
           
           ##if there multiple expression values, distant from them (eg 0.5 and 2 FPKM)
           ##We put a -2 to place it at the bottom
           if(matrixPhase[,"FPKM"]==-2){
-            max_score<--2
+            max_score<-0
             typeMax<-"equally_likely"
             
-            gof_score<--2
-            lof_score<--2
+            gof_score<-0
+            lof_score<-0
             
           }
           
@@ -743,44 +783,25 @@ rankingGenes<-function(genesData, phasesVector, runMode){
           ##type mechanism:
           res_scores[[phase]][gene,"type"]<-"Direct_uncertaintyRegion"
           
+          ##RECORDING METADATA/Additional info pathogenic score
+          res_scores[[phase]][gene,"genePhenoScore_GOF"]<-gof_score_metadata$genePhenoScore
+          res_scores[[phase]][gene,"genePhenoScore_LOF"]<-lof_score_metadata$genePhenoScore
           
-        }else{
-          ##Hence, phase Free
-          ############################################################
-          ## Once prediction based on expresion and enhancer activity
-          ## Phase Free Analysis
-          ############################################################
+          res_scores[[phase]][gene,"geneEnhancerScore_GOF"]<-gof_score_metadata$geneEnhancerScore
+          res_scores[[phase]][gene,"geneEnhancerScore_LOF"]<-lof_score_metadata$geneEnhancerScore
           
-          ##Computing info to add to the list
-          # lof_score<-eval_lof_directEffect_phase_FREE_score(info_gene = info_gene,
-          #                                                   geneTransversalData = geneTransversalData,
-          #                                                   phenoScore = phenoScore_LOF)
-          lof_score<-0 ##As of January 17 2022, test how it performs without predictions for any mech
-          gof_score<-0 ##For now 0, not implemented, and we are not sure whether it will be or not
+          res_scores[[phase]][gene,"geneFeaturesScore_GOF"]<-gof_score_metadata$geneFeaturesScore
+          res_scores[[phase]][gene,"geneFeaturesScore_LOF"]<-lof_score_metadata$geneFeaturesScore
           
-          ##Get max score && type
-          Scores<-c(lof_score, gof_score)
-          names(Scores)<-c("LOF_score","GOF_score")
+          res_scores[[phase]][gene,"dosageSensitivityScore_GOF"]<-gof_score_metadata$dosageSensitivityScore
+          res_scores[[phase]][gene,"dosageSensitivityScore_LOF"]<-lof_score_metadata$dosageSensitivityScore
           
-          max_score<-max(Scores)## (unless both equal check, like 0,0 or 0.8 0.8)
+          res_scores[[phase]][gene,"polycombScore_GOF"]<-gof_score_metadata$polycombScore
+          res_scores[[phase]][gene,"polycombScore_LOF"]<-lof_score_metadata$polycombScore
           
-          if(lof_score==gof_score){
-            typeMax<-"equally_likely"
-          }else{
-            ##one score bigger than the other
-            typeMax<-names(Scores)[which(Scores==max_score)]
-          }
+          res_scores[[phase]][gene,"geneExpressionScore_GOF"]<-gof_score_metadata$geneExpressionScore
+          res_scores[[phase]][gene,"geneExpressionScore_LOF"]<-lof_score_metadata$geneExpressionScore
           
-          ##Add results
-          # colnames(matScores)<-c("GOF_score","LOF_score","Max_type","Max_Score","type")
-          res_scores[[phase]][gene,"GOF_score"]<-gof_score
-          res_scores[[phase]][gene,"LOF_score"]<-lof_score
-          
-          res_scores[[phase]][gene,"Max_type"]<-typeMax       
-          res_scores[[phase]][gene,"Max_Score"]<-max_score 
-          
-          ##type mechanism: longrange...
-          res_scores[[phase]][gene,"type"]<-"Direct_uncertaintyRegion"
         }
       }
     }
@@ -806,6 +827,7 @@ rankingGenes<-function(genesData, phasesVector, runMode){
   resultsPrediction<-list("MatrixesGeneEvaluation"= genesData, ##updated
                           "ScoresResults" = res_scores)
   
+
   return(resultsPrediction)
   
 }

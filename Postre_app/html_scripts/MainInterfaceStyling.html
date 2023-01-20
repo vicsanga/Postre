@@ -541,18 +541,23 @@ Explanation of why the dimensions:
     font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
     border-collapse: separate; /* Do not collapse*/
     border-spacing: 0;
-    width: 100%;
+    /*width: 2500px;*/ /*Automatically adjusted when creating pathogenic score Table, will be overwritten for that table*/
     overflow-y: auto;
     overflow-x:scroll;
-    max-height: 500px;
-    
+    max-height: 750px;
 }
 
+.tablePathomech td, .tablePathomech th {
+  /*Ajustar aqui para el pathogenic score table*/
+  /*text-align:center !important;*/
+  
+}
 
 
 .divTablePathoMech{
     width: 80em;
-    max-height: 500px;
+    max-height: 750px !important; /*2800px !important;*/ /*750px !important;*/
+    /*max-width: 70% !important;*/
     overflow-x: scroll;
     overflow-y: scroll; /*Overflow y only the table body*/
     /*white-space: nowrap;*/
@@ -573,7 +578,7 @@ Explanation of why the dimensions:
                /*padding-top: 12px;*/
                padding-bottom: 12px;
                text-align: left;
-               background-color: #0066cc;
+               background-color: #236fA7;
                color: white;
                position: sticky;
                top:0;
@@ -849,7 +854,7 @@ height:600px;
 }
 
 .patientFormulary{
-  width: 65%;
+  width: 75%;
   margin: auto;
   padding: 10px;
   background-color: #9ed8db;
@@ -860,8 +865,9 @@ height:600px;
   grid-template-rows: 1fr;
   grid-gap: 5px;
   grid-template-areas:
-    "i1 i2"
+  "i1 i1" /*If allowing selection refGenome, i5 goes next to i1 instead of at the bottom (31/08/2021)*/
   "i3 i4"
+  "i2 i2"
   "i6 i6"
   "i5 i5"
   "subm subm";
@@ -913,7 +919,7 @@ color:#1D3354;
     border-radius: 10px;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows:1fr 0.05fr 0.05fr 0.05fr;
+    grid-template-rows:1fr; /* 0.05fr 0.05fr 0.05fr;*/
     grid-gap: 5px;
     grid-template-areas:
       "uploadBox"
@@ -941,35 +947,29 @@ color:#1D3354;
 
 /**Mover luego fuera de aqui la info para hacer el menu del panel de submission**/
 .panelSubmAggregatedRes{
-  width: 65%;
+  width: 45%;
   margin: auto;
   padding: 10px;
   background-color: #9ed8db;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   border-radius: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   grid-gap: 5px;
   grid-template-areas:
-    "i1ag i2ag runModeAg"
-  "submag submag submag";
+    "i1ag"
+    "submag";
 }
 
 .svID{
   grid-area:i1ag;
 }
 
-.phenoID{
-  grid-area:i2ag ;
-}
-
 .submissionAggregated{
   grid-area:submag;
 }
-.runMode_aggregatedRes_SubmBox{
-  grid-area:runModeAg;
-}
+
 
 /*********/
 
@@ -981,19 +981,15 @@ color:#1D3354;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   border-radius: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   grid-gap: 5px;
   grid-template-areas:
-  "i1UsrGuide i2UsrGuide"
-  "submUsrGuide submUsrGuide";
+  "i1UsrGuide"
+  "submUsrGuide";
 }
 .usrGuideSelectedPatient{
   grid-area:i1UsrGuide;
-}
-
-.runMode_UserGuide_SubmBox{
-  grid-area:i2UsrGuide;
 }
 
 .usrGuideSinglePatient_SubmissionButton{
@@ -1082,7 +1078,7 @@ footer {
 #heatmap {
     font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 100%; /*800px;*/ /*100%;Defualt, */
     }
 
 #heatmap td, #heatmap th {
@@ -1109,9 +1105,123 @@ image-rendering: -webkit-optimize-contrast !important;
 }
 
 
+/*********************************/
+/*Collapsible advanced features*/
+
+.collapsibleAdvancedFeatures, .collapsibleAdvancedFeaturesMultiple{
+  background-color: transparent;
+  color: black;
+  cursor: pointer;
+  padding-left: 0px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 22px;
+  
+}
+
+.collapsibleAdvancedFeatures:after, .collapsibleAdvancedFeaturesMultiple:after{
+  color: black;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.contentAdvancedFeatures {
+  color:black;
+  background-color: transparent;
+  /*padding: 0 18px;*/
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.collapsibleAdvancedFeatures:hover, .collapsibleAdvancedFeaturesMultiple:hover{
+  color: #2596be;
+}
+
+.WrapperAdvancedFeatures, .WrapperAdvancedFeaturesMultiple{
+  padding-bottom: 10px;
+}
+
+.resetTADmapSelection{
+  
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  margin-top: 40px !important;
+  font-family: arial, sans-serif;
+
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+  
+  font-size: 14px;
+  /*margin-top: -30px!important;*/
+
+}
+
+.resetTADmapSelection:hover{
+  color: #3366ff;
+}
+
+.resetTADmapSelection:active {
+    color: #33ccff;
+}
+
+.TADSubmission{
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.tadSubmissionManagement{
+  
+  display: grid;
+  grid-template-columns: 1fr 0.5fr;
+  grid-template-rows: 1fr;
+  grid-gap: 5px;
+  grid-template-areas:
+  "i1_TADmanagement i2TADmanagement";
+}
+
+.TADSubmission{
+  grid-area: i1_TADmanagement;
+}
+
+.resetSubmTAD{
+  margin-top: 25%;
+  margin-bottom: 25%;
+  padding-top: 25%;
+  padding-bottom: 25%;
+  grid-area: i2TADmanagement;
+}
+
+/*Removing margins of the nested tables*/
+table.nestedPathomechTables, table.nestedPathomechTables td{
+  border: none !important;
+  text-align: left !important;
+}
+
+/*To make left column sticky*/
+/*https://csslayout.io/sticky-table-column/ */
+/*https://css-tricks.com/a-table-with-both-a-sticky-header-and-a-sticky-first-column/ */
+.column_sticky{
+    /* Background color */
+    background-color: #236fA7;
+    color: white;
+
+    /* Stick to the left */
+    left: 0;
+    position: sticky;
+
+    /* Displayed on top of other rows when scrolling */
+    z-index: 9000;
+  
+}
+
+
 </style>
-
-
 
 </head>
     <div class="regionHeader">

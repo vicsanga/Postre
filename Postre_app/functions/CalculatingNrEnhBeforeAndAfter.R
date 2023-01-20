@@ -6,7 +6,7 @@
 ## For each gene, what will be used for the graphical representations
 ###############################################################################
 
-calculatingEnh<-function(targetGenes,keptEnh,gainedEnh,matrixRes,enhOrigin, genesInfo){
+calculatingEnh<-function(targetGenes,keptEnh,gainedEnh,matrixRes,enhOrigin, info_affectedGenes){
   ##if there is at least a target gene
   ##compute the balance of enh, and add the info to the matrix of results
   ##if there are no target genes, waste of time computing the enh balances
@@ -74,7 +74,7 @@ calculatingEnh<-function(targetGenes,keptEnh,gainedEnh,matrixRes,enhOrigin, gene
     ## With respect to each gene
     
     for(gene in targetGenes){
-      geneTSS<-genesInfo$genesPosition[gene,"TSS"]
+      geneTSS<-info_affectedGenes$genesPosition[gene,"TSS"]
       
       for(origin in enhOrigin){
         ###REGARDING KEPT ENHANCERS AND ACETILATION

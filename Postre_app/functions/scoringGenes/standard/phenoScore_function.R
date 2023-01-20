@@ -1,7 +1,7 @@
 #############################################
 ## Script to develop the phenoScore function
 
-phenoScore_fun<-function(geneData, gof_case){
+phenoScore_fun<-function(geneData, gof_case, patientInfo){
   
   ##Introduction of gof_case parameter  6/Sept/2021
   ##If gof_case == FALSE, prediction for LOF cases (we look for gene-pheno specific match)
@@ -13,7 +13,8 @@ phenoScore_fun<-function(geneData, gof_case){
   ##Check if reported phenotype either in OMIM or in MGI
   reportedPhenoInDb<-rowSums(geneData[,c("associatedPhenotypeIn_OMIM","associatedPhenotypeIn_MGI")])
   
-  #reportedPhenoInOMIM<-geneData[,"associatedPhenotypeIn_OMIM"]
+  reportedPhenoInOMIM<-geneData[,"associatedPhenotypeIn_OMIM"]
+  reportedPhenoInMGI<-geneData[,"associatedPhenotypeIn_MGI"]
   
   ##Check if association to the main phenotype either in OMIM or in MGI
   associatedMainPhenoInDb<-rowSums(geneData[,c("mainPhenotype_Through_OMIM_Human","mainPhenotype_Through_MGI_Mice")])
@@ -24,16 +25,35 @@ phenoScore_fun<-function(geneData, gof_case){
   ###########################################
   phenoScore<-0
   
-  if(associatedMainPhenoInOMIM == TRUE ){
-    ##So, associated with phenotype in Human, Top Relevant
-    ##Does not matter whether it is not in mice, Human, Top Relevant specie
-    phenoScore<-1
-  }else{
-    ##Combine info Mouse and Human, so if only in Mice, boost a bit the scoring (0.5 phenoScore)
-    phenoScore<-associatedMainPhenoInDb/2    
-    ##DOING NOTHING, ONLY CONSIDERING OMIM, CHECK CHANGE IN FP FN
+  ##############
+  ##Differentiating whether only interested on gene-specific pheno association
+  ##Or gene-anyDisease pheno association
+  
+  if(patientInfo$genePhenoConsideration=="yes"){
+    ##We are looking for gene exact associations with patient phenotype
+    if(associatedMainPhenoInOMIM == TRUE ){
+      ##So, associated with phenotype in Human, Top Relevant
+      ##Does not matter whether it is not in mice, Human, Top Relevant specie
+      phenoScore<-1
+    }else{
+      ##Combine info Mouse and Human, so if only in Mice, boost a bit the scoring (0.5 phenoScore)
+      phenoScore<-associatedMainPhenoInDb/2    
+      ##DOING NOTHING, ONLY CONSIDERING OMIM, CHECK CHANGE IN FP FN
+    }
+  } else if(patientInfo$genePhenoConsideration=="no"){
+    ##We are not looking for exact gene-patient phenotype associations. 
+    ## Only requiring that the gene is associated with ANY phenotype
+    if(reportedPhenoInOMIM == TRUE ){
+      ##So, associated with any phenotype in Human, Top Relevant
+      ##Does not matter whether it is not in mice, Human, Top Relevant specie
+      phenoScore<-1
+    }else{
+      ##Combine info Mouse and Human, so if only in Mice, boost a bit the scoring (0.5 phenoScore)
+      phenoScore<-reportedPhenoInDb/2    
+      ##DOING NOTHING, ONLY CONSIDERING OMIM, CHECK CHANGE IN FP FN
+    }
   }
-
+  
   
   return(phenoScore)
   

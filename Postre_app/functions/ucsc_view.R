@@ -39,7 +39,13 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
   #                        "<p>For each affected Domain, it is depicted in blue the regulatory domain limits, and in red the breakpoint location.</p>",
   #                        sep = "",
   #                        collapse = "")
-  
+  ##Adding warning of userTADmap selected 
+
+  if(patientResults$patientInfo$userTADmap == "yes"){
+    shiny_html_ucsc<-paste0(shiny_html_ucsc,
+                            "<p><b style='color:#cc3300;'>WARNING: </b>Since you have uploaded your own TAD map for the analysis, to see the coordinates of the actually considered TADs (black horizontal bars below Hi-C data) in the linked UCSC sessions, add them on your own once you open the links through: My Data > Add Custom Tracks, and display the track in Full mode.</p>",
+                            collapse="")
+  }
   ucsc_domain_tracks<-list()
   
   #######################################################################
