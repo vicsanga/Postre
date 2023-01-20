@@ -1,7 +1,7 @@
 # POSTRE
 POSTRE: Prediction Of STRuctural variant Effects
 <h2>IMPORTANT: POSTRE update in progress</h2>
-A new version of POSTRE has been uploaded, very similar with the previous one but with some changes.
+A new version of POSTRE has been uploaded. The new version is very similar with the previous one but with some changes and new functionalities have been added.
 During this week the tutorial videos will be updated.
 <h2> </h2>
 <br>
