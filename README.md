@@ -4,6 +4,8 @@ POSTRE: Prediction Of STRuctural variant Effects
 A new version of POSTRE has been uploaded, very similar with the previous one but with some changes.
 During this week the tutorial videos will be updated.
 
+<br><br>
+
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
