@@ -114,10 +114,11 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       ##youtube size de partida width="560" height="315" . Reajustar en base a ello
       ##http://thenewcode.com/717/Force-Embedded-YouTube-Videos-To-Play-In-HD  ##Not everything done but the idea
       contentExplorePreviousPat<-paste(c("<div class = 'explanationExplorePreviousPat'>",
-                                         "<p style = 'font-size: 20px;'> In the video below there is an explanation about how to navigate the current page. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualitzation. </p>",
-                                         "<div class ='videotutorialExplPreviousPat'>",##div used to center video
-                                         "<p align='center'><iframe width='640' height='360' src='https://www.youtube.com/embed/movwXisGsmM' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></p>",
-                                         "</div>",
+                                         "Two main tables are provided. The first one is a table with pathogenicity prediction per SV and associated phenotype/s. The second one is an aggregation of the results per gene, phenotype and pathogenic mechanism (coding, long-range). A video to clarify this concepts will be updated shortly.",
+                                         # "<p style = 'font-size: 20px;'> In the video below there is an explanation about how to navigate the current page. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualitzation. </p>",
+                                         # "<div class ='videotutorialExplPreviousPat'>",##div used to center video
+                                         # "<p align='center'><iframe width='640' height='360' src='https://www.youtube.com/embed/movwXisGsmM' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></p>",
+                                         # "</div>",
                                          "</div>"),
                                        sep=" ",
                                        collapse=" ")
