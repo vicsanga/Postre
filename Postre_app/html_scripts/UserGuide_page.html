@@ -222,57 +222,17 @@
     
     <br><br>
     An example file can be downloaded <a href="ExampleMultipleSubmission.tsv" target="_blank">here</a>.
+    and also in the Github testFiles folder.
     
-    <br>
-    <br>
-    <p style = 'font-size: 20px;'> A short tutorial showing how to prepare the Multiple SV file and submit a Multiple SV job is provided in the video below. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualization. </p> 
-      <br><br>
-      <div class ='videotutorialExplPreviousPat'> 
-      <p align="center">
-        <iframe width="640" height="360" src="https://www.youtube.com/embed/fm8gGggzf4E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </p>
-      </div>
+    Upon the analyses of multiple SVs POSTRE returns a table with pathogenicity per SV. 
+    In addition results are also aggregated per gene and phenotype.
+    
     <br>
     <br>
     
     <h2 id="PathogenicScoreCalculation"> <b>Pathogenic score calculation</b> </h2>
     <div>
-      
-      <p>The Structural Variant (SV) pathogenic score is computed for each of the genes considered to be affected by the SV (candidate genes). Candidate genes are defined to be all those located in TADs disrupted by the SV.</p>
-      
-      <p>For each candidate gene and cell type/tissue where the SV pathogenicity is evaluated, two pathogenic scores are computed:</p>
-      <ul>
-        <li><b>Loss of Function (LOF) pathogenic score</b>, to evaluate a pathogenic downregulation.</li>
-        
-        <li><b>Gain of Function (GOF) pathogenic score</b>, to evaluate a pathogenic upregulation.</li>
-      </ul>
-      
-      
-      <p>The pathogenic score, which ranges from 0 to 1, corresponds with the average of three different subscores (each of them also ranging from 0 to 1): </p>
-        <ul>
-          <li><i>genePhenoScore</i> <br> Values of this score close to 1 indicate that the candidate gene has been previously associated with the SV-associated phenotype in other individuals (default). When running POSTRE with the advanced feature option: <i>Require known association of the candidate genes with the patient phenotype for pathogenicity</i> set to No, the <i>genePhenoScore</i> will be 1 if the candidate gene has been associated previously with any kind of disease.
-            <br><br></li>
-            
-          <li><i>geneEnhancerScore</i><br>Values of this score close to 1 indicate considerable changes in the regulatory landscape of the candidate gene. For LOF it involves the loss of cognate enhancer activity, and for GOF the gain of enhancer activity (either through the duplication of cognate enhancers or the adoption of ectopic enhancers). <b>The <i>geneEnhancerScore</i> is only considered when the candidate gene sequence has not been directly affected by the SV.</b><br><br></li>
-            
-          <li><i>geneFeaturesScore</i></li>
-            This score averages the information of three additional subscores:
-            <ul>
-              <li><i>dosageSensitivityScore</i><br>Values of this score close to 1 indicate that for the candidate gene, deviations from the normal dosage (i.e. number of copies), or expression levels, are likely detrimental. 0 means that these deviations are not detrimental.<br><br></li>
-              
-              <li><i>polycombScore</i><br>Values of this score close to 1 indicate strong evidence for being a H3K27me3-polycomb based developmental gene (genes covered by broad domains of H3K27me3 when inactive and with tissue specific expression patterns), 0 implies the opposite. These genes tend to regulate cellular identity and altering their expression can lead to strong phenotypic alterations (<a target="_blank" href="https://doi.org/10.1016/j.celrep.2016.11.046">Rehimi et al., 2016</a>; <a target="_blank" href="https://doi.org/10.1016/j.cels.2020.11.001">Shim et al., 2020</a>). In addition, this type of gene shows high enhancer responsiveness (<a target="_blank" href="https://doi.org/10.1038/s41556-019-0273-x">Kraft et al.,2019</a>; <a target="_blank" href="https://doi.org/10.1038/s41588-021-00888-x">Pachano et al., 2021</a>), which might be attributed to the presence of promoter CpG islands that prevent DNA methylation, facilitate enhancer-gene communication and, overall, provide a permissive chromatin environment. <br><br></li>
-              
-              <li><i>geneExpressionScore</i><br> Values of this score close to 1 indicate a relevant gene expression status for the candidate gene. Considering the expression status of the candidate genes is particularly important for LOF situations, as the disease-causative genes must be expressed in the relevant cell types/tissues. <br><br></li>
-            </ul>
-            For the <i>geneFeaturesScore</i> to be > 0 either the <i>polycombScore</i> or the <i>dosageSensitiveScore</i> must be >0.75 in the Standard running mode (default), while both scores must be >0.75 in the High-Specificity running mode.
-            
-        </ul>
-      
-      <p>The pathogenic score for LOF and GOF is obtained as a result of averaging the different subscores. If any of them (pathogenic score for LOF or GOF) is higher than 0.8 it will be considered as potentially pathogenic and additional information will be provided through the results overview heatmap.</p>
-      
-      <p> Certain criteria must be met for the pathogenic score to be different than 0. For example, a pathogenic score for LOF will only be different than 0 if the candidate gene is expressed, because evaluating LOF for an inactive gene is not logical. In line with this, it is also not considered appropriate to evaluate a pathogenic upregulation when a gene is deleted. Under these circumstances, the pathogenic scores for GOF or LOF will be 0 even if the different subscores such as the <i>genePhenoScore</i> or the <i>geneDosageSensitivityScore</i> are different than 0. <b><a target="_blank" href="https://www.biorxiv.org/content/10.1101/2022.06.20.496902v1">If you want to know more about POSTRE pathogenic score calculation, please check our manuscript </a></b>.</p>
-      
-      <p>NOTE: When checking the pathogenic scores results table, some of the different subscores may have a value of NA. This is because that subscore has been ignored when computing the pathogenicity. For instance, when modeling the pathogenic effect of a gene deletion and computing the pathogenic score for LOF, the <i>geneEnhancerScore</i> will appear as an NA, since long-range effects are not considered when the candidate gene sequence has been disrupted. At the same time, regarding the pathogenic score for GOF for the same scenario (gene deletion), all the subscores will be NA, given that a pathogenic upregulation is not feasible if the candidate gene has been deleted.</p>
+      For a simplified version of POSTRE pathogenic score calculation please visith the following <a href="PathogenicScoreCalculation.html" target="_blank"> 
     <br>
     </div>
     
