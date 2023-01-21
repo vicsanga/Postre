@@ -69,7 +69,7 @@ If you are not sure about how to do it. You can find me initializing POSTRE from
 
 [![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
       
-<br><br>
+<br>
       
 <h3>Alternative option, POSTRE online </h3>     
 POSTRE can also be uploaded to a server (e.g. shinyapps.io), by a user with R installed, and accessed online as a normal web app by other users. 
