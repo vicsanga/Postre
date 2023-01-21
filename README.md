@@ -28,7 +28,12 @@ POSTRE can be used to analyse Single or Multiple SVs.
 <h4>Analysing a Single SV</h4>
 Watch POSTRE performance with a real patient in the following <a href="https://youtu.be/g1vinL4Xra4" target="_blank">YouTube video</a>. Reproduce it in Full Screen and High Quality (1080p) for optimal visualization. For this patient, with BOFS syndrome carrying an inversion <a href="https://pubmed.ncbi.nlm.nih.gov/30982769/" target="_blank">(Laugsch et al., 2019)</a>, POSTRE successfully predicts the loss of TFAP2A expression in neural crest cells through an enhancer disconnection mechanism.
 <br><br>
+
 [![Postre BOFS analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/BofsHeatmap.png?raw=true)](https://youtu.be/EmZYSQwfJm0 "Postre BOFS analysis")
+
+[![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
+
+
 <br><br>
 
 <h4>Analysing Multiple SVs</h4>
@@ -87,7 +92,7 @@ The above instruction installs and loads all the required libraries for POSTRE. 
 If you are not sure about how to do it. You can find me initializing POSTRE from R in the video below!
 <br><br>
 
-![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
+[![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
       
 <br>
       
