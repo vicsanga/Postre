@@ -31,9 +31,6 @@ Watch POSTRE performance with a real patient in the following <a href="https://y
 
 [![Postre BOFS analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/BofsHeatmap.png?raw=true)](https://youtu.be/EmZYSQwfJm0 "Postre BOFS analysis")
 
-[![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImageGithub_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
-
-
 <br><br>
 
 <h4>Analysing Multiple SVs</h4>
