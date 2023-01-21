@@ -22,17 +22,37 @@ Check the infographic displayed below to see a representation of POSTRE function
 
 ![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografia.png?raw=true)
 
+<h2 id="UsingPOSTRE">How to use POSTRE?</h2>
+POSTRE can be used to analyse Single or Multiple SVs.
+<br><br>
+<h4>Analysing a Single SV</h4>
 Watch POSTRE performance with a real patient in the following <a href="https://youtu.be/g1vinL4Xra4" target="_blank">YouTube video</a>. Reproduce it in Full Screen and High Quality (1080p) for optimal visualization. For this patient, with BOFS syndrome carrying an inversion <a href="https://pubmed.ncbi.nlm.nih.gov/30982769/" target="_blank">(Laugsch et al., 2019)</a>, POSTRE successfully predicts the loss of TFAP2A expression in neural crest cells through an enhancer disconnection mechanism.
 <br><br>
-[![Postre BOFS analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/BofsHeatmap.png?raw=true)](https://youtu.be/g1vinL4Xra4 "Postre BOFS analysis")
+[![Postre BOFS analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/BofsHeatmap.png?raw=true)](https://youtu.be/EmZYSQwfJm0 "Postre BOFS analysis")
+<br><br>
 
-
-<h2 id="UsingPOSTRE">How to use POSTRE?</h2>
-
-A detailed overview of POSTRE is provided in this section. Click on the image below to see the video in Youtube. Reproduce it in Full Screen and High Quality (1080p) for optimal visualization. 
-
-[![POSTRE Tutorial](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/ImagenParaGithub_Tutorial.png?raw=true)]( https://youtu.be/Pc7MsKvqyQs "POSTRE Tutorial")
-
+<h4>Analysing Multiple SVs</h4>
+The multiple SV submission box allows the sequential analysis of multiple structural variants (results can be downloaded as txt tables). The SVs may come from just one or multiple patients.The SVs information has to be uploaded in a specific format. The file format consists on 1 line and 7 columns per structural variant. Each structural variant must only contain two breakpoints. The information associated with each column is provided below:
+      <br><br>
+      <i>Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplication) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.</i>
+      <br><br>
+      <ul>
+      <li>Column 1: Chromosome for the breakpoint 1  </li>
+      <li>Column 2: Genomic coordinates for the breakpoint 1. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.  </li>
+      <li>Column 3: Chromosome for the breakpoint 2</li>
+      <li>Column 4: Genomic coordinates for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.</li>
+      <li>Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.</li>
+      <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental or cardiovascular. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
+      <li>Column 7: Structural variant unique identifier e.g. (Patient1_SV3)</li>
+      </ul> 
+      
+The data must be stored in a plain text file with column values separated by tabulations
+<br><br>
+An example file can be found <a href="https://github.com/vicsanga/Postre/blob/main/testFiles/ExampleMultipleSubmission.tsv" target="_blank">here</a> (to download it  just: right-click the Raw button at the top of the page, select Save Link As…, choose the location on your computer where you want to save the file, and select Save).  Additional test files can also be downloaded from the <a href="https://github.com/vicsanga/Postre/tree/main/testFiles" target="_blank">testFiles</a> folder.
+<br><br>
+Briefly, upon the analyses of multiple SVs two main tables are provided. The first one is a table with pathogenicity prediction per SV and associated phenotype/s. The second one is an aggregation of the results per gene, phenotype and pathogenic mechanism (coding, long-range). 
+<br><br>
+A video to clarify these concepts will be provided shortly.
 <br><br>
 <h2 id="Installation">How to install and run POSTRE?</h2>
 
