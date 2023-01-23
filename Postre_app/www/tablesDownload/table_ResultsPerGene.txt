@@ -1,10 +1,6 @@
-Gene	Phenotype	N SVs	N Long-Range	N Coding	SVid	Long-Range	Coding
-TFAP2A	head_neck	2	1	1	Patient1_SV1,Patient2_SV1	Patient1_SV1	Patient2_SV1
-SOX9	head_neck	1	1	0	Patient3_SV1	Patient3_SV1	
-SOX9	limbs	1	1	0	Patient3_SV1	Patient3_SV1	
-KCNJ2	limbs	1	1	0	Patient4_SV1	Patient4_SV1	
-PAX3	limbs	1	1	0	Patient5_SV1	Patient5_SV1	
-SATB2	neurodevelopmental	1	0	1	Patient6_SV1		Patient6_SV1
-NR2F1	neurodevelopmental	1	0	1	Patient7_SV1		Patient7_SV1
-MEF2C	neurodevelopmental	1	1	0	Patient7_SV1	Patient7_SV1	
-BCL11B	neurodevelopmental	1	1	0	Patient8_SV1	Patient8_SV1	
+Gene	Phenotype	N SVs	N SVs Long-Range	N SVs Coding	SV IDs	Long-Range SV IDs	Coding SV IDs
+TFAP2A	head_neck	1	1	0	Patient_Nr1	Patient_Nr1	
+SOX9	head_neck	1	1	0	Patient_Nr2	Patient_Nr2	
+KCNJ2	limbs	1	1	0	Patient_Nr3	Patient_Nr3	
+PAX3	limbs	1	1	0	Patient_Nr4	Patient_Nr4	
+IHH	limbs	1	1	0	Patient_Nr5	Patient_Nr5	

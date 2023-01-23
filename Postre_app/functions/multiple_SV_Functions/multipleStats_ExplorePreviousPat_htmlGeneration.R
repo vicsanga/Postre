@@ -114,11 +114,49 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       ##youtube size de partida width="560" height="315" . Reajustar en base a ello
       ##http://thenewcode.com/717/Force-Embedded-YouTube-Videos-To-Play-In-HD  ##Not everything done but the idea
       contentExplorePreviousPat<-paste(c("<div class = 'explanationExplorePreviousPat'>",
-                                         "<p>Upon the analyses of multiple SVs two main tables are provided. The first one is a table with pathogenicity prediction per SV and associated phenotype/s. The second one is an aggregation of the results per gene, phenotype and pathogenic mechanism (coding, long-range).</p>  <br><br> <p>A video to clarify these concepts will be provided shortly.</p>",
+                                         # "<p>Upon the analyses of multiple SVs two main tables are provided. The first one is a table with pathogenicity prediction per SV and associated phenotype/s. The second one is an aggregation of the results per gene, phenotype and pathogenic mechanism (coding, long-range).</p>  <br><br> <p>A video to clarify these concepts will be provided shortly.</p>",
                                          # "<p style = 'font-size: 20px;'> In the video below there is an explanation about how to navigate the current page. Reproduce it in <b>Full Screen</b> and <b>High Quality</b>(1080p) for optimal visualitzation. </p>",
                                          # "<div class ='videotutorialExplPreviousPat'>",##div used to center video
                                          # "<p align='center'><iframe width='640' height='360' src='https://www.youtube.com/embed/movwXisGsmM' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></p>",
                                          # "</div>",
+                                         
+"Three different tables and a submission box are provided, as a result of a Multiple SV Submission, in the Multiple SVs Results page (same format in Explore Previous SVs page). 
+<br><br>
+<ul>
+<li><b>Table1 (Results per SV and phenotype)</b>: This table provides a pathogenic prediction for each of the SVs and associated phenotypes analyzed. It presents different columns:
+<ul>
+<li>SV ID: Identifier of the SV as provided in the file uploaded to POSTRE.</li>
+<li>Phenotype: Phenotype associated with the SV considered for pathogenic evaluation. </li>
+<li>Pathogenic score: Pathogenic score (0-1) computed for the SV-phenotype association. It corresponds with the maximum pathogenic score computed for all the candidate genes.</li>
+<li>Pathogenic: It indicates whether the SV-phenotype association is predicted pathogenic (Yes) or not (No).</li>
+<li>Causative genes: List of genes predicted as disease causative. This cell will be empty if pathogenicity is not predicted.</li>
+<li>Candidate genes (Pathogenic Score): List of candidate genes (gene whose regulatory domain (TAD) or sequence (e.g gene deletion) is altered by a SV). A candidate gene is not necessarily involved in the disease etiology (i.e. candidate genes include both causative and non-causative genes). For each candidate gene, the maximum pathogenic score (0-1) computed along all cell types considered is provided in brackets. </li>
+</ul>
+</li>
+<br>
+<li><b>Table2 (Results per gene and phenotype)</b>: This table is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range). It presents different columns:
+<ul>
+<li>Gene: Name of the gene.</li>
+<li>Phenotype: Phenotype associated with the gene where pathogenicity has been predicted. </li>
+<li>N SVs: Number of SVs where pathogenicity has  been predicted (either by coding or long-range pathogenic mechanisms). </li>
+<li>N SVs Long-Range: Number of SVs where pathogenicity has been predicted through a long-range (enhancer mediated) pathogenic event.</li>
+<li>N SVs Coding: Number of SVs where pathogenicity has been predicted through a coding mechanism (e.g. gene deletion).</li>
+<li>SV IDs: Identifier of the SVs where pathogenicity has been predicted (either by coding or long-range pathogenic mechanisms).</li>
+<li>Long-Range SV IDs: Identifier of the SVs where pathogenicity has been predicted through long-range (enhancer mediated) pathological mechanisms.</li>
+<li>Coding SV IDs: Identifier of the SVs where pathogenicity has been predicted through coding (e.g. gene deletion) pathological mechanisms.</li>
+</ul>
+</li>
+<br>
+<li><b>Table3 (SVs information)</b>: Information (genomic coordinates, type and associated phenotypes) of the SVs  uploaded to POSTRE.</li>
+<br>
+<li><b>Submit SV for prediction</b>: Introduce the SV ID for the SV of interest to generate the results (e.g. graphical abstracts, explanatory reports) as provided through a Single SV Submission.</li>
+</ul>
+<br>
+A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis will be provided provided shortly.
+<br>
+",
+                                         
+                                         
                                          "</div>"),
                                        sep=" ",
                                        collapse=" ")
@@ -277,6 +315,14 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
       
       ##Quitamos cols que no me interesan ahora mismo
 
+      ##Renombramos alguna columna para que el output sea mas legible
+      colnames(resultsPerGene)[which(colnames(resultsPerGene)=="SVid")]<-"SV IDs"
+      colnames(resultsPerGene)[which(colnames(resultsPerGene)=="Long-Range")]<-"Long-Range SV IDs"
+      colnames(resultsPerGene)[which(colnames(resultsPerGene)=="Coding")]<-"Coding SV IDs"
+      
+      colnames(resultsPerGene)[which(colnames(resultsPerGene)=="N Long-Range")]<-"N SVs Long-Range"
+      colnames(resultsPerGene)[which(colnames(resultsPerGene)=="N Coding")]<-"N SVs Coding"
+      
       ###############################################
       write.table(x=resultsPerGene,
                   file = paste0("www/tablesDownload/table_ResultsPerGene", ids_append,".txt"),

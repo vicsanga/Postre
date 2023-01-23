@@ -1,4 +1,4 @@
-Gene	Phenotype	N SVs	N Long-Range	N Coding	SVid	Long-Range	Coding
+Gene	Phenotype	N SVs	N SVs Long-Range	N SVs Coding	SV IDs	Long-Range SV IDs	Coding SV IDs
 CORO1A	neurodevelopmental	6	1	5	U83,U87,U88,U90,U91,U93	U88	U83,U87,U90,U91,U93
 SCARF2	head_neck	5	1	5	U126,U128,U129,U132,U133	U129	U126,U128,U129,U132,U133
 TBX1	head_neck	5	0	5	U126,U128,U129,U132,U133		U126,U128,U129,U132,U133

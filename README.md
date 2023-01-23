@@ -34,9 +34,9 @@ Watch POSTRE performance with a real patient in the following <a href="https://y
 <br><br>
 
 <h4>Analysing Multiple SVs</h4>
-The Multiple SV Submission box allows the sequential analysis of multiple structural variants (results can be downloaded as txt tables). The SVs may come from just one or multiple patients.The SVs information has to be uploaded in a specific format. The file format consists on 1 line and 7 columns per structural variant. Each structural variant must only contain two breakpoints. The information associated with each column is provided below:
+The Multiple SV Submission box allows the sequential analysis of multiple structural variants (results can be downloaded as txt tables). The SVs may come from just one or multiple patients. The SVs information has to be uploaded in a specific format. The file format consists on 1 line and 7 columns per structural variant. Each structural variant must contain only two breakpoints. The information associated with each column is provided below:
       <br><br>
-      <i>Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplication) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.</i>
+      <i>Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplications) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.</i>
       <br><br>
       <ul>
       <li>Column 1: Chromosome for the breakpoint 1  </li>
@@ -50,11 +50,13 @@ The Multiple SV Submission box allows the sequential analysis of multiple struct
       
 The data must be stored in a plain text file with column values separated by tabulations
 <br><br>
-An example file can be found <a href="https://github.com/vicsanga/Postre/blob/main/testFiles/ExampleMultipleSubmission.tsv" target="_blank">here</a> (to download it: (1) right-click the Raw button at the top of the file, (2) select Save Link As…, (3) choose the location on your computer where you want to save the file, and (4) select Save).  Additional test files can also be downloaded from the <a href="https://github.com/vicsanga/Postre/tree/main/testFiles" target="_blank">testFiles</a> folder.
+An example file can be found <a href="https://github.com/vicsanga/Postre/blob/main/testFiles/ExampleMultipleSubmission.tsv" target="_blank">here</a> (to download it: (1) right-click the "Raw" button at the top of the file, (2) select Save Link As…, (3) choose the location on your computer where you want to save the file, and (4) select Save).  Additional test files can also be downloaded from the <a href="https://github.com/vicsanga/Postre/tree/main/testFiles" target="_blank">testFiles</a> folder.
 <br><br>
-Upon the analyses of multiple SVs two main tables are provided. The first one is a table with pathogenicity prediction per SV and associated phenotype/s. The second one is an aggregation of the results per gene, phenotype and pathogenic mechanism (coding, long-range). 
+Upon the analysis of multiple SVs two main tables are provided. The first one (Results per SV and phenotype) is a table with a pathogenic prediction for each of the SVs and associated phenotypes analyzed. The second one (Results per gene and phenotype) is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range). Perform a Multiple SV Submission with one of the test files and check "How to navigate this section?" for more details.
+
 <br><br>
-A video to clarify these concepts will be provided shortly.
+
+A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis will be provided provided shortly.
 <br><br>
 <h2 id="Installation">How to install and run POSTRE?</h2>
 
