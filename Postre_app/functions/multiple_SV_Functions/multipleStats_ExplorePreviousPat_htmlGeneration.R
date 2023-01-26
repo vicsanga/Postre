@@ -127,10 +127,11 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
 <ul>
 <li>SV ID: Identifier of the SV as provided in the file uploaded to POSTRE.</li>
 <li>Phenotype: Phenotype associated with the SV considered for pathogenic evaluation. </li>
-<li>Pathogenic Score: Pathogenic score (0-1) computed for the SV-phenotype association. It corresponds with the maximum pathogenic score computed for all the candidate genes.</li>
+<li>Pathogenic Score: Pathogenic score (0-1) computed for the SV-phenotype association. It corresponds with the maximum 
+<a href='PathogenicScoreCalculation.html' target='_blank'>pathogenic score computed for all the candidate genes</a>.</li>
 <li>Pathogenic: It indicates whether the SV-phenotype association is predicted pathogenic (Yes) or not (No).</li>
 <li>Causative genes: List of genes predicted as disease causative. This cell will be empty if pathogenicity is not predicted.</li>
-<li>Candidate genes (Pathogenic Score): List of candidate genes (gene whose regulatory domain (TAD) or sequence (e.g gene deletion) is altered by a SV). A candidate gene is not necessarily involved in the disease etiology (i.e. candidate genes include both causative and non-causative genes). For each candidate gene, the maximum pathogenic score (0-1) computed along all cell types considered is provided in brackets. </li>
+<li>Candidate genes (Pathogenic Score): List of candidate genes (gene whose regulatory domain (TAD) or sequence (e.g gene deletion) is altered by a SV). A candidate gene is not necessarily involved in the disease etiology (i.e. candidate genes include both causative and non-causative genes). For each candidate gene, the maximum <a href='PathogenicScoreCalculation.html' target='_blank'> pathogenic score (0-1) </a> computed along all cell types considered is provided in brackets. </li>
 </ul>
 </li>
 <br>

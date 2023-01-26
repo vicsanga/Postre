@@ -31,7 +31,7 @@ html, body{
               <h2 id="PathogenicScoreCalculation"> <b>Pathogenic score calculation</b> </h2>
     <div>
       
-      <p>The Structural Variant (SV) pathogenic score is computed for each of the genes considered to be affected by the SV, i.e. candidate genes. Candidate genes are those genes whose regulatory domain (TAD) or sequence (e.g gene deletion) is altered by the SV. A candidate gene is not necessarily involved in the disease etiology (i.e. candidate genes include both disease causative and non-causative genes)</p>
+      <p>Pathogenic scores are computed for each of the genes considered to be affected by the SV, i.e. candidate genes. Candidate genes are those genes whose regulatory domain (TAD) or sequence (e.g gene deletion) is altered by the SV. A candidate gene is not necessarily involved in the disease etiology (i.e. candidate genes include both disease causative and non-causative genes)</p>
       
       <p>For each candidate gene and cell type/tissue where the SV pathogenicity is evaluated, two pathogenic scores are computed:</p>
       <ul>
@@ -64,7 +64,7 @@ phenotype associated with the SV).
       
       <p>The pathogenic score for LOF and GOF is obtained as a result of averaging the different subscores. If any of them (pathogenic score for LOF or GOF) is higher than 0.8 it will be considered as potentially pathogenic and additional information will be provided through the results overview heatmap.</p>
       
-      <p>NOTE: When checking the pathogenic scores results table, some of the different subscores may have a value of "Ignored". This is because that subscore has been ignored when computing the pathogenicity. For instance, when modeling the pathogenic effect of a gene deletion and computing the pathogenic score for LOF, the <i>geneEnhancerScore</i> will appear as "Ignored", since long-range effects are not considered when the candidate gene sequence has been disrupted. At the same time, regarding the pathogenic score for GOF for the same scenario (gene deletion), all the subscores will be "Ignored", given that a pathogenic gain of expression is not feasible if the candidate gene has been deleted.<b><a target="_blank" href="https://www.biorxiv.org/content/10.1101/2022.06.20.496902v1">If you want to know more about POSTRE pathogenic score calculation, please check our manuscript </a></b></p>
+      <p>NOTE: When checking the pathogenic scores results table, some of the different subscores may have a value of "Ignored". This is because that subscore has been ignored when computing the pathogenicity. For instance, when modeling the pathogenic effect of a gene deletion and computing the pathogenic score for LOF, the <i>geneEnhancerScore</i> will appear as "Ignored", since long-range effects are not considered when the candidate gene sequence has been disrupted. At the same time, regarding the pathogenic score for GOF for the same scenario (gene deletion), all the subscores will be "Ignored", given that a pathogenic gain of expression is not feasible if the candidate gene has been deleted.<b><a target="_blank" href="https://www.biorxiv.org/content/10.1101/2022.06.20.496902v1">If you want to know more about POSTRE pathogenic score calculation, please check our manuscript </a></b>.</p>
     <br>
         </div>
     </div>
