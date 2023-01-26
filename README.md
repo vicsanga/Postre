@@ -1,10 +1,5 @@
 # POSTRE
 POSTRE: Prediction Of STRuctural variant Effects
-<h2>IMPORTANT: POSTRE update in progress</h2>
-A new version of POSTRE has been uploaded (January 20, 2023). The new version is very similar with the previous one but some changes and new functionalities have been incorporated. During this week the tutorial videos and documentation will be updated.
-<h2> </h2>
-<br>
-
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
@@ -52,9 +47,12 @@ The data must be stored in a plain text file with column values separated by tab
 <br><br>
 An example file can be found <a href="https://github.com/vicsanga/Postre/blob/main/testFiles/ExampleMultipleSubmission.tsv" target="_blank">here</a> (to download it: (1) right-click the "Raw" button at the top of the file, (2) select Save Link As…, (3) choose the location on your computer where you want to save the file, and (4) select Save).  Additional test files can also be downloaded from the <a href="https://github.com/vicsanga/Postre/tree/main/testFiles" target="_blank">testFiles</a> folder.
 <br><br>
-Upon the analysis of multiple SVs two main tables are provided. The first one (Results per SV and phenotype) is a table with a pathogenic prediction for each of the SVs and associated phenotypes analyzed. The second one (Results per gene and phenotype) is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range). Perform a Multiple SV Submission with one of the test files and check "How to navigate this section?" for more details.
+Upon the analysis of multiple SVs two main tables are provided. The first one (Results per SV and phenotype) is a table with a pathogenic prediction for each of the SVs and associated phenotypes analyzed. The second one (Results per gene and phenotype) is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range). Perform a Multiple SV Submission with one of the test files and check "How to navigate through this page?" section for more details.
 <br><br>
-A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis will be provided shortly.
+A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis is provided in the following video.
+
+[![Postre MultiSV analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/MultipleSV.png?raw=true)](https://youtu.be/c36Oa3QuNls "Postre MultiSV analysis")
+
 <br><br>
 <h2 id="Installation">How to install and run POSTRE?</h2>
 

@@ -57,7 +57,7 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
     
     ##To plot nice header
     if(targetSection=="HowToNavigateResults"){
-      sectionTag<-"How to navigate this section?"
+      sectionTag<-"How to navigate through this page?"
     }else if(targetSection=="resultsPerSV"){
       sectionTag<-"Results per SV and phenotype"
     }else if(targetSection=="resultsPerGene"){
