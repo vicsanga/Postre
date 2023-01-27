@@ -51,7 +51,7 @@ Upon the analysis of multiple SVs two main tables are provided. The first one (R
 <br><br>
 A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis is provided in the following video.
 
-[![Postre MultiSV analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/MultipleSV.png?raw=true)](https://youtu.be/UBYoa79hJko "Postre MultiSV analysis")
+[![Postre MultiSV analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/Multiple_SV.png?raw=true)](https://youtu.be/UBYoa79hJko "Postre MultiSV analysis")
 
 <br><br>
 <h2 id="Installation">How to install and run POSTRE?</h2>
