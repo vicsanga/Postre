@@ -153,7 +153,13 @@ multipleStats_htmlGeneration<-function(cohort_results, consideredPheno, ids_appe
 <li><b>Submit SV for prediction</b>: Introduce the SV ID for the SV of interest to generate the results (e.g. graphical abstracts, explanatory reports) as provided through a Single SV Submission.</li>
 </ul>
 <br>
-A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis will be provided shortly.
+A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis is provided in the following video.
+<br><br>
+  <div class ='videotutorialExplPreviousPat'> 
+    <p align='center'>
+      <iframe width='640' height='360' src='https://www.youtube.com/embed/UBYoa79hJko' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>
+        </p>
+        </div>
 <br>
 ",
                                          
