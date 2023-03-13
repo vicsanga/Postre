@@ -2,13 +2,6 @@
 ### POSTRE (Prediction of STRuctural variant Effects)
 ########################################################
 
-##Do not repeat devStages or phases Names! Even for different phenotypes!!
-
-##To consider bioconductor repos
-##To avoid this error: https://community.rstudio.com/t/deployment-error-unable-to-determine-the-location-for-some-packages/102312
-# options(repos = BiocManager::repositories())
-#options('repos')
-
 library(shiny)
 library(waiter)
 library(shinybusy)
@@ -19,6 +12,13 @@ library(plotrix)##For enhancers, ellipse shape representation
 library(shape)##For curve arrows representation
 library(diagram)##For curve arrows representation
 
+##To consider bioconductor repos
+##To avoid this error: https://community.rstudio.com/t/deployment-error-unable-to-determine-the-location-for-some-packages/102312
+# options(repos = BiocManager::repositories())
+#options('repos')
+
+
+###########################################################
 ###Setwd in the folder where all the app info is hosted
 # setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
 
@@ -53,188 +53,12 @@ relevantChr<-c(paste("chr",1:22,sep = ""), "chrX")##chrY excluded not all data a
 
 #To avoid navbar collapse in smaller screens
 # https://stackoverflow.com/questions/21738417/bootstrap-remove-responsive-from-navbar
-navbar_js<-"@media (max-width: 768px) {
-    .navbar-header {
-        float: left;
-    }
-
-    .navbar {
-        border-radius: 4px;
-        min-width: 400px;
-    }
-
-    .nav-tabs-justified > li > a {
-        border-bottom: 1px solid #ddd;
-        border-radius: 4px 4px 0 0;
-    }
-    .nav-tabs-justified > .active > a,
-    .nav-tabs-justified > .active > a:hover,
-    .nav-tabs-justified > .active > a:focus {
-        border-bottom-color: #fff;
-    }
-
-    .nav-justified > li {
-        display: table-cell;
-        width: 1%;
-    }
-    .nav-justified > li > a {
-        margin-bottom: 0;
-    }
-
-    .nav-tabs.nav-justified > li > a {
-        border-bottom: 1px solid #ddd;
-        border-radius: 4px 4px 0 0;
-    }
-    .nav-tabs.nav-justified > .active > a,
-    .nav-tabs.nav-justified > .active > a:hover,
-    .nav-tabs.nav-justified > .active > a:focus {
-        border-bottom-color: #fff;
-    }
-
-    .nav-tabs.nav-justified > li {
-        display: table-cell;
-        width: 1%;
-    }
-    .nav-tabs.nav-justified > li > a {
-        margin-bottom: 0;
-    }
-
-    .navbar-right .dropdown-menu {
-        right: 0;
-        left: auto;
-    }
-    .navbar-right .dropdown-menu-left {
-        right: auto;
-        left: 0;
-    }
-    .container {
-        min-width: 400px;
-    }
-
-    .navbar-collapse {
-        width: auto;
-        border-top: 0;
-        box-shadow: none;
-    }
-    .navbar-collapse.collapse {
-        display: block !important;
-        height: auto !important;
-        padding-bottom: 0;
-        overflow: visible !important;
-    }
-    .navbar-collapse.in {
-        overflow-y: visible;
-    }
-    .navbar-fixed-top .navbar-collapse,
-    .navbar-static-top .navbar-collapse,
-    .navbar-fixed-bottom .navbar-collapse {
-        padding-right: 0;
-        padding-left: 0;
-    }
-
-    .container > .navbar-header,
-    .container-fluid > .navbar-header,
-    .container > .navbar-collapse,
-    .container-fluid > .navbar-collapse {
-        margin-right: 0;
-        margin-left: 0;
-    }
-
-    .navbar-static-top {
-        border-radius: 0;
-    }
-
-    .navbar-fixed-top,
-    .navbar-fixed-bottom {
-        border-radius: 0;
-    }
-
-    .navbar-toggle {
-        display: none;
-    }
-
-    .navbar-nav {
-        float: left;
-        margin: 0;
-    }
-    .navbar-nav > li {
-        float: left;
-    }
-    .navbar-nav > li > a {
-        padding-top: 15px;
-        padding-bottom: 15px;
-    }
-    .navbar-nav.navbar-right:last-child {
-        margin-right: -15px;
-    }
-
-    .navbar-left {
-        float: left !important;
-    }
-    .navbar-right {
-        float: right !important;
-    }
-
-    .navbar-form .form-group {
-        display: inline-block;
-        margin-bottom: 0;
-        vertical-align: middle;
-    }
-    .navbar-form .form-control {
-        display: inline-block;
-        width: auto;
-        vertical-align: middle;
-    }
-    .navbar-form .control-label {
-        margin-bottom: 0;
-        vertical-align: middle;
-    }
-    .navbar-form .radio,
-    .navbar-form .checkbox {
-        display: inline-block;
-        padding-left: 0;
-        margin-top: 0;
-        margin-bottom: 0;
-        vertical-align: middle;
-    }
-    .navbar-form .radio input[type='radio'],
-    .navbar-form .checkbox input[type='checkbox'] {
-        float: none;
-        margin-left: 0;
-    }
-    .navbar-form .has-feedback .form-control-feedback {
-        top: 0;
-    }
-
-    .navbar-form {
-        width: auto;
-        padding-top: 0;
-        padding-bottom: 0;
-        margin-right: 0;
-        margin-left: 0;
-        border: 0;
-        -webkit-box-shadow: none;
-                box-shadow: none;
-    }
-    .navbar-form.navbar-right:last-child {
-        margin-right: -15px;
-    }
-
-    .navbar-text {
-        float: left;
-        margin-right: 15px;
-        margin-left: 15px;
-    }
-    .navbar-text.navbar-right:last-child {
-        margin-right: 0;
-    } 
-}"
+# navbar_js<-""
 
 ui <-function(req){
   
   return(div(
     class="container",
-    ##Mirar esto del title que no me acaba lo de meterlo como si no existiera nada
     div(class="titleBrowser",
         titlePanel(title="POSTRE: Prediction Of STRuctural variant Effects")
     ),
@@ -271,24 +95,7 @@ ui <-function(req){
                                             div(class="inp2",
                                                 ##Patient Phenotype
                                                 wellPanel(           
-                                                  # selectInput(
-                                                  # inputId = "phenoPatient",
-                                                  # label = "Phenotype",
-                                                  # ##Choices full name is then matched & renamed in GenomicData_Loader.R
-                                                  # ##Alphabet order
-                                                  # choices = c("Cardiovascular",
-                                                  #             "Head & Neck",
-                                                  #             "Limbs",
-                                                  #             "Neurodevelopmental"
-                                                  # ),
-                                                  # selected ="Head & Neck" )
-                                                  
-                                                  # https://shiny.rstudio.com/reference/shiny/1.6.0/checkboxGroupInput.html
                                                   checkboxGroupInput(inputId = "phenoPatient", label = "Phenotype",
-                                                                     # c("Head & Neck" = "head_neck",
-                                                                     #   "Cardiovascular" = "cardiovascular",
-                                                                     #   "Limbs" = "limbs",
-                                                                     #   "Neurodevelopmental" = "neurodevelopmental"),
                                                                      c("Cardiovascular" = "cardiovascular",
                                                                        "Head & Neck" = "head_neck",
                                                                        "Limbs" = "limbs",
@@ -345,14 +152,6 @@ ui <-function(req){
                                             #################################
                                             ##Adding Advanced Features Menu
                                             #################################
-                                            ##Selecting Running Mode
-                                            ##Drop down menu shiny
-                                            #https://rdrr.io/cran/shinyWidgets/man/dropdown.html
-                                            ##No me acaba, hacer tipo webGestalt
-                                            # https://www.w3schools.com/howto/howto_js_collapsible.asp
-                                            ##https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible
-                                            ##Con la parte de AddIcons
-                                            ##Y pillar el html que genera Shiny, yeah
                                             
                                             div(class="inp6",
                                                 wellPanel(HTML('
@@ -494,12 +293,8 @@ for (i = 0; i < coll.length; i++) {
                                 ## Multiple SV Input Panel
                                 ######################
                                 div(class="sideBarClassMultiple",
-                                    ##If I put here on the html, h2 tag it gets styled as the header, so style features 
-                                    ##are connected
-                                    
-                                    #START MULTIPLE SUBMISSION
                                     div(class="formAndTitle_patient_Multiple_Input",
-                                        ##Patient SV type
+ 
                                         HTML('<h2 id="titleSideBarPannel">Upload Multiple Structural Variants with Phenotypes</h2>'),
                                         div(class="patientMultipleFormulary",
                                             
@@ -509,12 +304,14 @@ for (i = 0; i < coll.length; i++) {
                                                   label="Select File",
                                                   multiple = FALSE,
                                                   accept = "*"
-                                                ))#,style = "padding: 5px; padding-bottom:0px;")
+                                                ))
                                             ),
                                             
-                                            ##Selecting Running Mode
+                                            #################################
+                                            ##Adding Advanced Features Menu
+                                            #################################
                                             div(class="multipleSVRunMode",
-                                                ##Meter aqui la info del panel de Advanced Features
+                                                
                                                 wellPanel(HTML('
 <div class="WrapperAdvancedFeatures">
 <button class="collapsibleAdvancedFeaturesMultiple" id="buttonMultipleSubmAdvancedFeatures">Advanced Parameters [+]</button>
@@ -665,8 +462,6 @@ for (i = 0; i < coll.length; i++) {
                                 includeHTML("html_scripts/UserGuide_page.html")
                             )
                    )
-                   ,
-                   tags$head(tags$style(HTML(navbar_js)))
         )
     ), 
     #####################
@@ -681,7 +476,7 @@ for (i = 0; i < coll.length; i++) {
 
 server <- function(input, output, session){
   
-  ##Defining phenotypes currenlty accepted by POSTRE, 
+  ##Defining phenotypes currently accepted by POSTRE, 
   ##Variable used in downstream computations
   ##When doing multiple patient and pheno analysis, considered pheno
   ##If not here,  not do prediction
@@ -1001,14 +796,13 @@ server <- function(input, output, session){
             userTadProcessed<-TRUE
           }
           
-          ##To track wehter user_tadMapInfo must be used or not in downstream functions
+          ##To track wether user_tadMapInfo must be used or not in downstream functions
           patientData$userTADmap<-"yes"
 
           
         }
        
         ##If there is an error the following instruction will not be terminated
-        # browser()
         patientResults_singlePhenoPrediction<-masterWrapperSinglePrediction(patientInfo = patientData , minScore = minScore, 
                                                                             highScore = highScore, runMode = runMode_single,
                                                                             user_tadMapInfo = user_tadMapInfo,
@@ -1044,9 +838,6 @@ server <- function(input, output, session){
     }
     
     ###Merge results from the different phenotypes to create the master Output HTML
-    ##input$phenoPatient and patientResults, objects to be passed as parameters
-    # heatmapSummary
-    # patientResults$`Head & Neck`$heatmapSummary
     patientResults<-mergingMultiPhenoPredictions(patientResults = patientResults, selectedPheno = input$phenoPatient, allPostreAvailablePheno = consideredPheno)
  
     ##Stoping waiter
@@ -1056,7 +847,6 @@ server <- function(input, output, session){
   
   #########################################################################
   ## Single SV submission From User Guide
-  ## Here, as a proof of concept, only dealing with 1 phenotype per patient
   patientResults_2<-eventReactive(input$click_SingleSubmissionUserGuide, {
     ###Adding-Initializing waiter
     show_modal_spinner(text = HTML("Running Prediction <br>
@@ -1136,8 +926,7 @@ server <- function(input, output, session){
     
     ##Stoping waiter
     remove_modal_spinner()
-    #removeModal()
-    
+
     return(patientResults)
     
   })
@@ -1174,16 +963,8 @@ server <- function(input, output, session){
       ##Trimws to avoid problems with spaces before or after the word
       targetPatient<-trimws(input$aggregatedResults_svID_ExplorePreviousPat)
       
-      ##Capturing selected phenotype
-      # targetPhenoSV<-input$aggregatedResults_phenoId_ExplorePreviousPat
-      ##All phenotypes associated with the patient will be considered
-      
-      
       ##Filtering database patients information
       filt_InfoDBsvs<-subset(AllPatientsInfo,patientID == targetPatient )
-      ##Ahora mismo los phenos estan entrando aqui con los nombres para filtrar la tabla
-      ##Check pheno that user specified is indeed associated with the SV of interest
-      #sv_has_The_Pheno<-grepl(pattern = targetPhenoSV, x = filt_InfoDBsvs$Phenotype)
 
       ##Checking data is correct
       if(nrow(filt_InfoDBsvs)!=1){
@@ -1328,16 +1109,9 @@ server <- function(input, output, session){
       ##Trimws to avoid problems with spaces before or after the word
       targetPatient<-trimws(input$aggregatedResults_svID_MultipleSVSubmission)
       
-      ##Capturing selected phenotype
-      # targetPhenoSV<-input$aggregatedResults_phenoId_MultipleSVSubmission
-      ##All phenotypes associated with the patient will be considered
-      
       ##Filtering database patients information
       filt_InfoDBsvs<-subset(multiSV_uploadedFile_AllPatientsInfo,patientID == targetPatient )
-      ##Ahora mismo los phenos estan entrando aqui con los nombres para filtrar la tabla
-      ##Check pheno that user specified is indeed associated with the SV of interest
-      # sv_has_The_Pheno<-grepl(pattern = targetPhenoSV, x = filt_InfoDBsvs$Phenotype)
-      
+
       ##Checking data is correct
       if(nrow(filt_InfoDBsvs)!=1){
         ##Apparently the relation sv-pheno does not exist in the database, or for any reason there is a repeated SVID or the SVid is wrongly introduced
@@ -1349,12 +1123,9 @@ server <- function(input, output, session){
       
       ###
       ##Running configuration as runMode etc is already recorded on the patient Info from the multipleSV submission
-      ##Regarding refGenome it was necessary liftover, here the coordinates already liftovered
-      #browser()
-      patientInfo$runMode
-      patientInfo$genePhenoConsideration
-      patientInfo$userTADmap
-      
+      ## eg in patientInfo$runMode or patientInfo$genePhenoConsideration
+      ##Regarding refGenome ifit was necessary liftover, here the coordinates already liftovered
+
       ##Changing patientID by SV_ID for the html table output.
       colnames(patientInfo)[colnames(patientInfo)=="patientID"]<-"SV_ID"
       
@@ -1385,8 +1156,6 @@ server <- function(input, output, session){
             return(patientResults_singlePhenoPrediction)
             
           })
-          
-          
           
           ############################################
           #If status error, generate the error html
@@ -1521,11 +1290,6 @@ server <- function(input, output, session){
       
       multiData$chr_Break2<-as.character(multiData$chr_Break2)
       multiData$coord_Break2<-as.character(multiData$coord_Break2)
-      #######################################
-      #multiple_patientResults<-list()
-      
-      # multiple_patientResults$patientsInfo<-multiData ##At the end, with the resulting df upon editing patients info if liftover required
-      
       ##Capturing runMode
       runMode_Multiple<-as.character(input$runMode_Multiple)
       
@@ -1711,19 +1475,8 @@ server <- function(input, output, session){
 
         # browser() ##To store some table output
         # candidateGenesInfo<-cohort_results$candidateGenesInfo
+        # And now save object
         
-        #Esta para guardar positive controls del table2 con Standard Mode
-        # save(candidateGenesInfo,
-        #      file = "~/Dropbox/Cantabria/PhD_Project/Resultados/softwareObjects/Robjects/candidateGenesInfo_PositiveControls_Table2_StandardMode.RData")
-        
-        #Esta para guardar positive controls del table2 con High Specificity Mode
-        # save(candidateGenesInfo,
-        #      file = "~/Dropbox/Cantabria/PhD_Project/Resultados/softwareObjects/Robjects/candidateGenesInfo_PositiveControls_Table2_HighSpecificityMode.RData")
-        
-        #Esta fue para guardar los positive controls table 1 and 2
-        # save(candidateGenesInfo,
-        #      file = "~/Dropbox/Cantabria/PhD_Project/Resultados/softwareObjects/Robjects/candidateGenesInfo_PositiveControls_Table1and2.RData")
-
         #########################################
         ## Generating HTML from Parsed results
         #########################################

@@ -588,7 +588,7 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##I'm going to apply same style as for heatmap numbers collapsible sections, so we are going to repeat the button classes
   ##And so on because we want them to look the same
   
-  ##Adding heatmap numbers section
+  ##Adding SV considered information
   whole_html<-paste(whole_html,
                     "<div class='numbersHeatmap'>",
                     ##The first class,  collapsible_subsectionMainResults a secas, es para el estilo del boton, la segunda ,que integra el fenotipo para el responsiveness
@@ -601,8 +601,31 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
                     patientInfo_html,
                     "</div>",
                     "</div>",
+                    "<br>",
                     sep="",
                     collapse="")
+  
+  
+  ##Adding Info for each of the cell types or tissues considered
+  whole_html<-paste(whole_html,
+                    "<div class='numbersHeatmap'>",
+                    ##The first class,  collapsible_subsectionMainResults a secas, es para el estilo del boton, la segunda ,que integra el fenotipo para el responsiveness
+                    "<button type='button' class='collapsible_subsectionMainResults collapsible_subsectionMainResults_",
+                    patientResults$patientInfo$Phenotype,
+                    "'>",
+                    "<span style='font-size:22px'>Cell Types/Tissues considered per Phenotype</span>",
+                    "</button>",
+                    "<div class='content_subsectionMainResults'>",
+                    "If you want to know more about the different cell types/tissues considered for each phenotype, check the 
+                    <a href='Supplementary_Data_1.html' target='_blank'> Cell types/tissues per phenotype File </a>.",
+                    "</div>",
+                    "</div>",
+                    "<br>",
+                    sep="",
+                    collapse="")
+  
+  
+  
   
   
   ##########################################

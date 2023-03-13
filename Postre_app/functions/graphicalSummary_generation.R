@@ -563,17 +563,20 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               ###Creating canvas for plotting
               yAxisLim<-c(-50,30)
               
+              ##tagEnhancersLabel to avoid enhancershancers when neoTAD painting, to avoid overlap
+              
+              tagEnhancersLabel<-"enhancers"
+              
               ##Defining xAxis Width
-              if((gene_mechanism == "LongRange_geneDuplication") && (SV_landing == "InterTAD")){
+              if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication") ) && (SV_landing == "InterTAD")){
                 ##xAxiss wider if NEO TAD because a third tad will be painted
                 ##Usar un lienzo mas grande, due to NEO-TAD situation
                 xAxisLim<-c(-15,55)
+                tagEnhancersLabel<-"Enh."
                 
               }else{
                 xAxisLim<-c(0,40)
               }
-              
-              
               
               
               yPos_chr_WT<-13 ##variable to hold the position of the chr text  in the WT situation in the Y axis
@@ -652,7 +655,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                          gene = gene,
                                                          gene_breakp_line_type = gene_breakp_line_type,
                                                          situation = situation,
-                                                         patientResults = patientResults)
+                                                         patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                   
                   geneCenter<-info_drawingGENE_TAD$geneCenter
                   
@@ -676,7 +679,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                             otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                             situation = situation,
                                                                             geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                            patientResults = patientResults)
+                                                                            patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                   
                 }else if(situation == "primaryTAD_Dextral"){
                   ########################
@@ -696,7 +699,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                          gene = gene,
                                                          gene_breakp_line_type = gene_breakp_line_type,
                                                          situation = situation,
-                                                         patientResults = patientResults)
+                                                         patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                   
                   geneCenter<-info_drawingGENE_TAD$geneCenter
                   
@@ -721,7 +724,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                             otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                             situation = situation,
                                                                             geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                            patientResults = patientResults)
+                                                                            patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                 }
                 
               }else if(situation == "primaryTAD_Central"){
@@ -751,7 +754,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                        gene = gene,
                                                        gene_breakp_line_type = gene_breakp_line_type,
                                                        situation = situation,
-                                                       patientResults = patientResults)
+                                                       patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                 
                 geneCenter<-info_drawingGENE_TAD$geneCenter
                 
@@ -828,7 +831,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                             tad_XCoord_OnLeftSide = tad_XCoord_OnLeftSide, 
                                                             tad_XCoord_OnRightSide = tad_XCoord_OnRightSide,
                                                             tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS)
+                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
                   
                   #Paint SecondaryTAD SV re-arranged
                   #The one where the gene of interest is not located
@@ -846,7 +849,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                               tad_XCoord_OnLeftSide = tad_XCoord_OnLeftSide, 
                                               tad_XCoord_OnRightSide = tad_XCoord_OnRightSide,
                                               tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                              infoDrawing_gene_sv_tad = infoDrawing_gene_sv_tad)
+                                              infoDrawing_gene_sv_tad = infoDrawing_gene_sv_tad,  tagEnhancersLabel = tagEnhancersLabel)
                   
                 }else if(sv_type=="Deletion"){
                   ##For Deletions, by long-range... so TAD disrupted... in any case intraTAD or betweenTADs only one TAD painted
@@ -863,7 +866,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                             info_drawingSecondaryTAD = info_drawingSecondaryTAD,
                                             tad_X_cord = tad_XCoord_OnCenter ,
                                             tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS)
+                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
                   
                 }else if(sv_type == "Duplication"){
                   
@@ -900,7 +903,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                      tad_X_cord = tad_XCoord_OnCenter ,
                                                                      tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
                                                                      geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                     patientResults = patientResults)
+                                                                     patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                     
                   }else{
                     ##Error, no concibo esta situacion ahora mismo
@@ -910,7 +913,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   
                   
                 }
-              }else if(gene_mechanism == "LongRange_geneDuplication"){
+              }else if((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication")){
                 ##Here it either can occur, NeoTAD if SV interTAD or be intraTAD, but for sure gene Duplicated
                 ##So two genes need to be painted
                 
@@ -960,7 +963,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                            gene = gene,
                                                            gene_breakp_line_type = gene_breakp_line_type,
                                                            situation = situation,
-                                                           patientResults = patientResults)
+                                                           patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                     
                     geneCenter<-info_drawingGENE_TAD$geneCenter
                     
@@ -982,7 +985,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                               otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                               situation = situation,
                                                                               geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                              patientResults = patientResults)
+                                                                              patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                     
                   }else if(situation == "primaryTAD_Dextral"){
                     ########################
@@ -1003,7 +1006,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                            gene = gene,
                                                            gene_breakp_line_type = gene_breakp_line_type,
                                                            situation = situation,
-                                                           patientResults = patientResults)
+                                                           patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                     
                     geneCenter<-info_drawingGENE_TAD$geneCenter
                     
@@ -1026,7 +1029,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                               otherDomain_breakp_line_type = otherDomain_breakp_line_type,
                                                                               situation = situation,
                                                                               geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                              patientResults = patientResults)
+                                                                              patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                   }
                   
                   ########################
@@ -1045,7 +1048,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                    info_drawingSecondaryTAD = info_drawingSecondaryTAD,
                                                    tad_X_cord = tad_XCoord_OnCenter ,
                                                    tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                                   geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS)
+                                                   geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
                   
                   
                   
@@ -1059,12 +1062,8 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                 
                 
                 
-              }else if((gene_mechanism == "Direct_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication")){
+              }else if(gene_mechanism == "Direct_geneDuplication"){
                 ##We paint two times only the gene, and enough...
-                
-                ##Direc_LongRange_geneDuplication
-                ##Means that equal likely that upreg by enh dup, that by gene expression...This is sth tricky
-                ##If this is the case, just paint the gene duplicated
                 
                 paint_Gene_Duplicated(gene = gene,
                                       xAxisLim = xAxisLim,

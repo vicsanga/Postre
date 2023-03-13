@@ -2,11 +2,12 @@
 ## Auxiliar Functions developed for Graphical Summary plotting
 ## Maybe this functions are only valid for Inversions And Translocations Between TADs
 ######################################################################################
+#tagEnhancersLabel #varComesFromMainEnvironment,based on if NeoTad painted to avoid overlap of enhancers text
 
 ##NOTE: To place text labels, take as reference the center point of interest,
 ##since the label is centered over that coordinate
 
-paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initial_right, gene, gene_breakp_line_type, situation, patientResults){
+paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initial_right, gene, gene_breakp_line_type, situation, patientResults, tagEnhancersLabel){
   ########################################################
   ## Function to paint GENE WT TAD Initial representation
   ########################################################
@@ -349,10 +350,10 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
                  y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
-    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label="enhancers", cex = 0.8)
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
     boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel
                  -distance_Yaxis_EnhGene,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
@@ -389,10 +390,10 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
                  y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
-    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label="enhancers", cex = 0.8)
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
     boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel
                  -distance_Yaxis_EnhGene,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
@@ -447,7 +448,7 @@ paintGene_WT_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_initial_left, nEnh_initi
   
 }
 
-paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_domain, geneCenter,otherDomain_breakp_line_type, situation, geneBreakP_Position_respectToTSS, patientResults){
+paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_domain, geneCenter,otherDomain_breakp_line_type, situation, geneBreakP_Position_respectToTSS, patientResults, tagEnhancersLabel){
   
   ##geneCenter needs to be known to paint the arrow orientations, towards the left or right
   
@@ -805,10 +806,10 @@ paint_Enhancer_WT_Secondary_TAD<-function(tad_X_cord, tad_Y_cord, nEnh_other_dom
                  y=enh_y_positions,a=0.1,col="#b2d235")
     
     #enhancers Label
-    #text(x=enhXpos + 0.4, y=-3, label="enhancers", cex = 0.8)
+    #text(x=enhXpos + 0.4, y=-3, label=tagEnhancersLabel, cex = 0.8)
     boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                  -distance_Yaxis_EnhLabel,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1.1 #To allow the text to breath

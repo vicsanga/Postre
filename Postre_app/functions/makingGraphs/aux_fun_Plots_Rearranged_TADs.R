@@ -1,7 +1,7 @@
 ###############################################################
 ## Script to hold the functions to plot the SV rearrangements
 ###############################################################
-
+#tagEnhancersLabel #varComesFromMainEnvironment,based on if NeoTad painted to avoid overlap of enhancers text
 
 ########################################################
 ## Function to paint GENE SV re-arranged TAD 
@@ -14,7 +14,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
                            info_drawingGENE_TAD, info_drawingSecondaryTAD,
                            tad_XCoord_OnLeftSide, tad_XCoord_OnRightSide,
                            tad_YCoord_Rearrangements,
-                           geneBreakP_Position_respectToTSS){
+                           geneBreakP_Position_respectToTSS,  tagEnhancersLabel){
   
   ########################################################
   ## Function to paint GENE SV re-arranged TAD 
@@ -399,11 +399,11 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
                      y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
         
         #enhancers Label
-        #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
+        #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label=tagEnhancersLabel, cex = 0.8)
         boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -456,7 +456,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -513,7 +513,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -567,7 +567,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -635,7 +635,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -685,7 +685,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
           boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                        -distance_Yaxis_geneLabel
                        -distance_Yaxis_EnhGene,
-                       labels = "enhancers", cex=0.8, 
+                       labels = tagEnhancersLabel, cex=0.8, 
                        border = NA, bg ="white", 
                        xpad=1,
                        ypad=1 #To allow the text to breath
@@ -733,7 +733,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -781,11 +781,11 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
                      y=enh_y_positions,a=0.1,col="#b2d235")
         
         #enhancers Label
-        #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
+        #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label=tagEnhancersLabel, cex = 0.8)
         boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -832,7 +832,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
           boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                        -distance_Yaxis_geneLabel
                        -distance_Yaxis_EnhGene,
-                       labels = "enhancers", cex=0.8, 
+                       labels = tagEnhancersLabel, cex=0.8, 
                        border = NA, bg ="white", 
                        xpad=1,
                        ypad=1 #To allow the text to breath
@@ -881,7 +881,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
         boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                      -distance_Yaxis_geneLabel
                      -distance_Yaxis_EnhGene,
-                     labels = "enhancers", cex=0.8, 
+                     labels = tagEnhancersLabel, cex=0.8, 
                      border = NA, bg ="white", 
                      xpad=1,
                      ypad=1 #To allow the text to breath
@@ -1004,7 +1004,7 @@ paintGene_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene, gene_bre
                  -distance_Yaxis_EnhGene
                  -distance_Yaxis_EnhLabel_EnhNumber
                  -distance_Yaxis_EnhLabel_EnhNumber,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
@@ -1081,7 +1081,7 @@ paintSecondaryDomain_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gen
                            info_drawingGENE_TAD, info_drawingSecondaryTAD,
                            tad_XCoord_OnLeftSide, tad_XCoord_OnRightSide,
                            tad_YCoord_Rearrangements,
-                           infoDrawing_gene_sv_tad){
+                           infoDrawing_gene_sv_tad, tagEnhancersLabel){
   
   ##########################################################################################
   #We are coloring in this function the re-arranged domain where the gen of interest is not
@@ -1461,7 +1461,7 @@ paintSecondaryDomain_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gen
     #Below the level of the other enhancers, to avoid overlaps
     boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                  -distance_Yaxis_EnhLabel,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
@@ -1593,7 +1593,7 @@ paintSecondaryDomain_SV_TAD<-function(nEnh_initial_left, nEnh_initial_right, gen
                  -distance_Yaxis_EnhLabel
                  -distance_Yaxis_EnhLabel_EnhNumber
                  -distance_Yaxis_EnhLabel_EnhNumber,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
@@ -1820,7 +1820,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
                            info_drawingGENE_TAD, info_drawingSecondaryTAD,
                            tad_X_cord,
                            tad_YCoord_Rearrangements,
-                           geneBreakP_Position_respectToTSS){
+                           geneBreakP_Position_respectToTSS, tagEnhancersLabel){
   
   ########################################################
   ## Function to paint GENE SV re-arranged TAD 
@@ -2266,11 +2266,11 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
                    y=enh_y_positions,a=0.1,col="#b2d235")
       
       #enhancers Label
-      #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
+      #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label=tagEnhancersLabel, cex = 0.8)
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -2323,7 +2323,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -2380,7 +2380,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -2434,7 +2434,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -2535,7 +2535,7 @@ paintGene_SV_Deletion_TAD<-function(nEnh_initial_left, nEnh_initial_right, gene,
                  -distance_Yaxis_EnhGene
                  -distance_Yaxis_EnhLabel_EnhNumber
                  -distance_Yaxis_EnhLabel_EnhNumber,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
@@ -2612,7 +2612,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
                                                      tad_X_cord,
                                                      tad_YCoord_Rearrangements,
                                                      geneBreakP_Position_respectToTSS,
-                                                     patientResults){
+                                                     patientResults, tagEnhancersLabel){
   
   #############################################################################################################
   ##We are dealing with intraTAD SV in this context (if not intraTAD this function is unreachable in the code)
@@ -2906,11 +2906,11 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
                    y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
       
       #enhancers Label
-      #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
+      #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label=tagEnhancersLabel, cex = 0.8)
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -2958,7 +2958,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3001,7 +3001,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3051,7 +3051,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3102,7 +3102,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3156,7 +3156,7 @@ paintGene_SV_Duplication_OnlyLongRange_Intra_TAD<-function(nEnh_initial_left, nE
       boxed.labels(x=enhXpos + (enh_x_positions[length(enh_x_positions)] - enh_x_positions[1])/2, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3301,7 +3301,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
                                            info_drawingGENE_TAD, info_drawingSecondaryTAD,
                                            tad_X_cord,
                                            tad_YCoord_Rearrangements,
-                                           geneBreakP_Position_respectToTSS){
+                                           geneBreakP_Position_respectToTSS, tagEnhancersLabel){
   
   ##Coded taking as reference paintGene_SV_Deletion_TAD()
   ##La unica diferencia es ... apuntar si hay alguna
@@ -3744,11 +3744,11 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
                    y=enh_y_positions,a=0.1,col="#b2d235")
       
       #enhancers Label
-      #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label="enhancers", cex = 0.8)
+      #text(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel              -distance_Yaxis_EnhGene, label=tagEnhancersLabel, cex = 0.8)
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3801,7 +3801,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3856,7 +3856,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -3910,7 +3910,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
       boxed.labels(x=enhXpos + 0.15, y=enh_y_positions[1]
                    -distance_Yaxis_geneLabel
                    -distance_Yaxis_EnhGene,
-                   labels = "enhancers", cex=0.8, 
+                   labels = tagEnhancersLabel, cex=0.8, 
                    border = NA, bg ="white", 
                    xpad=1,
                    ypad=1 #To allow the text to breath
@@ -4008,7 +4008,7 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
                  -distance_Yaxis_EnhGene
                  -distance_Yaxis_EnhLabel_EnhNumber
                  -distance_Yaxis_EnhLabel_EnhNumber,
-                 labels = "enhancers", cex=0.8, 
+                 labels = tagEnhancersLabel, cex=0.8, 
                  border = NA, bg ="white", 
                  xpad=1,
                  ypad=1 #To allow the text to breath
