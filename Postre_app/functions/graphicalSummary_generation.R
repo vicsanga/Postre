@@ -215,11 +215,9 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               }else if((gene_mechanism=="LongRange_geneDuplication") || (gene_mechanism=="Direct_LongRange_geneDuplication")){
                 ##It is predicted in intra TAD SV a longRange_geneDuplication
                 ##Basically the gene is active and gets duplicated with some enhancers
-                ##But the gene is duplicated inside of the TAD, and based on the algorithm the gene has to be active
-                # Bec gene_breakpoint == "Break1&2"
-                ##So just paint the gene as duplicated
-                
-                gene_breakp_line_type<-"surroundingGene"
+                #How to handle this scenario is done afterwards
+                #But it implies that the breakpoints have to be painted around the gene
+                geneBreakP_Position_respectToTSS<-"bothSides"##Particularities for this are considered afterwards in this script
                 
               }else{
                 ##Just generating this variable to avoid missing variable errors
@@ -446,18 +444,14 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                 
                 if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism =="Direct_LongRange_geneDuplication")) && (SV_landing == "IntraTAD")){
                   
-                
-                  ##It means, okey, THE GENE IS DUPLICATED AND some enhancers  are duplicated surrounding the gene,
+                  ##It means, THE GENE IS DUPLICATED AND some enhancers  are duplicated surrounding the gene,
                   #And it has been predicted a pathomech where enh could contribute... bec they are dupl
-                  #but the gene is active since it is a pathogenically predicted intra TAD SV by GOF
-                  #So only plot the gene duplicated, keep it simple for now
-                  ##FUTURE, IMPROVE THIS PLOT
                   
-                  ###For Now:
-                  ## Set n enhnacers initial and in the other TAD to 0
-                  ## If gene pathogenic effect by Direct Gene Truncation we do not care about enhancers
-                  ##So not painting them in the plot (achieved by enh = 0)
-                  ##But if in future we predict fusion transcripts... should be painted if that is the prediction
+                  ##################################################################
+                  ## IMPORTANT PARTICULARITIE. "nEnh_Kept...." tracks cognate enhancers, and nEnh_gained ectopic ones
+                  
+                  #Remembering the vars
+                  
                   # nEnh_initial_left
                   # nEnh_initial_right
                   # nEnh_other_domain
@@ -466,18 +460,15 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   # nEnh_kept_right
                   # nEnh_gained
                   
-                  ##nEnhGained refers to ectopic enh, and this is an IntraTAD SV
-                  #So ignore
-                  ##################################################################
-                  ## IMPORTANT PARTICULARITIE. "Kept" tracks cognate enhancers 
-                  ## So if nkept > intial is because some of the initial duplicated
+                  ## So if nkept > initial is because some of the initial duplicated
                   
+                  ##Tracking where to put the breakpoints regarding both sides of the gene
+                  ##Here we need to paint 2 breakpoints
                   gene_breakp_line_type<-list()
                   
                   ##Tener en cuenta ambos breakpoints
                   ##For left breakp
                   if(nEnh_kept_left == nEnh_initial_left ){
-                    ##for now, does not matter wheter it had initially or not
                     gene_breakp_line_type$LeftBreakp<-"beforeTSS_duplic_none"##we will put the line between gene and enh
                     
                   }else if(nEnh_kept_left == 2*nEnh_initial_left){
@@ -489,7 +480,6 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   
                   ##For right Breakpoint
                   if(nEnh_kept_right == nEnh_initial_right){
-                    ##for now, does not matter wheter it had initially or not
                     gene_breakp_line_type$RightBreakp<-"afterTSS_duplic_none"##we will put the line between gene and enh
                     
                   }else if(nEnh_kept_right == 2*nEnh_initial_right ){
@@ -623,11 +613,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               fullOutpPath<-paste0(outpPath, gene,"_",targetMech, "_", phase,"_", patientResults$job_UniCode, ".png")
               
 
-              
-              
-               
-              ##Do a try catch, If i get an error, just PLOT
-              ##Error on graphical abstract generation. Pq esto va a generar bastantes crasheos
+              ##Do a try catch, If i get an error, just PLOT "Error on graphical abstract generation".
               
               tryCatch({
                 
@@ -825,8 +811,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   
                   if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism =="Direct_LongRange_geneDuplication")) && (SV_landing == "IntraTAD")){
                     
-                    # browser()
-                    
+                    #Two breakpoints around the gene are painted
                     info_drawingGENE_TAD<-paintGene_WT_TAD_intraTADdupWithEnh(tad_X_cord = tad_X_cord,
                                                                           tad_Y_cord = tad_YCoord_WildTypeLine,
                                                                           nEnh_initial_left = nEnh_initial_left, 
@@ -999,6 +984,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                       
                     }else{
                       ##Error, no concibo esta situacion ahora mismo
+                      ## Since regulatory domain stays the same
                       stop("I don't contemplate how this can happen sensibly right now")
                     }
                     
@@ -1147,12 +1133,9 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     
                     
                   }else {
-                    #It would be intraTAD dup, where pathogenic mech by enh dup and not by gene dup
-                    #...rare, attending to what I have stated before
-                    ##Error, no concibo esta situacion ahora mismo
-                    # stop("I don't contemplate how this can happen sensibly right now")
-                    
-                    ##This is the SATB2 and FOXG1 situation where both scores are large buth long-range slightly larger...
+                    #It would be intraTAD dup, where  gene is duplicated and enh are also predicted to contribute
+                    ##This is the SATB2 and FOXG1 situation where both scores (coding and long-range) are large buth long-range slightly larger...
+                    #Painting just the duplicated gene to keep it simple
                     paint_Gene_Duplicated(gene = gene,
                                           xAxisLim = xAxisLim,
                                           tad_X_cord = tad_XCoord_OnCenter,

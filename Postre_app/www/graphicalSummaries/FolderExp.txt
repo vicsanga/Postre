@@ -1,0 +1,2 @@
+##Folder with automatically generated images for the analysed SV
+##Images will be removed upon job resubmission

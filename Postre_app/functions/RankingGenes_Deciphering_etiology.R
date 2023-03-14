@@ -530,6 +530,10 @@ rankingGenes<-function(genesData, phase, runMode, patientInfo){
           ##For those whose TAD is entirely duplicated we are not even considering where the enhancers are located
           
           if(info_gene[,"TypeDomainInitial"]=="TAD_disrupted"){
+            ###################################################
+            ## The gene is duplicated and its TAD is disrupted
+            ###################################################
+            
             ##It will take into account nEnh before and after, as with LongRange translocation, inversion, or deletion
             gof_score_metadata_longRange<-eval_Gof_indirectEffect_score(matrixPhase = matrixPhase, 
                                                                         geneTransversalData = geneTransversalData,
@@ -542,9 +546,13 @@ rankingGenes<-function(genesData, phase, runMode, patientInfo){
             gof_score_longRange<-gof_score_metadata_longRange$finalScore
             
           }else{
+            ############################################
+            ##This means the WHOLE TAD IS DUPLICATED
+            ############################################
             ##We assign this score to 0, so that this can never be higher than the one by direct effect
             # gof_score_longRange<-0
             ##We assign this score to 0, so that this can never be higher than the one by direct effect
+            
             gof_score_metadata_longRange<-list("finalScore"=0,
                                                "geneEnhancerScore"=NA,
                                                "genePhenoScore"=NA,
@@ -557,7 +565,7 @@ rankingGenes<-function(genesData, phase, runMode, patientInfo){
             
           }
           
-          ###SEGUIR POR AQUI, HE DE METER EL DE _METADATA Y LUEGO PILLAR EL VALOR DEL FINAL SCORE
+          ####Computing coding effect
           gof_score_metadata_directEffect<-eval_Gof_directEffect_score(matrixPhase = matrixPhase, 
                                                                        geneTransversalData = geneTransversalData,
                                                                        phenoScore = phenoScore_GOF,
