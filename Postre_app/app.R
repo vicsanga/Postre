@@ -803,6 +803,7 @@ server <- function(input, output, session){
         }
        
         ##If there is an error the following instruction will not be terminated
+        # browser()
         patientResults_singlePhenoPrediction<-masterWrapperSinglePrediction(patientInfo = patientData , minScore = minScore, 
                                                                             highScore = highScore, runMode = runMode_single,
                                                                             user_tadMapInfo = user_tadMapInfo,

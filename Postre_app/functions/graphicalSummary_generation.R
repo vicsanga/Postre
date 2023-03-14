@@ -212,6 +212,15 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   geneBreakP_Position_respectToTSS <-"afterTSS"
                 }
                 
+              }else if((gene_mechanism=="LongRange_geneDuplication") || (gene_mechanism=="Direct_LongRange_geneDuplication")){
+                ##It is predicted in intra TAD SV a longRange_geneDuplication
+                ##Basically the gene is active and gets duplicated with some enhancers
+                ##But the gene is duplicated inside of the TAD, and based on the algorithm the gene has to be active
+                # Bec gene_breakpoint == "Break1&2"
+                ##So just paint the gene as duplicated
+                
+                gene_breakp_line_type<-"surroundingGene"
+                
               }else{
                 ##Just generating this variable to avoid missing variable errors
                 ##On function call eventhough won't be used
@@ -427,45 +436,106 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               ################################################################################
               ##Duplications have their own kind of particularities so let's treat them a part
               ################################################################################
-              
+            
               ##Focusing on duplic that enh can be triggering the disease
               if((gene_mechanism == "LongRange") || ##In this case the gene is not duplicated
                  (gene_mechanism == "LongRange_geneDuplication") ||
                  (gene_mechanism =="Direct_LongRange_geneDuplication")){
                 
-                ##################################################################
-                ## IMPORTANT PARTICULARITIE. "Kept" tracks cognate enhancers 
-                ## So if nkept > intial is because some of the initial duplicated
                 
-                if(geneBreakP_Position_respectToTSS=="afterTSS"){
-                  ##It implies the breakpoint is after the TSS (bigger position):
-                  ##Check n enh kept on the right
-                  if(nEnh_kept_right == nEnh_initial_right){
-                    ##for now, does not matter wheter it had initially or not
-                    gene_breakp_line_type<-"afterTSS_duplic_none"##we will put the line between gene and enh
-                    
-                  }else if(nEnh_kept_right == 2*nEnh_initial_right ){
-                    gene_breakp_line_type<-"afterTSS_duplic_all" 
-                    
-                  }else if(nEnh_kept_right > nEnh_initial_right){
-                    gene_breakp_line_type<-"afterTSS_duplic_some" ##we will put the line between enh
-                  }
+                
+                if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism =="Direct_LongRange_geneDuplication")) && (SV_landing == "IntraTAD")){
                   
-                }else if(geneBreakP_Position_respectToTSS=="beforeTSS"){
-                  ##It implies the breakpoint is before the TSS (smaller position):
-                  ##Check nEnh kept on the left
+                
+                  ##It means, okey, THE GENE IS DUPLICATED AND some enhancers  are duplicated surrounding the gene,
+                  #And it has been predicted a pathomech where enh could contribute... bec they are dupl
+                  #but the gene is active since it is a pathogenically predicted intra TAD SV by GOF
+                  #So only plot the gene duplicated, keep it simple for now
+                  ##FUTURE, IMPROVE THIS PLOT
+                  
+                  ###For Now:
+                  ## Set n enhnacers initial and in the other TAD to 0
+                  ## If gene pathogenic effect by Direct Gene Truncation we do not care about enhancers
+                  ##So not painting them in the plot (achieved by enh = 0)
+                  ##But if in future we predict fusion transcripts... should be painted if that is the prediction
+                  # nEnh_initial_left
+                  # nEnh_initial_right
+                  # nEnh_other_domain
+                  # 
+                  # nEnh_kept_left
+                  # nEnh_kept_right
+                  # nEnh_gained
+                  
+                  ##nEnhGained refers to ectopic enh, and this is an IntraTAD SV
+                  #So ignore
+                  ##################################################################
+                  ## IMPORTANT PARTICULARITIE. "Kept" tracks cognate enhancers 
+                  ## So if nkept > intial is because some of the initial duplicated
+                  
+                  gene_breakp_line_type<-list()
+                  
+                  ##Tener en cuenta ambos breakpoints
+                  ##For left breakp
                   if(nEnh_kept_left == nEnh_initial_left ){
                     ##for now, does not matter wheter it had initially or not
-                    gene_breakp_line_type<-"beforeTSS_duplic_none"##we will put the line between gene and enh
+                    gene_breakp_line_type$LeftBreakp<-"beforeTSS_duplic_none"##we will put the line between gene and enh
                     
                   }else if(nEnh_kept_left == 2*nEnh_initial_left){
-                    gene_breakp_line_type<-"beforeTSS_duplic_all"##all enhancer on that side duplicated
+                    gene_breakp_line_type$LeftBreakp<-"beforeTSS_duplic_all"##all enhancer on that side duplicated
                     
                   }else if(nEnh_kept_left > nEnh_initial_left){
-                    gene_breakp_line_type<-"beforeTSS_duplic_some" ##we will put the line between enh
+                    gene_breakp_line_type$LeftBreakp<-"beforeTSS_duplic_some" ##we will put the line between enh
                   }
                   
+                  ##For right Breakpoint
+                  if(nEnh_kept_right == nEnh_initial_right){
+                    ##for now, does not matter wheter it had initially or not
+                    gene_breakp_line_type$RightBreakp<-"afterTSS_duplic_none"##we will put the line between gene and enh
+                    
+                  }else if(nEnh_kept_right == 2*nEnh_initial_right ){
+                    gene_breakp_line_type$RightBreakp<-"afterTSS_duplic_all" 
+                    
+                  }else if(nEnh_kept_right > nEnh_initial_right){
+                    gene_breakp_line_type$RightBreakp<-"afterTSS_duplic_some" ##we will put the line between enh
+                  }
+                  
+                }else{
+                  ##################################################################
+                  ## IMPORTANT PARTICULARITIE. "Kept" tracks cognate enhancers 
+                  ## So if nkept > intial is because some of the initial duplicated
+                  
+                  if(geneBreakP_Position_respectToTSS=="afterTSS"){
+                    ##It implies the breakpoint is after the TSS (bigger position):
+                    ##Check n enh kept on the right
+                    if(nEnh_kept_right == nEnh_initial_right){
+                      ##for now, does not matter wheter it had initially or not
+                      gene_breakp_line_type<-"afterTSS_duplic_none"##we will put the line between gene and enh
+                      
+                    }else if(nEnh_kept_right == 2*nEnh_initial_right ){
+                      gene_breakp_line_type<-"afterTSS_duplic_all" 
+                      
+                    }else if(nEnh_kept_right > nEnh_initial_right){
+                      gene_breakp_line_type<-"afterTSS_duplic_some" ##we will put the line between enh
+                    }
+                    
+                  }else if(geneBreakP_Position_respectToTSS=="beforeTSS"){
+                    ##It implies the breakpoint is before the TSS (smaller position):
+                    ##Check nEnh kept on the left
+                    if(nEnh_kept_left == nEnh_initial_left ){
+                      ##for now, does not matter wheter it had initially or not
+                      gene_breakp_line_type<-"beforeTSS_duplic_none"##we will put the line between gene and enh
+                      
+                    }else if(nEnh_kept_left == 2*nEnh_initial_left){
+                      gene_breakp_line_type<-"beforeTSS_duplic_all"##all enhancer on that side duplicated
+                      
+                    }else if(nEnh_kept_left > nEnh_initial_left){
+                      gene_breakp_line_type<-"beforeTSS_duplic_some" ##we will put the line between enh
+                    }
+                    
+                  }
                 }
+                
+
                 
               } else if(gene_mechanism == "Direct_geneDuplication"){
                 ############################
@@ -542,6 +612,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
             ##So track it on the list of Not, main candidates
             
             if(gene_breakpoint != "NotClear_BreakpointAssociation"){
+             
               ##So we generate graphical Abstract 
               ##We will see what to do with NotClear_BreakpointAssociation, but for now skip to avoid crash
               ###########
@@ -551,399 +622,96 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               ##outpPath<-"graphicalSummaries/"
               fullOutpPath<-paste0(outpPath, gene,"_",targetMech, "_", phase,"_", patientResults$job_UniCode, ".png")
               
-              #############################
-              ## Loading auxiliar functions for plotting
-              ##source("functions/aux_functions_forGraphicalSummary.R")
+
               
-              ####################################
-              ##png with maximum resolution 300dpi
-              png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
-              ##x11()
-              ##########################################
-              ###Creating canvas for plotting
-              yAxisLim<-c(-50,30)
               
-              ##tagEnhancersLabel to avoid enhancershancers when neoTAD painting, to avoid overlap
+               
+              ##Do a try catch, If i get an error, just PLOT
+              ##Error on graphical abstract generation. Pq esto va a generar bastantes crasheos
               
-              tagEnhancersLabel<-"enhancers"
-              
-              ##Defining xAxis Width
-              if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication") ) && (SV_landing == "InterTAD")){
-                ##xAxiss wider if NEO TAD because a third tad will be painted
-                ##Usar un lienzo mas grande, due to NEO-TAD situation
-                xAxisLim<-c(-15,55)
-                tagEnhancersLabel<-"Enh."
+              tryCatch({
                 
-              }else{
-                xAxisLim<-c(0,40)
-              }
-              
-              
-              yPos_chr_WT<-13 ##variable to hold the position of the chr text  in the WT situation in the Y axis
-              
-              ##Adjust image, to exclude spaces outside canvas (drawing area)
-              par(mar = c(0,0,0,0))
-              
-              #When I want to se the axis, uncomment the 3 following lines
-              # plot(x=1:2, y=1:2, type="n",
-              #       ylim=yAxisLim,
-              #       xlim=xAxisLim)
-              
-              ##OPTION REMOVING AXIS
-              #UPON COMPLETION USING THIS
-              plot(x=0:20, y=0:20, type = "n",
-                   ylim = yAxisLim,
-                   xlim = xAxisLim,
-                   xaxt = 'n', yaxt = 'n', bty = 'n', pch = '', ylab = '', xlab = '') ##Upon completion, REMOVE AXIS
-              
-              ##############################################################################
-              ##############################################################################
-              
-              texSizeChr<-2
-              # enhNumbersSize<-1##Some variables for text sizes
-              
-              #Adding plot header
-              text(x=20, y=30, label=paste0("Graphical summary of ", gene, " regulatory domain in ", phase), cex = 1.7)
-              
-              text(x=20,y=26, label="Simplification",cex=1.7)
-              
-              #WT allelle label
-              text(x=20, y=20, label="Control Scenario", cex = 1.5)
-              
-              
-              ##Check whether the current Gene gene regulatory domain is disrupted or not (it can occur for deletions or duplications)
-              ##If the TAD gene is entirely deleted or duplicated, between the affected ones
-              ##We will know that this is occurring if the gene_breakpoint takes the value<-"No_AssociatedBreakpoint"
-              ##Still pendent to take into account if value: "NotClear_BreakpointAssociation"
-              
-              ##Again important to check whether gene regulatory domain altered or not
-              #Info derived from gene breakpoint
-              ##gene_regulatoryDomain_altered##TRUE OR FALSE
-              ##situation "primaryTAD_Central" means we only paint one tad in the middle cause it is not disrupted
-              
-              ##Coord for tads over X axis (Depending on the situation either two TADs or just one will be painted)
-              #Let's try make them wider two cm per side to ensure everything fits on the re-arrangement plots
-              tad_XCoord_OnLeftSide<-c(3,17,10)#c(5,15,10) ##c(3,17,10)
-              tad_XCoord_OnRightSide<-c(tad_XCoord_OnLeftSide[1]+10+11,
-                                        tad_XCoord_OnLeftSide[2]+10+11,
-                                        tad_XCoord_OnLeftSide[3]+10+11)
-              tad_XCoord_OnCenter<-c(13,27,20)
-              
-              #Over Y axis, WT line
-              tad_YCoord_WildTypeLine<-c(0,0,15)
-              
-              
-              
-              if(situation %in% c("primaryTAD_Sinistral", "primaryTAD_Dextral")){
-                ##So we paint two TADs cause gene breakpoint disrupts its regulatory domain, and re-shuffles it with another
+                ####################################
+                ##png with maximum resolution 300dpi
+                png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
                 
-                if(situation =="primaryTAD_Sinistral"){
-                  ########################
-                  ## PAINTING GENE-TAD ###
-                  ## on the left side 
-                  ########################
+                ##########################################
+                ###Creating canvas for plotting
+                yAxisLim<-c(-50,30)
+                
+                ##tagEnhancersLabel to avoid enhancershancers when neoTAD painting, to avoid overlap
+                
+                tagEnhancersLabel<-"enhancers"
+                
+                ##Defining xAxis Width
+                if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication")) && (SV_landing == "InterTAD")){
+                  ##xAxiss wider if NEO TAD because a third tad will be painted
+                  ##Usar un lienzo mas grande, due to NEO-TAD situation
+                  xAxisLim<-c(-15,55)
+                  tagEnhancersLabel<-"Enh."
                   
-                  text(x=5, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
-                  
-                  ##Creating TAD to represente gene WT scenario
-                  
-                  tad_X_cord<-tad_XCoord_OnLeftSide ##c(5,15,10)
-                  info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
-                                                         tad_Y_cord = tad_YCoord_WildTypeLine,
-                                                         nEnh_initial_left = nEnh_initial_left, 
-                                                         nEnh_initial_right = nEnh_initial_right,
-                                                         gene = gene,
-                                                         gene_breakp_line_type = gene_breakp_line_type,
-                                                         situation = situation,
-                                                         patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
-                  
-                  geneCenter<-info_drawingGENE_TAD$geneCenter
-                  
-                  # ##Adding interTAD dotted lines
-                  # paintInterTAD_WT_lines(tad_X_cord = c(5,15,10))
-                  
-                  ################################################
-                  ## PAINTING SECONDARY//OTHER AFFECTED DOMAIN ###
-                  ## on the right side 
-                  ################################################
-                  text(x=26, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
-                  ##Creating TAD to represente gene WT scenario
-                  tad_X_cord<-tad_XCoord_OnRightSide
-                  tad_Y_cord<-tad_YCoord_WildTypeLine
-                  ##Info returned used to represent the rearrangement
-                  
-                  info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
-                                                                            tad_Y_cord = tad_YCoord_WildTypeLine,
-                                                                            nEnh_other_domain = nEnh_other_domain,
-                                                                            geneCenter = geneCenter,
-                                                                            otherDomain_breakp_line_type = otherDomain_breakp_line_type,
-                                                                            situation = situation,
-                                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                            patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
-                  
-                }else if(situation == "primaryTAD_Dextral"){
-                  ########################
-                  ## PAINTING GENE-TAD ###
-                  ## on the Right Side side 
-                  ########################
-                  
-                  text(x=26, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
-                  
-                  ##Creating TAD to represente gene WT scenario
-                  tad_X_cord<-tad_XCoord_OnRightSide##c(5+10+11,15+10+11,10+10+11)
-                  ##Info returned used to represent the rearrangement
-                  info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
-                                                         tad_Y_cord = tad_YCoord_WildTypeLine,
-                                                         nEnh_initial_left = nEnh_initial_left, 
-                                                         nEnh_initial_right = nEnh_initial_right,
-                                                         gene = gene,
-                                                         gene_breakp_line_type = gene_breakp_line_type,
-                                                         situation = situation,
-                                                         patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
-                  
-                  geneCenter<-info_drawingGENE_TAD$geneCenter
-                  
-                  # ##Adding interTAD dotted lines
-                  # paintInterTAD_WT_lines(tad_X_cord = c(5,15,10))
-                  
-                  ################################################
-                  ## PAINTING SECONDARY//OTHER AFFECTED DOMAIN ###
-                  ## on the LEFT side 
-                  ################################################
-                  text(x=5, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
-                  ##Creating TAD to represente gene WT scenario
-                  tad_X_cord<-tad_XCoord_OnLeftSide
-                  tad_Y_cord<-tad_YCoord_WildTypeLine
-                  
-                  ##Info returned used to represent the rearrangement
-                  
-                  info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
-                                                                            tad_Y_cord = tad_YCoord_WildTypeLine,
-                                                                            nEnh_other_domain = nEnh_other_domain,
-                                                                            geneCenter = geneCenter,
-                                                                            otherDomain_breakp_line_type = otherDomain_breakp_line_type,
-                                                                            situation = situation,
-                                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                            patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                }else{
+                  xAxisLim<-c(0,40)
                 }
                 
-              }else if(situation == "primaryTAD_Central"){
-                ##So either the breakpoint falls in a different TAD, and this TAD is either duplicated or deleted entirely
-                ##Or both breakpoint fall inside of the same TAD
-                ##In any case, breakpoints do not affect its boundaries
                 
-                ##So paint it in the center
-                ##With breakpoints flanking theTAD upon a certain distance
-                ##source("functions/aux_functions_forGraphicalSummary.R")
+                yPos_chr_WT<-13 ##variable to hold the position of the chr text  in the WT situation in the Y axis
                 
-                ########################
-                ## PAINTING GENE-TAD ###
-                ## on the Center (Only one TAD painted)
-                ########################
+                ##Adjust image, to exclude spaces outside canvas (drawing area)
+                par(mar = c(0,0,0,0))
                 
-                text(x=tad_XCoord_OnCenter[1]+2, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
+                #When I want to se the axis, uncomment the 3 following lines
+                # plot(x=1:2, y=1:2, type="n",
+                #       ylim=yAxisLim,
+                #       xlim=xAxisLim)
                 
-                ##Creating TAD to represente gene WT scenario
+                ##OPTION REMOVING AXIS
+                #UPON COMPLETION USING THIS
+                plot(x=0:20, y=0:20, type = "n",
+                     ylim = yAxisLim,
+                     xlim = xAxisLim,
+                     xaxt = 'n', yaxt = 'n', bty = 'n', pch = '', ylab = '', xlab = '') ##Upon completion, REMOVE AXIS
                 
-                tad_X_cord<-tad_XCoord_OnCenter
+                ##############################################################################
+                ##############################################################################
                 
-                info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
-                                                       tad_Y_cord = tad_YCoord_WildTypeLine,
-                                                       nEnh_initial_left = nEnh_initial_left, 
-                                                       nEnh_initial_right = nEnh_initial_right,
-                                                       gene = gene,
-                                                       gene_breakp_line_type = gene_breakp_line_type,
-                                                       situation = situation,
-                                                       patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                texSizeChr<-2
+                # enhNumbersSize<-1##Some variables for text sizes
                 
-                geneCenter<-info_drawingGENE_TAD$geneCenter
+                #Adding plot header
+                text(x=20, y=30, label=paste0("Graphical summary of ", gene, " regulatory domain in ", phase), cex = 1.7)
                 
-              }
-              
-              
-              ###########################
-              ## Adding Label SV type
-              ###########################
-              ##source("functions/aux_functions_forGraphicalSummary.R")
-              paint_SV_labels(sv_type = sv_type, xAxisLim = xAxisLim, yAxisPos = -12.5)
-              
-              ##############################
-              ###Paint interTad arrows
-              ##############################
-              
-              ##Avoid if is translocation
-              ##For now remove, too noisy
-              # if(sv_type=="Inversion"){
-              #   paintInterTAD_arrows() 
-              # }
-              
-              ############################################################
-              ## Painting Patient Re-arranged Scenario ###################
-              ## Here is when plot changes, regarding SV
-              ############################################################
-              ##source("functions/makingGraphs/aux_fun_Plots_Rearranged_TADs.R")
-              
-              #Adding SV rearrangment header
-              #WT allelle label
-              text(x=20, y=20-40, label="Patient Scenario", cex = 1.5)
-              #text(x=20,y=18-30, label="Simplification",cex=1.2)
-              #text(x=20, y=16-30, label=paste0("Focusing on gene ", gene, " in phase ", phase), cex = 1.2)
-              
-              #Height at which TADs are displayed
-              tad_YCoord_Rearrangements<-tad_YCoord_WildTypeLine-40
-              
-              #############################################################################################################
-              ##Here, we need to differentiate depending on the SV
-              ##Also if gene direct effect, for LOF (as truncation or deletion), do not paint the whole rearrangement
-              #############################################################################################################
-              
-              if(gene_mechanism == "Direct_geneTruncation"){
-                ##Plot GeneTruncation. Only one plot in the middle no TAD painted
-                paint_Gene_Truncation(gene = gene,
-                                      xAxisLim = xAxisLim,
-                                      tad_X_cord = tad_XCoord_OnCenter,
-                                      tad_YCoord_Rearrangements = tad_YCoord_Rearrangements)
+                text(x=20,y=26, label="Simplification",cex=1.7)
                 
-              }else if(gene_mechanism == "Direct_geneDeletion"){
-                ##Plot GeneDeletion. Only one plot in the middle no TAD painted
-                paint_Gene_Deletion(gene = gene,
-                                    xAxisLim = xAxisLim,
-                                    tad_X_cord = tad_XCoord_OnCenter,
-                                    tad_YCoord_Rearrangements = tad_YCoord_Rearrangements)
+                #WT allelle label
+                text(x=20, y=20, label="Control Scenario", cex = 1.5)
                 
-              }else if(gene_mechanism == "LongRange"){
                 
-                if((sv_type=="Inversion") || (sv_type=="Translocation")){
-                  ##It implies a reshuffling of TADs, so no DNA gained or lost
-                  
-                  #Paint Gene SV re-arranged TAD
-                  infoDrawing_gene_sv_tad<-paintGene_SV_TAD(nEnh_initial_left = nEnh_initial_left, 
-                                                            nEnh_initial_right = nEnh_initial_right,
-                                                            gene = gene,
-                                                            gene_breakp_line_type = gene_breakp_line_type,
-                                                            situation = situation,
-                                                            nEnh_kept_left = nEnh_kept_left, 
-                                                            nEnh_kept_right = nEnh_kept_right,
-                                                            nEnh_gained = nEnh_gained,
-                                                            nEnh_other_domain = nEnh_other_domain,
-                                                            info_drawingGENE_TAD = info_drawingGENE_TAD, 
-                                                            info_drawingSecondaryTAD = info_drawingSecondaryTAD,
-                                                            tad_XCoord_OnLeftSide = tad_XCoord_OnLeftSide, 
-                                                            tad_XCoord_OnRightSide = tad_XCoord_OnRightSide,
-                                                            tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
-                  
-                  #Paint SecondaryTAD SV re-arranged
-                  #The one where the gene of interest is not located
-                  paintSecondaryDomain_SV_TAD(nEnh_initial_left = nEnh_initial_left, 
-                                              nEnh_initial_right = nEnh_initial_right,
-                                              gene = gene,
-                                              gene_breakp_line_type = gene_breakp_line_type,
-                                              situation = situation,
-                                              nEnh_other_domain = nEnh_other_domain,
-                                              nEnh_kept_left = nEnh_kept_left, 
-                                              nEnh_kept_right = nEnh_kept_right,
-                                              nEnh_gained = nEnh_gained,
-                                              info_drawingGENE_TAD = info_drawingGENE_TAD, 
-                                              info_drawingSecondaryTAD = info_drawingSecondaryTAD,
-                                              tad_XCoord_OnLeftSide = tad_XCoord_OnLeftSide, 
-                                              tad_XCoord_OnRightSide = tad_XCoord_OnRightSide,
-                                              tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                              infoDrawing_gene_sv_tad = infoDrawing_gene_sv_tad,  tagEnhancersLabel = tagEnhancersLabel)
-                  
-                }else if(sv_type=="Deletion"){
-                  ##For Deletions, by long-range... so TAD disrupted... in any case intraTAD or betweenTADs only one TAD painted
-                  paintGene_SV_Deletion_TAD(nEnh_initial_left = nEnh_initial_left, 
-                                            nEnh_initial_right = nEnh_initial_right,
-                                            gene = gene,
-                                            gene_breakp_line_type = gene_breakp_line_type,
-                                            situation = situation,
-                                            nEnh_kept_left = nEnh_kept_left, 
-                                            nEnh_kept_right = nEnh_kept_right,
-                                            nEnh_gained = nEnh_gained,
-                                            nEnh_other_domain = nEnh_other_domain,
-                                            info_drawingGENE_TAD = info_drawingGENE_TAD, 
-                                            info_drawingSecondaryTAD = info_drawingSecondaryTAD,
-                                            tad_X_cord = tad_XCoord_OnCenter ,
-                                            tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                            geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
-                  
-                }else if(sv_type == "Duplication"){
-                  
-                  ##In this context there is no gene duplication
-                  ###If we are facing a LongRange mechanism, and the gene is not duplicated, as it is happening in this case
-                  ###It must be intraTAD, because on the contrary, if a gene Not duplicated, and in a InterTAD SV, the gene regulatory 
-                  ##Domain remains as it was.
-                  
-                  ##If it is not intra-TAD, raise error, it can be an interTAD where breakpoint falls in enh...hence counted as lost
-                  ##So LOF happening by means of a Duplication... but rare. So if this is the case rise error to check what is going on
-                  
-                  
-                  ##Check if SV is intraTAD (primaryTAD_central or phaseIntegratedResults$SV_landing IntraTAD)
-                  
-                  ##To be a NeoTAD process the gene needs to be duplicated
-                  ##Check that THIS is INTRA-TAD  
-                  
-                  if(SV_landing == "IntraTAD"){
-                    
-                    #okey pintar
-                    ##Pintar el TAD con los enh, si hay mas que habian en un lado pintar 6 u 8 si se doblan todos
-                    ##Si hay menos... tal vez por duplication falling strictly in a enh... pintar menos.. Buff for now not considered
-                    paintGene_SV_Duplication_OnlyLongRange_Intra_TAD(nEnh_initial_left = nEnh_initial_left, 
-                                                                     nEnh_initial_right = nEnh_initial_right,
-                                                                     gene = gene,
-                                                                     gene_breakp_line_type = gene_breakp_line_type,
-                                                                     situation = situation,
-                                                                     nEnh_kept_left = nEnh_kept_left, 
-                                                                     nEnh_kept_right = nEnh_kept_right,
-                                                                     nEnh_gained = nEnh_gained,
-                                                                     nEnh_other_domain = nEnh_other_domain,
-                                                                     info_drawingGENE_TAD = info_drawingGENE_TAD, 
-                                                                     info_drawingSecondaryTAD = info_drawingSecondaryTAD,
-                                                                     tad_X_cord = tad_XCoord_OnCenter ,
-                                                                     tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                                                     geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
-                                                                     patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
-                    
-                  }else{
-                    ##Error, no concibo esta situacion ahora mismo
-                    stop("I don't contemplate how this can happen sensibly right now")
-                  }
-                  
-                  
-                  
-                }
-              }else if((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication")){
-                ##Here it either can occur, NeoTAD if SV interTAD or be intraTAD, but for sure gene Duplicated
-                ##So two genes need to be painted
+                ##Check whether the current Gene gene regulatory domain is disrupted or not (it can occur for deletions or duplications)
+                ##If the TAD gene is entirely deleted or duplicated, between the affected ones
+                ##We will know that this is occurring if the gene_breakpoint takes the value<-"No_AssociatedBreakpoint"
+                ##Still pendent to take into account if value: "NotClear_BreakpointAssociation"
                 
-                ## NEO-TAD processes. If interTAD
+                ##Again important to check whether gene regulatory domain altered or not
+                #Info derived from gene breakpoint
+                ##gene_regulatoryDomain_altered##TRUE OR FALSE
+                ##situation "primaryTAD_Central" means we only paint one tad in the middle cause it is not disrupted
                 
-                ##Filter for interTAD, if it is intraTAD i do not reasonably understand how this can be pathogenic
-                ##IF not considered as Direct or Direct_LonRange_geneDuplication
-                ##Because this would imply that gene poorly expressed, by cognate enh duplication pathogenic
-                ##And we are trying to prevent this from being a good candidate
+                ##Coord for tads over X axis (Depending on the situation either two TADs or just one will be painted)
+                #Let's try make them wider two cm per side to ensure everything fits on the re-arrangement plots
+                tad_XCoord_OnLeftSide<-c(3,17,10)#c(5,15,10) ##c(3,17,10)
+                tad_XCoord_OnRightSide<-c(tad_XCoord_OnLeftSide[1]+10+11,
+                                          tad_XCoord_OnLeftSide[2]+10+11,
+                                          tad_XCoord_OnLeftSide[3]+10+11)
+                tad_XCoord_OnCenter<-c(13,27,20)
+                
+                #Over Y axis, WT line
+                tad_YCoord_WildTypeLine<-c(0,0,15)
                 
                 
                 
-                if(SV_landing == "InterTAD" ){
-                  
-                  ######################
-                  ## NEO-TAD process
-                  ######################
-                  ##Left and Right TADs are painted same as WT at the sides
-                  ##So reuse the same script styling
-                  ##Situation can not be primary tad central
-                  
-                  ######################
-                  ## Painting borderTADs
-                  tad_Y_cord<-tad_YCoord_Rearrangements
-                  
-                  tad_XCoord_MoreLefted_OnLeftSide<-tad_XCoord_OnLeftSide - 10
-                  tad_XCoord_MoreRighted_OnRightSide<-tad_XCoord_OnRightSide + 10
-                  
-                  
-                  ##Modificar TAD X coord tirarlos mas a  los lados
+                if(situation %in% c("primaryTAD_Sinistral", "primaryTAD_Dextral")){
+                  ##So we paint two TADs cause gene breakpoint disrupts its regulatory domain, and re-shuffles it with another
                   
                   if(situation =="primaryTAD_Sinistral"){
                     ########################
@@ -951,13 +719,13 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     ## on the left side 
                     ########################
                     
-                    #text(x=5, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
+                    text(x=5, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
                     
                     ##Creating TAD to represente gene WT scenario
                     
-                    tad_X_cord<-tad_XCoord_MoreLefted_OnLeftSide
+                    tad_X_cord<-tad_XCoord_OnLeftSide ##c(5,15,10)
                     info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
-                                                           tad_Y_cord = tad_YCoord_Rearrangements,
+                                                           tad_Y_cord = tad_YCoord_WildTypeLine,
                                                            nEnh_initial_left = nEnh_initial_left, 
                                                            nEnh_initial_right = nEnh_initial_right,
                                                            gene = gene,
@@ -967,19 +735,21 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     
                     geneCenter<-info_drawingGENE_TAD$geneCenter
                     
+                    # ##Adding interTAD dotted lines
+                    # paintInterTAD_WT_lines(tad_X_cord = c(5,15,10))
                     
                     ################################################
                     ## PAINTING SECONDARY//OTHER AFFECTED DOMAIN ###
                     ## on the right side 
                     ################################################
-                    #text(x=26, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
+                    text(x=26, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
                     ##Creating TAD to represente gene WT scenario
-                    tad_X_cord<-tad_XCoord_MoreRighted_OnRightSide
-                    
+                    tad_X_cord<-tad_XCoord_OnRightSide
+                    tad_Y_cord<-tad_YCoord_WildTypeLine
                     ##Info returned used to represent the rearrangement
                     
                     info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
-                                                                              tad_Y_cord = tad_YCoord_Rearrangements,
+                                                                              tad_Y_cord = tad_YCoord_WildTypeLine,
                                                                               nEnh_other_domain = nEnh_other_domain,
                                                                               geneCenter = geneCenter,
                                                                               otherDomain_breakp_line_type = otherDomain_breakp_line_type,
@@ -993,14 +763,13 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     ## on the Right Side side 
                     ########################
                     
-                    #text(x=26, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
+                    text(x=26, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
                     
                     ##Creating TAD to represente gene WT scenario
-                    tad_X_cord<-tad_XCoord_MoreRighted_OnRightSide
-                    
+                    tad_X_cord<-tad_XCoord_OnRightSide##c(5+10+11,15+10+11,10+10+11)
                     ##Info returned used to represent the rearrangement
                     info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
-                                                           tad_Y_cord = tad_YCoord_Rearrangements,
+                                                           tad_Y_cord = tad_YCoord_WildTypeLine,
                                                            nEnh_initial_left = nEnh_initial_left, 
                                                            nEnh_initial_right = nEnh_initial_right,
                                                            gene = gene,
@@ -1010,20 +779,22 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                     
                     geneCenter<-info_drawingGENE_TAD$geneCenter
                     
+                    # ##Adding interTAD dotted lines
+                    # paintInterTAD_WT_lines(tad_X_cord = c(5,15,10))
                     
                     ################################################
                     ## PAINTING SECONDARY//OTHER AFFECTED DOMAIN ###
                     ## on the LEFT side 
                     ################################################
-                    #text(x=5, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
+                    text(x=5, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
                     ##Creating TAD to represente gene WT scenario
-                    tad_X_cord<-tad_XCoord_MoreLefted_OnLeftSide
-                    
+                    tad_X_cord<-tad_XCoord_OnLeftSide
+                    tad_Y_cord<-tad_YCoord_WildTypeLine
                     
                     ##Info returned used to represent the rearrangement
                     
                     info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
-                                                                              tad_Y_cord = tad_YCoord_Rearrangements,
+                                                                              tad_Y_cord = tad_YCoord_WildTypeLine,
                                                                               nEnh_other_domain = nEnh_other_domain,
                                                                               geneCenter = geneCenter,
                                                                               otherDomain_breakp_line_type = otherDomain_breakp_line_type,
@@ -1032,52 +803,418 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                               patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                   }
                   
+                }else if(situation == "primaryTAD_Central"){
+                  ##So either the breakpoint falls in a different TAD, and this TAD is either duplicated or deleted entirely
+                  ##Or both breakpoint fall inside of the same TAD
+                  ##In any case, breakpoints do not affect its boundaries
+                  
+                  ##So paint it in the center
+                  ##With breakpoints flanking theTAD upon a certain distance
+                  ##source("functions/aux_functions_forGraphicalSummary.R")
+                  
                   ########################
-                  ##Painting the NEO TAD 
+                  ## PAINTING GENE-TAD ###
+                  ## on the Center (Only one TAD painted)
                   ########################
-                  paintGene_SV_Duplication_NEO_TAD(nEnh_initial_left = nEnh_initial_left, 
-                                                   nEnh_initial_right = nEnh_initial_right,
-                                                   gene = gene,
-                                                   gene_breakp_line_type = gene_breakp_line_type,
-                                                   situation = situation,
-                                                   nEnh_kept_left = nEnh_kept_left, 
-                                                   nEnh_kept_right = nEnh_kept_right,
-                                                   nEnh_gained = nEnh_gained,
-                                                   nEnh_other_domain = nEnh_other_domain,
-                                                   info_drawingGENE_TAD = info_drawingGENE_TAD, 
-                                                   info_drawingSecondaryTAD = info_drawingSecondaryTAD,
-                                                   tad_X_cord = tad_XCoord_OnCenter ,
-                                                   tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
-                                                   geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
                   
+                  text(x=tad_XCoord_OnCenter[1]+2, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
                   
+                  ##Creating TAD to represente gene WT scenario
                   
+                  tad_X_cord<-tad_XCoord_OnCenter
                   
-                }else {
-                  #It would be intraTAD dup, where pathogenic mech by enh dup and not by gene dup
-                  #...rare, attending to what I have stated before
-                  ##Error, no concibo esta situacion ahora mismo
-                  stop("I don't contemplate how this can happen sensibly right now")
+                  if(((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism =="Direct_LongRange_geneDuplication")) && (SV_landing == "IntraTAD")){
+                    
+                    # browser()
+                    
+                    info_drawingGENE_TAD<-paintGene_WT_TAD_intraTADdupWithEnh(tad_X_cord = tad_X_cord,
+                                                                          tad_Y_cord = tad_YCoord_WildTypeLine,
+                                                                          nEnh_initial_left = nEnh_initial_left, 
+                                                                          nEnh_initial_right = nEnh_initial_right,
+                                                                          gene = gene,
+                                                                          gene_breakp_line_type = gene_breakp_line_type,
+                                                                          situation = situation,
+                                                                          patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                    
+                    
+                  }else{
+                    info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
+                                                           tad_Y_cord = tad_YCoord_WildTypeLine,
+                                                           nEnh_initial_left = nEnh_initial_left, 
+                                                           nEnh_initial_right = nEnh_initial_right,
+                                                           gene = gene,
+                                                           gene_breakp_line_type = gene_breakp_line_type,
+                                                           situation = situation,
+                                                           patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                    
+                    geneCenter<-info_drawingGENE_TAD$geneCenter 
+                  }
+                  
                 }
                 
                 
+                ###########################
+                ## Adding Label SV type
+                ###########################
+                ##source("functions/aux_functions_forGraphicalSummary.R")
+                paint_SV_labels(sv_type = sv_type, xAxisLim = xAxisLim, yAxisPos = -12.5)
                 
-              }else if(gene_mechanism == "Direct_geneDuplication"){
-                ##We paint two times only the gene, and enough...
+                ##############################
+                ###Paint interTad arrows
+                ##############################
                 
-                paint_Gene_Duplicated(gene = gene,
+                ##Avoid if is translocation
+                ##For now remove, too noisy
+                # if(sv_type=="Inversion"){
+                #   paintInterTAD_arrows() 
+                # }
+                
+                ############################################################
+                ## Painting Patient Re-arranged Scenario ###################
+                ## Here is when plot changes, regarding SV
+                ############################################################
+                ##source("functions/makingGraphs/aux_fun_Plots_Rearranged_TADs.R")
+                
+                #Adding SV rearrangment header
+                #WT allelle label
+                text(x=20, y=20-40, label="Patient Scenario", cex = 1.5)
+                #text(x=20,y=18-30, label="Simplification",cex=1.2)
+                #text(x=20, y=16-30, label=paste0("Focusing on gene ", gene, " in phase ", phase), cex = 1.2)
+                
+                #Height at which TADs are displayed
+                tad_YCoord_Rearrangements<-tad_YCoord_WildTypeLine-40
+                
+                #############################################################################################################
+                ##Here, we need to differentiate depending on the SV
+                ##Also if gene direct effect, for LOF (as truncation or deletion), do not paint the whole rearrangement
+                #############################################################################################################
+                
+                if(gene_mechanism == "Direct_geneTruncation"){
+                  ##Plot GeneTruncation. Only one plot in the middle no TAD painted
+                  paint_Gene_Truncation(gene = gene,
+                                        xAxisLim = xAxisLim,
+                                        tad_X_cord = tad_XCoord_OnCenter,
+                                        tad_YCoord_Rearrangements = tad_YCoord_Rearrangements)
+                  
+                }else if(gene_mechanism == "Direct_geneDeletion"){
+                  ##Plot GeneDeletion. Only one plot in the middle no TAD painted
+                  paint_Gene_Deletion(gene = gene,
                                       xAxisLim = xAxisLim,
                                       tad_X_cord = tad_XCoord_OnCenter,
                                       tad_YCoord_Rearrangements = tad_YCoord_Rearrangements)
+                  
+                }else if(gene_mechanism == "LongRange"){
+                  
+                  if((sv_type=="Inversion") || (sv_type=="Translocation")){
+                    ##It implies a reshuffling of TADs, so no DNA gained or lost
+                    
+                    #Paint Gene SV re-arranged TAD
+                    infoDrawing_gene_sv_tad<-paintGene_SV_TAD(nEnh_initial_left = nEnh_initial_left, 
+                                                              nEnh_initial_right = nEnh_initial_right,
+                                                              gene = gene,
+                                                              gene_breakp_line_type = gene_breakp_line_type,
+                                                              situation = situation,
+                                                              nEnh_kept_left = nEnh_kept_left, 
+                                                              nEnh_kept_right = nEnh_kept_right,
+                                                              nEnh_gained = nEnh_gained,
+                                                              nEnh_other_domain = nEnh_other_domain,
+                                                              info_drawingGENE_TAD = info_drawingGENE_TAD, 
+                                                              info_drawingSecondaryTAD = info_drawingSecondaryTAD,
+                                                              tad_XCoord_OnLeftSide = tad_XCoord_OnLeftSide, 
+                                                              tad_XCoord_OnRightSide = tad_XCoord_OnRightSide,
+                                                              tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
+                                                              geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
+                    
+                    #Paint SecondaryTAD SV re-arranged
+                    #The one where the gene of interest is not located
+                    paintSecondaryDomain_SV_TAD(nEnh_initial_left = nEnh_initial_left, 
+                                                nEnh_initial_right = nEnh_initial_right,
+                                                gene = gene,
+                                                gene_breakp_line_type = gene_breakp_line_type,
+                                                situation = situation,
+                                                nEnh_other_domain = nEnh_other_domain,
+                                                nEnh_kept_left = nEnh_kept_left, 
+                                                nEnh_kept_right = nEnh_kept_right,
+                                                nEnh_gained = nEnh_gained,
+                                                info_drawingGENE_TAD = info_drawingGENE_TAD, 
+                                                info_drawingSecondaryTAD = info_drawingSecondaryTAD,
+                                                tad_XCoord_OnLeftSide = tad_XCoord_OnLeftSide, 
+                                                tad_XCoord_OnRightSide = tad_XCoord_OnRightSide,
+                                                tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
+                                                infoDrawing_gene_sv_tad = infoDrawing_gene_sv_tad,  tagEnhancersLabel = tagEnhancersLabel)
+                    
+                  }else if(sv_type=="Deletion"){
+                    ##For Deletions, by long-range... so TAD disrupted... in any case intraTAD or betweenTADs only one TAD painted
+                    paintGene_SV_Deletion_TAD(nEnh_initial_left = nEnh_initial_left, 
+                                              nEnh_initial_right = nEnh_initial_right,
+                                              gene = gene,
+                                              gene_breakp_line_type = gene_breakp_line_type,
+                                              situation = situation,
+                                              nEnh_kept_left = nEnh_kept_left, 
+                                              nEnh_kept_right = nEnh_kept_right,
+                                              nEnh_gained = nEnh_gained,
+                                              nEnh_other_domain = nEnh_other_domain,
+                                              info_drawingGENE_TAD = info_drawingGENE_TAD, 
+                                              info_drawingSecondaryTAD = info_drawingSecondaryTAD,
+                                              tad_X_cord = tad_XCoord_OnCenter ,
+                                              tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
+                                              geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
+                    
+                  }else if(sv_type == "Duplication"){
+                    
+                    ##In this context there is no gene duplication
+                    ###If we are facing a LongRange mechanism, and the gene is not duplicated, as it is happening in this case
+                    ###It must be intraTAD, because on the contrary, if a gene Not duplicated, and in a InterTAD SV, the gene regulatory 
+                    ##Domain remains as it was.
+                    
+                    ##If it is not intra-TAD, raise error, it can be an interTAD where breakpoint falls in enh...hence counted as lost
+                    ##So LOF happening by means of a Duplication... but rare. So if this is the case rise error to check what is going on
+                    
+                    
+                    ##Check if SV is intraTAD (primaryTAD_central or phaseIntegratedResults$SV_landing IntraTAD)
+                    
+                    ##To be a NeoTAD process the gene needs to be duplicated
+                    ##Check that THIS is INTRA-TAD  
+                    
+                    if(SV_landing == "IntraTAD"){
+                      
+                      #okey pintar
+                      ##Pintar el TAD con los enh, si hay mas que habian en un lado pintar 6 u 8 si se doblan todos
+                      ##Si hay menos... tal vez por duplication falling strictly in a enh... pintar menos.. Buff for now not considered
+                      paintGene_SV_Duplication_OnlyLongRange_Intra_TAD(nEnh_initial_left = nEnh_initial_left, 
+                                                                       nEnh_initial_right = nEnh_initial_right,
+                                                                       gene = gene,
+                                                                       gene_breakp_line_type = gene_breakp_line_type,
+                                                                       situation = situation,
+                                                                       nEnh_kept_left = nEnh_kept_left, 
+                                                                       nEnh_kept_right = nEnh_kept_right,
+                                                                       nEnh_gained = nEnh_gained,
+                                                                       nEnh_other_domain = nEnh_other_domain,
+                                                                       info_drawingGENE_TAD = info_drawingGENE_TAD, 
+                                                                       info_drawingSecondaryTAD = info_drawingSecondaryTAD,
+                                                                       tad_X_cord = tad_XCoord_OnCenter ,
+                                                                       tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
+                                                                       geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
+                                                                       patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                      
+                    }else{
+                      ##Error, no concibo esta situacion ahora mismo
+                      stop("I don't contemplate how this can happen sensibly right now")
+                    }
+                    
+                    
+                    
+                  }
+                }else if((gene_mechanism == "LongRange_geneDuplication") || (gene_mechanism == "Direct_LongRange_geneDuplication")){
+                  
+                  ##Here it either can occur, NeoTAD if SV interTAD or be intraTAD, but for sure gene Duplicated
+                  ##So two genes need to be painted
+                  
+                  ## NEO-TAD processes. If interTAD
+                  
+                  ##Filter for interTAD, if it is intraTAD i do not reasonably understand how this can be pathogenic
+                  ##IF not considered as Direct or Direct_LonRange_geneDuplication
+                  ##Because this would imply that gene poorly expressed, by cognate enh duplication pathogenic
+                  ##And we are trying to prevent this from being a good candidate
+                  
+                  
+                  
+                  if(SV_landing == "InterTAD" ){
+                    
+                    ######################
+                    ## NEO-TAD process
+                    ######################
+                    ##Left and Right TADs are painted same as WT at the sides
+                    ##So reuse the same script styling
+                    ##Situation can not be primary tad central
+                    
+                    ######################
+                    ## Painting borderTADs
+                    tad_Y_cord<-tad_YCoord_Rearrangements
+                    
+                    tad_XCoord_MoreLefted_OnLeftSide<-tad_XCoord_OnLeftSide - 10
+                    tad_XCoord_MoreRighted_OnRightSide<-tad_XCoord_OnRightSide + 10
+                    
+                    
+                    ##Modificar TAD X coord tirarlos mas a  los lados
+                    
+                    if(situation =="primaryTAD_Sinistral"){
+                      ########################
+                      ## PAINTING GENE-TAD ###
+                      ## on the left side 
+                      ########################
+                      
+                      #text(x=5, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
+                      
+                      ##Creating TAD to represente gene WT scenario
+                      
+                      tad_X_cord<-tad_XCoord_MoreLefted_OnLeftSide
+                      info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
+                                                             tad_Y_cord = tad_YCoord_Rearrangements,
+                                                             nEnh_initial_left = nEnh_initial_left, 
+                                                             nEnh_initial_right = nEnh_initial_right,
+                                                             gene = gene,
+                                                             gene_breakp_line_type = gene_breakp_line_type,
+                                                             situation = situation,
+                                                             patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                      
+                      geneCenter<-info_drawingGENE_TAD$geneCenter
+                      
+                      
+                      ################################################
+                      ## PAINTING SECONDARY//OTHER AFFECTED DOMAIN ###
+                      ## on the right side 
+                      ################################################
+                      #text(x=26, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
+                      ##Creating TAD to represente gene WT scenario
+                      tad_X_cord<-tad_XCoord_MoreRighted_OnRightSide
+                      
+                      ##Info returned used to represent the rearrangement
+                      
+                      info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
+                                                                                tad_Y_cord = tad_YCoord_Rearrangements,
+                                                                                nEnh_other_domain = nEnh_other_domain,
+                                                                                geneCenter = geneCenter,
+                                                                                otherDomain_breakp_line_type = otherDomain_breakp_line_type,
+                                                                                situation = situation,
+                                                                                geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
+                                                                                patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                      
+                    }else if(situation == "primaryTAD_Dextral"){
+                      ########################
+                      ## PAINTING GENE-TAD ###
+                      ## on the Right Side side 
+                      ########################
+                      
+                      #text(x=26, y=yPos_chr_WT, label=chr_gene, cex = texSizeChr)
+                      
+                      ##Creating TAD to represente gene WT scenario
+                      tad_X_cord<-tad_XCoord_MoreRighted_OnRightSide
+                      
+                      ##Info returned used to represent the rearrangement
+                      info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
+                                                             tad_Y_cord = tad_YCoord_Rearrangements,
+                                                             nEnh_initial_left = nEnh_initial_left, 
+                                                             nEnh_initial_right = nEnh_initial_right,
+                                                             gene = gene,
+                                                             gene_breakp_line_type = gene_breakp_line_type,
+                                                             situation = situation,
+                                                             patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                      
+                      geneCenter<-info_drawingGENE_TAD$geneCenter
+                      
+                      
+                      ################################################
+                      ## PAINTING SECONDARY//OTHER AFFECTED DOMAIN ###
+                      ## on the LEFT side 
+                      ################################################
+                      #text(x=5, y=yPos_chr_WT, label=chr_oppositeDomain, cex = texSizeChr)
+                      ##Creating TAD to represente gene WT scenario
+                      tad_X_cord<-tad_XCoord_MoreLefted_OnLeftSide
+                      
+                      
+                      ##Info returned used to represent the rearrangement
+                      
+                      info_drawingSecondaryTAD<-paint_Enhancer_WT_Secondary_TAD(tad_X_cord = tad_X_cord,
+                                                                                tad_Y_cord = tad_YCoord_Rearrangements,
+                                                                                nEnh_other_domain = nEnh_other_domain,
+                                                                                geneCenter = geneCenter,
+                                                                                otherDomain_breakp_line_type = otherDomain_breakp_line_type,
+                                                                                situation = situation,
+                                                                                geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS,
+                                                                                patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
+                    }
+                    
+                    ########################
+                    ##Painting the NEO TAD 
+                    ########################
+                    paintGene_SV_Duplication_NEO_TAD(nEnh_initial_left = nEnh_initial_left, 
+                                                     nEnh_initial_right = nEnh_initial_right,
+                                                     gene = gene,
+                                                     gene_breakp_line_type = gene_breakp_line_type,
+                                                     situation = situation,
+                                                     nEnh_kept_left = nEnh_kept_left, 
+                                                     nEnh_kept_right = nEnh_kept_right,
+                                                     nEnh_gained = nEnh_gained,
+                                                     nEnh_other_domain = nEnh_other_domain,
+                                                     info_drawingGENE_TAD = info_drawingGENE_TAD, 
+                                                     info_drawingSecondaryTAD = info_drawingSecondaryTAD,
+                                                     tad_X_cord = tad_XCoord_OnCenter ,
+                                                     tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
+                                                     geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel)
+                    
+                    
+                    
+                    
+                  }else {
+                    #It would be intraTAD dup, where pathogenic mech by enh dup and not by gene dup
+                    #...rare, attending to what I have stated before
+                    ##Error, no concibo esta situacion ahora mismo
+                    # stop("I don't contemplate how this can happen sensibly right now")
+                    
+                    ##This is the SATB2 and FOXG1 situation where both scores are large buth long-range slightly larger...
+                    paint_Gene_Duplicated(gene = gene,
+                                          xAxisLim = xAxisLim,
+                                          tad_X_cord = tad_XCoord_OnCenter,
+                                          tad_YCoord_Rearrangements = tad_YCoord_Rearrangements)
+                    
+                  }
+                  
+                  
+                  
+                }else if(gene_mechanism == "Direct_geneDuplication"){
+                  ##We paint two times only the gene, and enough...
+                  
+                  paint_Gene_Duplicated(gene = gene,
+                                        xAxisLim = xAxisLim,
+                                        tad_X_cord = tad_XCoord_OnCenter,
+                                        tad_YCoord_Rearrangements = tad_YCoord_Rearrangements)
+                  
+                  
+                }
+                
+                #######################################
+                ## CLOSING && STORING PLOT ############
+                #######################################
+                
+                dev.off()##Saving Graph
+                
+              },error = function(err){
+                dev.off()
+                ####################################
+                ##png with maximum resolution 300dpi
+                print("ERROR")
+                png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
                 
                 
-              }
+                ##########################################
+                ###Creating canvas for plotting
+                ##OPTION REMOVING AXIS
+                #UPON COMPLETION USING THIS
+                xAxisLim<-c(0,40)
               
-              #######################################
-              ## CLOSING && STORING PLOT ############
-              #######################################
-              
-              dev.off()##Saving Graph
+                ##Adjust image, to exclude spaces outside canvas (drawing area)
+                par(mar = c(0,0,0,0))
+                
+                
+                yAxisLim<-c(0,20)
+                
+                plot(x=0:20, y=0:20, type = "n",
+                     ylim = yAxisLim,
+                     xlim = xAxisLim,
+                     xaxt = 'n', yaxt = 'n', bty = 'n', pch = '', ylab = '', xlab = '') ##Upon completion, REMOVE AXIS
+                
+                text(x=20,y=10, label="An internal error occurred during the graphical abstract generation.\n Please contact POSTRE developers to take a look at the error",cex=1.7)
+                
+                
+                #######################################
+                ## CLOSING && STORING PLOT ############
+                #######################################
+                
+                dev.off()##Saving Graph
+                
+                
+              })
             }
           }
         }
