@@ -954,7 +954,6 @@ server <- function(input, output, session){
     #############################
     ## Try to get the prediction
     
-    #When want to see error mssg uncomment the following line
     ##We have error handling at two levels, the intial one, or inside the patient, for a specific phenotype (second level error)
     patientResults<-tryCatch({
       ##If there is an error the following instruction will not be terminated

@@ -97,8 +97,8 @@ rankingGenes<-function(genesData, phase, runMode, patientInfo){
                                     "mainPhenotype_Through_OMIM_Human","mainPhenotype_Through_MGI_Mice")]
     
     ## phenoScore different for GOF than LOF so computing both, then use the one required depending the prediction
-    phenoScore_LOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = FALSE, patientInfo)
-    phenoScore_GOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = TRUE, patientInfo)
+    phenoScore_LOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = FALSE, patientInfo = patientInfo)
+    phenoScore_GOF<-phenoScore_fun(geneData = dataForPhenoScore, gof_case = TRUE, patientInfo = patientInfo)
     
     ###############################
     ###Deciphering Etiology

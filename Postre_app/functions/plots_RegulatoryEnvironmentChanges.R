@@ -4,8 +4,8 @@
 ## If direct impact. And no enh info... unnecessary
 ## Another image will be displayed in those conditions
 ####################################################################
-source("functions/sv_barplotting.R")
-source("functions/makingGraphs/regulatoryImpact_directEffects.R")
+source("functions/sv_barplotting.R", local = TRUE)
+source("functions/makingGraphs/regulatoryImpact_directEffects.R",local = TRUE)
 plots_regulatoryEnvironmentChanges<-function(patientResults){
 
   ##We are going to store the plots in the same folder than the graphical abstracts www/graphicalSummaries/

@@ -34,8 +34,12 @@ masterWrapperSinglePrediction<-function(patientInfo,minScore, highScore, runMode
     ##Compute the normal and expected graphics and reports
     ##Generating graphical summary for the interesting genes
     #Interesting genes are tracked on the returned object
-    patientResults<-graphicalSummary_generation(patientResults = patientResults,
-                                                minPathogenicScore = minScore)
+    
+    ##Graphical summary generation always generate a useless warning, remove
+    patientResults<-suppressWarnings(
+      graphicalSummary_generation(patientResults = patientResults,
+                                  minPathogenicScore = minScore)
+      )
     
     ##Generating EnhancerLanscapeChanges Barplots
     plots_regulatoryEnvironmentChanges(patientResults = patientResults)

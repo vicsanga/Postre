@@ -1,13 +1,6 @@
 Gene	Phenotype	N SVs	N SVs Long-Range	N SVs Coding	SV IDs	Long-Range SV IDs	Coding SV IDs
-SATB2	neurodevelopmental	6	0	6	SATB2_Coding_Nr1,SATB2_Coding_Nr2,SATB2_Coding_Nr3,SATB2_Coding_Nr4,SATB2_Coding_Nr5,SATB2_Coding_Nr6		SATB2_Coding_Nr1,SATB2_Coding_Nr2,SATB2_Coding_Nr3,SATB2_Coding_Nr4,SATB2_Coding_Nr5,SATB2_Coding_Nr6
-FOXG1	neurodevelopmental	5	0	5	FOXG1_Coding_Nr1,FOXG1_Coding_Nr2,FOXG1_Coding_Nr3,FOXG1_Coding_Nr4,FOXG1_Coding_Nr5		FOXG1_Coding_Nr1,FOXG1_Coding_Nr2,FOXG1_Coding_Nr3,FOXG1_Coding_Nr4,FOXG1_Coding_Nr5
-MEF2C	neurodevelopmental	4	0	4	MEF2C_Coding_Nr1,MEF2C_Coding_Nr2,MEF2C_Coding_Nr3,MEF2C_Coding_Nr4		MEF2C_Coding_Nr1,MEF2C_Coding_Nr2,MEF2C_Coding_Nr3,MEF2C_Coding_Nr4
-TFAP2A	head_neck	2	0	2	TFAP2A_Coding_Nr1,TFAP2A_Coding_Nr2		TFAP2A_Coding_Nr1,TFAP2A_Coding_Nr2
-DLX5	limbs	2	0	2	DLX5&6_Coding_Nr1,DLX5&6_Coding_Nr2		DLX5&6_Coding_Nr1,DLX5&6_Coding_Nr2
-PAX3	head_neck	1	0	1	PAX3_Coding_Nr1		PAX3_Coding_Nr1
-TWIST1	neurodevelopmental	1	1	0	SATB2_Coding_Nr1	SATB2_Coding_Nr1	
-OTX2	neurodevelopmental	1	1	0	SATB2_Coding_Nr2	SATB2_Coding_Nr2	
-EGR2	neurodevelopmental	1	1	0	SATB2_Coding_Nr3	SATB2_Coding_Nr3	
-CHD8	neurodevelopmental	1	0	1	FOXG1_Coding_Nr3		FOXG1_Coding_Nr3
-SLC2A1	neurodevelopmental	1	0	1	SLC2A1_Coding_Nr1		SLC2A1_Coding_Nr1
-COL1A2	limbs	1	0	1	DLX5&6_Coding_Nr2		DLX5&6_Coding_Nr2
+TFAP2A	head_neck	1	1	0	Patient_Nr1	Patient_Nr1	
+SOX9	head_neck	1	1	0	Patient_Nr2	Patient_Nr2	
+KCNJ2	limbs	1	1	0	Patient_Nr3	Patient_Nr3	
+PAX3	limbs	1	1	0	Patient_Nr4	Patient_Nr4	
+IHH	limbs	1	1	0	Patient_Nr5	Patient_Nr5	
