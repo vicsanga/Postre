@@ -110,7 +110,7 @@ POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatc
   ####################################
   ###Let's load required Functions
   ####################################
-  source("scripts_To_Load_Data/metaFunctionLoad.R")
+  source("scripts_To_Load_Data/metaFunctionLoad.R", local = TRUE)
   
   ##Required object for Single Prediction
   ##Loading multidata object, to avoid multiple reloading
