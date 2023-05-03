@@ -1396,7 +1396,7 @@ server <- function(input, output, session){
                                            sep="\t",
                                            stringsAsFactors = FALSE)
                     
-                    colnames(userTADmap)<-c("chr","start","end") ##For internal usage, patientID, for frontEnd SV_ID. To clearly show that a patient can carry multiple SVs
+                    colnames(userTADmap)<-c("chr","start","end") 
                     
                     ##Filter for chromosomes of interest
                     ## Consider all chr among all patients
@@ -1418,7 +1418,7 @@ server <- function(input, output, session){
                     userTadProcessed<-TRUE
                   }
                   
-                  ##To track wether user_tadMapInfo must be used or not in downstream functions
+                  ##To track whether user_tadMapInfo must be used or not in downstream functions
                   patientInfo$userTADmap<-"yes"
                   
                   ##Updating patientInfo with userTADmap "yes", so that it is clarified that the user tad map has been used for the prediction

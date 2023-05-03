@@ -3,29 +3,114 @@
 ## master R function for performing multiple SV analyses
 ##########################################################
 
-################################################################################################
-#USER HAS TO SET THIS!!!!
-# If you have downloaded POSTRE github folder, uncompress and provide path to Postre_app folder, eg:
-# setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
-setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
-################################################################################################
+################################################################################################################
+# USER HAS TO TO ADJUST THE FOLLOWING:
+# After downloading POSTRE github folder, uncompress it and get the path to "Postre_app" folder:
+# NOTE: modify the string attending to your path:
+pathTo_Postre_app_Folder<-"~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app"
+#################################################################################################################
 
+
+######################################
+### DO NOT MODIFY ANYTHING FROM HERE
+######################################
+
+#This script generates the function POSTRE_multiSV(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatch="yes")
+#Which allows to use POSTRE in an R script with just a function
+#To get POSTRE_multiSV in an R script, after setting the value pathTo_Postre_app_Folder, source this script (i.e. source(pathToThisScript)) from a different R script
+#And you will have this function available
+
+###############################################################
+#Information and options for the  input parameters:
+###############################################################
+
+##################
+##SVs: data frame with 7 columns containing SVs information 
+# Column 1: Chromosome for the breakpoint 1
+# Column 2: Genomic coordinates for the breakpoint 1. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.
+# Column 3: Chromosome for the breakpoint 2
+# Column 4: Genomic coordinates for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.
+# Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.
+# Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental or cardiovascular. For instance: head_neck,neurodevelopmental,cardiovascular.
+# Column 7: Structural variant unique identifier e.g. (Patient1_SV3)
+
+# Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplications) the breakpoint 1 is
+# the one associated with a smaller genomic coordinate, 
+# and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.
+
+#############
+# userTADmap: if not NULL, it has to be a data frame with 3 columns (chr, start, end) with the TAD coordinates
+# if a TAD map is provided, it will be taken as reference for the regulatory domains annotation for all cell types
+# if a TAD map is not provided (default, userTADmap=NULL) the ones considered in POSTRE database are taken as reference
+
+#############
+#runMode: 2 options ("Standard" or "High-Specificity")
+
+#############
+#genePhenoMatch: 2 options ("yes","no")
+# if "yes" (default) it is required a known association of the candidate genes with the patient phenotype for being pathogenic candidates (in terms of gene-phenotype association requirements)
+# if "no" it is enough for the candidate genes to be associated with any disease to be pathogenic candidates (in terms of gene-phenotype association requirements)
+
+
+
+###############################################################
+#Information and options for the  output parameters:
+###############################################################
+
+#The object returned by POSTRE_multiSV is a list with 3 different elements:
+
+#################################
+## pathogenicityPrediction_per_SV:
+# This table provides a pathogenic prediction for each of the SVs and associated phenotypes analyzed. It presents different columns:
+#   
+# SV ID: Identifier of the SV as provided in the file uploaded to POSTRE.
+# Phenotype: Phenotype associated with the SV considered for pathogenic evaluation.
+# Pathogenic Score: Pathogenic score (0-1) computed for the SV-phenotype association. It corresponds with the maximum pathogenic score computed for all the candidate genes.
+# Pathogenic: It indicates whether the SV-phenotype association is predicted pathogenic (Yes) or not (No).
+# Causative genes: List of genes predicted as disease causative. This cell will be empty if pathogenicity is not predicted.
+# Candidate genes (Pathogenic Score): List of candidate genes (gene whose regulatory domain (TAD) or sequence (e.g gene deletion) is altered by a SV). A candidate gene is not necessarily involved in the disease etiology (i.e. candidate genes include both causative and non-causative genes). For each candidate gene, the maximum pathogenic score (0-1) computed along all cell types considered is provided in brackets.
+
+
+#################################
+## geneStats_recurrencyAndPathomech
+# This table is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range). It presents different columns:
+#   
+# Gene: Name of the gene.
+# Phenotype: Phenotype associated with the gene where pathogenicity has been predicted.
+# N SVs: Number of SVs where pathogenicity has been predicted (either by coding or long-range pathogenic mechanisms).
+# N SVs Long-Range: Number of SVs where pathogenicity has been predicted through a long-range (enhancer mediated) pathogenic event.
+# N SVs Coding: Number of SVs where pathogenicity has been predicted through a coding mechanism (e.g. gene deletion).
+# SV IDs: Identifier of the SVs where pathogenicity has been predicted (either by coding or long-range pathogenic mechanisms).
+# Long-Range SV IDs: Identifier of the SVs where pathogenicity has been predicted through long-range (enhancer mediated) pathological mechanisms.
+# Coding SV IDs: Identifier of the SVs where pathogenicity has been predicted through coding (e.g. gene deletion) pathological mechanisms.
+
+
+########
+## errors: Contains the name of the SVs where an error was risen (if they occur)
+
+
+########################################
+## Generating POSTRE_multiSV function
+########################################
 
 POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatch="yes"){
+
+  ##Getting current working directory to return to it after function exectution
+  user_workingDirectory<-getwd()
   
+  #Setting as working directory Postre_app folder
+  setwd(pathTo_Postre_app_Folder)
   ##############################################
-  ##NO TOUCHING FROM HERE!!
-  ##############################################
+  
   consideredPheno<-c("head_neck",
                      "cardiovascular",
                      "limbs",
-                     "neurodevelopmental")##As more phenos considered they will appear here
+                     "neurodevelopmental")
   
   ####################################
   ###Let's load required Functions
   ####################################
-  # Load data into the default environment inside the function
-  source("scripts_To_Load_Data/metaFunctionLoad.R",local = environment())
+  source("scripts_To_Load_Data/metaFunctionLoad.R")
   
   ##Required object for Single Prediction
   ##Loading multidata object, to avoid multiple reloading
@@ -37,11 +122,7 @@ POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatc
   minScore<-0.8
   highScore<-0.9
   
-  
-  ###Meter como variables, todos los valores que  estan estaticos en el menu
   relevantChr<-c(paste("chr",1:22,sep = ""), "chrX")##chrY excluded not all data available for chrY
-  
-  #genePhenoMatch options: "yes"-"no"
   
   ##Setting column and row names to SVs file
   colnames(SVs)<-c("chr_Break1","coord_Break1","chr_Break2",
@@ -81,8 +162,7 @@ POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatc
   ##Phenos considered when we also have data form them (eg if patient limb but yet no limb data also not section)
   
   userTadProcessed<-FALSE ##To track if own TAD has to be processed and doing it only once 
-  start.time<-Sys.time()
-  
+
   for(patient in rownames(SVs)){
     
     nPatient<-nPatient+1
@@ -122,7 +202,7 @@ POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatc
               ##So, not processed yet
               ##Do processing
               
-              colnames(userTADmap)<-c("chr","start","end") ##For internal usage, patientID, for frontEnd SV_ID. To clearly show that a patient can carry multiple SVs
+              colnames(userTADmap)<-c("chr","start","end") 
               
               ## Filter for chromosomes of interest
               ## Consider all chr among all patients
@@ -143,7 +223,7 @@ POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatc
               userTadProcessed<-TRUE
             }
             
-            ##To track wether user_tadMapInfo must be used or not in downstream functions
+            ##To track whether user_tadMapInfo must be used or not in downstream functions
             patientInfo$userTADmap<-"yes"
             
             ##Updating patientInfo with userTADmap "yes", so that it is clarified that the user tad map has been used for the prediction
@@ -210,6 +290,11 @@ POSTRE_multiSV<-function(SVs, userTADmap=NULL, runMode="Standard", genePhenoMatc
   
   outpInfo$geneStats_recurrencyAndPathomech<-cohort_results$geneRecurrencyInfo
   outpInfo$errors<-cohort_results$error_General_Info
+  
+  ##Defining again as working directory the one that the user was using before executing the function
+  setwd(user_workingDirectory)
+  
+  ##Returning output object
   return(outpInfo)
   
 }
