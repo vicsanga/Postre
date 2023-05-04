@@ -141,7 +141,7 @@ source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
    <li><b>pathTo_Postre_app_Folder</b>: Provide the path to "Postre_app" folder (downloaded in Step 1): i.e.  pathTo_Postre_app_Folder="/home/victor/Downloads/Postre-main/Postre_app/"</li>
    </ul>
    <br>
-   Regarding the output, a list with three different elements are provided.
+   Regarding the output, a list with three different elements is provided.
    <ul>
    <li><b>pathogenicityPrediction_per_SV</b>: This table provides a pathogenic prediction for each of the SVs and associated phenotypes analyzed.</li>
    
