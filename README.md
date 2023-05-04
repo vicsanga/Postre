@@ -4,6 +4,7 @@ POSTRE: Prediction Of STRuctural variant Effects
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
       <li><a href="#Installation">How to install and run POSTRE?</a></li>
+      <li><a href="#Rfunction">Using POSTRE as an R function</a> (alternative to usage with graphical user interface)</li>
       <li><a href="#Help">Can we help you?</a></li>
 </ul>
 <h2 id="ExplanationPOSTRE"> <b>What is POSTRE?</b> </h2>
@@ -28,7 +29,7 @@ Watch POSTRE performance with a real patient in the following <a href="https://y
 
 <br><br>
 
-<h4>Analysing Multiple SVs</h4>
+<h4 id="multiSVanalyses">Analysing Multiple SVs</h4>
 The Multiple SV Submission box allows the sequential analysis of multiple structural variants (results can be downloaded as txt tables). The SVs may come from just one or multiple patients. The SVs information has to be uploaded in a specific format. The file format consists on 1 line and 7 columns per structural variant. Each structural variant must contain only two breakpoints. The information associated with each column is provided below:
       <br><br>
       <i>Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplications) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.</i>
@@ -115,6 +116,73 @@ The advantage of this approach is to provide other users in your organization ac
 
 <br><br>
 
+<h2 id="Rfunction">Using POSTRE as an R function</h2>
+
+If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to take profit of POSTRE latest version, to update POSTRE R function you will have to repeat the steps 1 and 2 each time a new version is released. <b>Latest version release date: 01/05/2023</b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
+
+
+Steps for using POSTRE as an R function:
+
+<ol>
+<li>Download POSTRE repository. For instance, compressed as .zip through the: "Code" GitHub button (green button at the top of the GitHub page) and uncompress it after downloading.</li>
+<li>In the R script where you want to use POSTRE R function, to load it, do a source of the POSTRE_multiSV.R script (i.e. source("/PathTo/Postre_app/POSTRE_multiSV.R")). This script is located inside of the "Postre_app" folder (script + folder are downloaded in Step 1).</li>
+
+Example:
+
+```R
+##This is an R script
+
+##Loading POSTRE R function
+source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
+```
+<li>POSTRE R function, named POSTRE_multiSV(), is already loaded in the R environment. To use it, it requires 2 mandatory arguments.
+   <ul>
+   <li><b>SVs</b>: Data frame with 7 columns containing the SVs information. You can use as an example, to generate the data frame, any of the test files provided in the GitHub testFiles folder. More information about how to define the SVs information is given in the  <a href="#multiSVanalyses">Analysing Multiple SVs section</a>. </li>
+   <li><b>pathTo_Postre_app_Folder</b>: Provide the path to "Postre_app" folder (downloaded in Step 1): i.e.  pathTo_Postre_app_Folder="/home/victor/Downloads/Postre-main/Postre_app/"</li>
+   </ul>
+   <br>
+   Regarding the output, a list with three different elements are provided.
+   <ul>
+   <li><b>pathogenicityPrediction_per_SV</b>: This table provides a pathogenic prediction for each of the SVs and associated phenotypes analyzed.</li>
+   
+   <li><b>geneStats_recurrencyAndPathomech</b>: This table is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range).</li>   
+   
+   <li><b>errors</b>: Contains the ids of the SVs which rised an error (if they occur) during their interpretation.</li>   
+   </ul>
+</li>
+<br>
+If you want to know more details about the different parameters (mandatory and optional), and output provided by the function, run the function without arguments:
+
+```R
+###################################################
+##Getting all details about parameters and output
+POSTRE_multiSV()
+```
+
+Here is provided an example of how to use the function with default parameters:
+
+```R
+#############################
+##Example of function Usage
+
+#Loading SVs patients 
+svs_patients<-read.delim(file = "/home/victor/Downloads/Postre-main/testFiles/Table1_LongRange_SVs.tsv",
+                sep="\t",
+                stringsAsFactors = FALSE,
+                header = FALSE)
+
+#Running POSTRE R function, with default parameters
+res_svs<-POSTRE_multiSV(SVs = svs_patients,
+                        pathTo_Postre_app_Folder = "/home/victor/Downloads/Postre-main/Postre_app/")
+
+
+#Visualizing data frame with pathogenic prediction per SV and associated phenotype
+View(res_svs$pathogenicityPrediction_per_SV)
+```
+
+</ol>
+
+<br><br>
 <h2 id="Help">Can we help you?</h2>
 If you are experiencing some trouble, or you just want to contact us for any reason, please send a mail to postre.radaiglesiaslab@gmail.com. 
 
