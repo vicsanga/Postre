@@ -36,9 +36,9 @@ The Multiple SV Submission box allows the sequential analysis of multiple struct
       <br><br>
       <ul>
       <li>Column 1: Chromosome for the breakpoint 1  </li>
-      <li>Column 2: Genomic coordinates for the breakpoint 1. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.  </li>
+      <li>Column 2: Genomic coordinates (hg19) for the breakpoint 1. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.  </li>
       <li>Column 3: Chromosome for the breakpoint 2</li>
-      <li>Column 4: Genomic coordinates for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.</li>
+      <li>Column 4: Genomic coordinates (hg19) for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.</li>
       <li>Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.</li>
       <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental or cardiovascular. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
       <li>Column 7: Structural variant unique identifier e.g. (Patient1_SV3)</li>
@@ -137,7 +137,7 @@ source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
 ```
 <li>POSTRE R function, named POSTRE_multiSV(), is already loaded in the R environment. To use it, it requires 2 mandatory arguments.
    <ul>
-   <li><b>SVs</b>: Data frame with 7 columns containing the SVs information. You can use as an example, to generate the data frame, any of the test files provided in the GitHub testFiles folder (you can find it at the top of this page). More information about how to define the SVs information is given in the  <a href="#multiSVanalyses">Analysing Multiple SVs section</a>. </li>
+   <li><b>SVs</b>: Data frame with 7 columns containing the SVs information (coordinates have to be in hg19). You can use as an example, to generate the data frame, any of the test files provided in the GitHub testFiles folder (you can find it at the top of this page). More information about how to define the SVs information is given in the  <a href="#multiSVanalyses">Analysing Multiple SVs section</a>. </li>
    <li><b>pathTo_Postre_app_Folder</b>: Provide the path to "Postre_app" folder (downloaded in Step 1): i.e.  pathTo_Postre_app_Folder="/home/victor/Downloads/Postre-main/Postre_app/"</li>
    </ul>
    <br>
