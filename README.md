@@ -145,7 +145,7 @@ source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
    <ul>
    <li><b>pathogenicityPrediction_per_SV</b>: This table provides a pathogenic prediction for each of the SVs and associated phenotypes analyzed.</li>
    
-   <li><b>geneStats_recurrencyAndPathomech</b>: This table is an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range).</li>   
+   <li><b>geneStats_recurrencyAndPathomech</b>: This table contains an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range).</li>   
    
    <li><b>errors</b>: Contains the ids of the SVs which rised an error (if they occur) during their interpretation.</li>   
    </ul>
