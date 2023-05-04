@@ -162,8 +162,9 @@ POSTRE_multiSV()
 Here is provided a full example of how to use the function with default parameters:
 
 ```R
-#############################
-##Example of function Usage
+##############################
+## Example of function Usage
+##############################
 
 ##Loading POSTRE R function (named: POSTRE_multiSV())
 source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
