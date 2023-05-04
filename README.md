@@ -159,11 +159,14 @@ If you want to know more details about the different parameters (mandatory and o
 POSTRE_multiSV()
 ```
 
-Here is provided an example of how to use the function with default parameters:
+Here is provided a full example of how to use the function with default parameters:
 
 ```R
 #############################
 ##Example of function Usage
+
+##Loading POSTRE R function (named: POSTRE_multiSV())
+source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
 
 #Loading SVs patients 
 svs_patients<-read.delim(file = "/home/victor/Downloads/Postre-main/testFiles/Table1_LongRange_SVs.tsv",
