@@ -124,7 +124,7 @@ If you want to use POSTRE as an R function, and not through its graphical user i
 Steps for using POSTRE as an R function:
 
 <ol>
-<li>Download POSTRE repository. For instance, compressed as .zip through the: "Code" GitHub button (green button at the top of the GitHub page) and uncompress it after downloading.</li>
+<li>Download POSTRE repository. For instance, compressed as .zip through the: "Code" GitHub button (green button at the top of this page) and uncompress it after downloading.</li>
 <li>In the R script where you want to use POSTRE R function, to load it, do a source of the POSTRE_multiSV.R script (i.e. source("/PathTo/Postre_app/POSTRE_multiSV.R")). This script is located inside of the "Postre_app" folder (script + folder are downloaded in Step 1).</li>
 
 Example:
@@ -137,7 +137,7 @@ source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
 ```
 <li>POSTRE R function, named POSTRE_multiSV(), is already loaded in the R environment. To use it, it requires 2 mandatory arguments.
    <ul>
-   <li><b>SVs</b>: Data frame with 7 columns containing the SVs information. You can use as an example, to generate the data frame, any of the test files provided in the GitHub testFiles folder. More information about how to define the SVs information is given in the  <a href="#multiSVanalyses">Analysing Multiple SVs section</a>. </li>
+   <li><b>SVs</b>: Data frame with 7 columns containing the SVs information. You can use as an example, to generate the data frame, any of the test files provided in the GitHub testFiles folder (you can find it at the top of this page). More information about how to define the SVs information is given in the  <a href="#multiSVanalyses">Analysing Multiple SVs section</a>. </li>
    <li><b>pathTo_Postre_app_Folder</b>: Provide the path to "Postre_app" folder (downloaded in Step 1): i.e.  pathTo_Postre_app_Folder="/home/victor/Downloads/Postre-main/Postre_app/"</li>
    </ul>
    <br>
