@@ -83,6 +83,6 @@ MultiDataList<-list("cellInfo_hi"=cellInfo_hi,
 save(MultiDataList,
      file = "data/MultiDataList.RData" )
 
-save(MultiDataList,
-     file = "~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app/data/MultiDataList.RData" )
+# save(MultiDataList,
+#      file = "~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app/data/MultiDataList.RData" )
 

@@ -33,7 +33,10 @@ pheno_Phases<-list(
   # "nervous_system"=c("PfcGw15", "PfcGw18"),
   
   ##NEURODEVELOPMENTAL
-  "neurodevelopmental"=c("PfcGw15", "PfcGw18")
+  "neurodevelopmental"=c("PfcGw15", "PfcGw18"),
+  
+  ##VISION-EYE
+  "vision_eye"=c("Retina","RPE")
   
   ##...
 )
@@ -64,9 +67,7 @@ genomic_data_loader<-function(patientPheno){
     
     ################################################################################################################################
     ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
-    # phasesVector<-c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20", "PalateCSMix")
     phasesVector<-c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20")
-    #phasesVector<-c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20", "PalateCSMix")
     #####
     ## Correct phenotype category to be properly processed afterwards
     ##Hence the way the software handles it, without, spaces and so on
@@ -189,6 +190,42 @@ genomic_data_loader<-function(patientPheno){
     ##Cargar UCSC_links table relating each dev stage with its corresponding ucsc session
     #colnames: Phenotype	Stage	SessionId	SessionLinkBaseName
     genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/neurodevelopmental/neurodevelopmental_UCSC_links.tab",
+                                    sep="\t",
+                                    header = FALSE,
+                                    stringsAsFactors = FALSE)
+    colnames(genomeBrowser_links)<-c("Phenotype", "Stage", "SessionId", "SessionLinkBaseName")
+    
+    
+  }else if((patientPheno == "Vision-Eye") || (patientPheno == "vision_eye")){
+    ##14 Agosto 2021, incorporacion fenotipo
+    
+    ###########################################################
+    ## Loading fpkms for the genes 
+    load(file = "data/specificData_PerPhenotype/vision_eye/Master_GeneExpression_Vision_Eye.RData")
+    
+    ###########################################################
+    ##Load master enhancer map
+    load("data/specificData_PerPhenotype/vision_eye/Master_EnhMap_VisionEye.RData")
+    
+    ############################################################
+    ## Load TAD maps data per developmental Stage
+    ##Created in:~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/preparingDataForSoftware/genomicData_PhenotypeSpecific/...
+    load(file ="data/specificData_PerPhenotype/vision_eye/Master_RegulatoryDomains_Vision_Eye.RData")
+    
+    ################################################################################################################################
+    ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
+    phasesVector<-c("Retina", "RPE")
+    
+    #####
+    ## Correct phenotype category to be properly processed afterwards
+    ##Hence the way the software handles it, without, spaces and so on
+    
+    formatedPhenotype<-"vision_eye" #Ha de ser igual que el de la columna de tablas gene-pheno relationships
+    
+    ###############################
+    ##Cargar UCSC_links table relating each dev stage with its corresponding ucsc session
+    #colnames: Phenotype	Stage	SessionId	SessionLinkBaseName
+    genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/vision_eye/vision_eye_UCSC_links.tab",
                                     sep="\t",
                                     header = FALSE,
                                     stringsAsFactors = FALSE)

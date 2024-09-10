@@ -99,7 +99,9 @@ ui <-function(req){
                                                                      c("Cardiovascular" = "cardiovascular",
                                                                        "Head & Neck" = "head_neck",
                                                                        "Limbs" = "limbs",
-                                                                       "Neurodevelopmental" = "neurodevelopmental"),
+                                                                       "Neurodevelopmental" = "neurodevelopmental",
+                                                                       "Vision-Eye" = "vision_eye"
+                                                                       ),
                                                                      selected = "head_neck",
                                                                      inline = TRUE)
                                                 )
@@ -483,7 +485,9 @@ server <- function(input, output, session){
   consideredPheno<-c("head_neck",
                      "cardiovascular",
                      "limbs",
-                     "neurodevelopmental")##As more phenos considered they will appear here
+                     "neurodevelopmental",
+                     "vision_eye"
+                     )##As more phenos considered they will appear here
   ####################################################
   ##Defining initial behaviour when clicking buttons
   ####################################################
