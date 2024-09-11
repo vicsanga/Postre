@@ -39,7 +39,7 @@ Data frame with 7 columns containing SVs information (you can use as test file a
  Column 3: Chromosome for the breakpoint 2
  Column 4: Genomic coordinates (hg19) for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.
  Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.
- Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental or cardiovascular. For instance: head_neck,neurodevelopmental,cardiovascular.
+ Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental, cardiovascular or vision_eye. For instance: head_neck,neurodevelopmental,cardiovascular.
  Column 7: Structural variant unique identifier e.g. (Patient1_SV3)
 
  Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplications) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.
@@ -142,7 +142,8 @@ Contains the ids of the SVs which rised an error (if they occur) during their in
   consideredPheno<-c("head_neck",
                      "cardiovascular",
                      "limbs",
-                     "neurodevelopmental")
+                     "neurodevelopmental",
+                     "vision_eye")
   
   ####################################
   ###Let's load required Functions
