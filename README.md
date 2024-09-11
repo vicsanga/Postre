@@ -1,8 +1,10 @@
 # POSTRE
 POSTRE: Prediction Of STRuctural variant Effects
 
-<b>LATEST VERSION RELEASE: 11/09/2024</b> <br>
-<b>NEW:POSTRE can handle now Vision-Eye related phenotypes</b>
+<b>LATEST UPDATE: 11/09/2024</b> What is new?<br>
+<ul>
+<li>POSTRE can handle now Vision-Eye related phenotypes.</li>
+</ul>
 
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
