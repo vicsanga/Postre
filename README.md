@@ -1,5 +1,9 @@
 # POSTRE
 POSTRE: Prediction Of STRuctural variant Effects
+
+<b>LATEST VERSION RELEASE: 11/09/2024</b> <br>
+<b>NEW:POSTRE can handle now Vision-Eye related phenotypes</b>
+
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
@@ -7,6 +11,7 @@ POSTRE: Prediction Of STRuctural variant Effects
       <li><a href="#Rfunction">Using POSTRE as an R function</a> (alternative to usage with graphical user interface)</li>
       <li><a href="#Help">Can we help you?</a></li>
 </ul>
+
 <h2 id="ExplanationPOSTRE"> <b>What is POSTRE?</b> </h2>
 
  <div>
@@ -118,7 +123,7 @@ The advantage of this approach is to provide other users in your organization ac
 
 <h2 id="Rfunction">Using POSTRE as an R function</h2>
 
-If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to take profit of POSTRE latest version, to update POSTRE R function you will have to repeat the steps 1 and 2 each time a new version is released. <b>Latest version release date: 01/05/2023</b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
+If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to take profit of POSTRE latest version, to update POSTRE R function you will have to repeat the steps 1 and 2 each time a new version is released. <b>Latest version release date: 11/09/2024</b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
 
 
 Steps for using POSTRE as an R function:
