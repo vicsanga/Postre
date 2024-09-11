@@ -40,7 +40,7 @@ The Multiple SV Submission box allows the sequential analysis of multiple struct
       <li>Column 3: Chromosome for the breakpoint 2</li>
       <li>Column 4: Genomic coordinates (hg19) for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.</li>
       <li>Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.</li>
-      <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental or cardiovascular. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
+      <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental, cardiovascular or vision_eye. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
       <li>Column 7: Structural variant unique identifier e.g. (Patient1_SV3)</li>
       </ul> 
       
