@@ -58,6 +58,7 @@ chr3	147428507,147428516	chr5	11420640,11420650	Translocation	adipose_tissue,beh
 chr3	36969141,36969450	chr14	29745315,29745323	Translocation	head_neck,nervous_system,neurodevelopmental,skeletal_system	DGAP245	PMID:27841880	hg19	yes	no
 chr2	199943781,199943805	chr11	121638616,121642346	Translocation	nervous_system,neurodevelopmental	DGAP249	PMID:27841880	hg19	yes	no
 chr12	2707616,2707634	chr1	50758453,50758460	Translocation	behaviour_neurological_cognitive,nervous_system,neurodevelopmental	DGAP250	PMID:27841880	hg19	yes	no
+chr14	99346650,99371578	chr15	47725044,47725060	Translocation	behaviour_neurological_cognitive,nervous_system,vision_eye	DGAP251	PMID:27841880	hg19	yes	no
 chr3	104627622,104627629	chr18	19498398,19498400	Translocation	digestive,head_neck,nervous_system,respiratory_system,skeletal_system	DGAP252	PMID:27841880	hg19	yes	no
 chr11	61999067,61999068	chr17	74405340,74405346	Translocation	growth_abnormality,head_neck,limbs,nervous_system,neurodevelopmental,skeletal_system	DGAP255	PMID:27841880	hg19	yes	no
 chr9	29770647,29770663	chr14	26447986,26447990	Translocation	behaviour_neurological_cognitive,blood_hematopoietic_system,head_neck,hearing_ear,immune_system,nervous_system,respiratory_system,voice	DGAP263	PMID:27841880	hg19	yes	no

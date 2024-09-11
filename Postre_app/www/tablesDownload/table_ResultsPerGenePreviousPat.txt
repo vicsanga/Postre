@@ -325,3 +325,23 @@ MEIS2	neurodevelopmental	1	0	1	U75		U75
 SRCAP	neurodevelopmental	1	0	1	U94.1		U94.1
 JPH3	neurodevelopmental	1	1	0	U98	U98	
 FBXO31	neurodevelopmental	1	0	1	U98		U98
+KCNJ2	vision_eye	1	1	0	DGAP003	DGAP003	
+PDHA1	vision_eye	1	1	0	DGAP093	DGAP093	
+RS1	vision_eye	1	1	0	DGAP093	DGAP093	
+NSD1	vision_eye	1	1	0	DGAP100	DGAP100	
+NDP	vision_eye	1	1	0	DGAP100	DGAP100	
+CTNNA1	vision_eye	1	1	0	DGAP105	DGAP105	
+SLC9A1	vision_eye	1	1	0	DGAP105	DGAP105	
+SOS1	vision_eye	1	1	0	DGAP163	DGAP163	
+GSC	vision_eye	1	1	0	DGAP223	DGAP223	
+DICER1	vision_eye	1	1	0	DGAP223	DGAP223	
+MEF2C	vision_eye	1	0	1	DGAP301		DGAP301
+ADAMTS17	vision_eye	1	1	0	DGAP301	DGAP301	
+EFNB1	vision_eye	1	1	0	DGAP302	DGAP302	
+P4HB	vision_eye	1	1	0	NIJ3	NIJ3	
+TWIST1	vision_eye	1	1	0	UTR4	UTR4	
+DYRK1A	vision_eye	1	0	1	UTR12		UTR12
+DLG4	vision_eye	1	0	1	U102		U102
+POLR2A	vision_eye	1	0	1	U102		U102
+ZNF462	vision_eye	1	0	1	U44		U44
+KMT2D	vision_eye	1	1	1	U50	U50	U50
