@@ -156,7 +156,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                            acetilation_Initial,
                            " to ",
                            acetilation_Final,
-                           " RPGC (reads per genome coverage) ",
+                           " A.U.(arbitrary units, derived of data normalization) ",
                            " (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),"% reduction).",
                            "<br><br>",
                            sep="")
@@ -205,7 +205,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                                acetilation_Initial,
                                " to ",
                                round2(x = acetilation_Final,digits = 1),
-                               " RPGC (reads per genome coverage) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
+                               " A.U.(arbitrary units, derived of data normalization) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
                                "% increase). ",
                                "<br><br>",
                                sep="")
@@ -216,7 +216,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                                acetilation_Initial,
                                " to ",
                                round2(x = acetilation_Final, digits = 1),
-                               " RPGC (reads per genome coverage).",
+                               " A.U.(arbitrary units, derived of data normalization).",
                                "<br><br>",
                                sep="")
       }
@@ -251,7 +251,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                                acetilation_Initial,
                                " to ",
                                round2(x = acetilation_Final,digits = 1),
-                               " RPGC (reads per genome coverage) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
+                               " A.U.(arbitrary units, derived of data normalization) (", round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
                                "% increase). ",
                                "<br><br>",
                                sep="")
@@ -262,7 +262,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                                acetilation_Initial,
                                " to ",
                                round2(x = acetilation_Final, digits = 1),
-                               " RPGC (reads per genome coverage).",
+                               " A.U.(arbitrary units, derived of data normalization).",
                                "<br><br>",
                                sep="")
       }
@@ -343,7 +343,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
           " initially had ",
           nEnh_Initial," enhancers  on its regulatory domain.",
           " Now, there is a total of ", round2(x = (nEnh_Final),digits = 0),
-          " enhancers around him, attending to the overall impact of the ", sv_type, ". ",
+          " enhancers around it, attending to the overall impact of the ", sv_type, ". ",
           sep="")       
     
     if(nEnh_Initial>0){
@@ -357,7 +357,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
-                             " RPGC (reads per genome coverage) (",
+                             " A.U.(arbitrary units, derived of data normalization) (",
                              round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
                              "% increase). ",
                              "<br><br>",
@@ -369,7 +369,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
-                             " RPGC (reads per genome coverage)",
+                             " A.U.(arbitrary units, derived of data normalization)",
                              "<br><br>",
                              sep="")
     }
@@ -455,7 +455,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                            " initially had ",
                            nEnh_Initial," enhancers  on its regulatory domain.",
                            " Now, there is a total of ", round2(x = (nEnh_Final),digits = 0),
-                           " enhancers around him, attending to the overall impact of the ", sv_type, ". ",
+                           " enhancers around it, attending to the overall impact of the ", sv_type, ". ",
                            sep="")       
     
     if(nEnh_Initial>0){
@@ -469,7 +469,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
-                             " RPGC (reads per genome coverage) (",
+                             " A.U.(arbitrary units, derived of data normalization) (",
                              round2(x = (abs(acetilation_Final-acetilation_Initial)/acetilation_Initial)*100, digits = 1),
                              "% increase). ",
                              "<br><br>",
@@ -481,7 +481,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
                              acetilation_Initial,
                              " to ",
                              acetilation_Final,
-                             " RPGC (reads per genome coverage)",
+                             " A.U.(arbitrary units, derived of data normalization)",
                              "<br><br>",
                              sep="")
     }

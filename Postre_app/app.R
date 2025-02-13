@@ -100,7 +100,9 @@ ui <-function(req){
                                                                        "Head & Neck" = "head_neck",
                                                                        "Limbs" = "limbs",
                                                                        "Neurodevelopmental" = "neurodevelopmental",
-                                                                       "Vision-Eye" = "vision_eye"
+                                                                       "Vision-Eye" = "vision_eye",
+                                                                       "Liver - Biliary System" = "liver_biliary_system"#,
+                                                                       # "Endocrine" = "endocrine"
                                                                        ),
                                                                      selected = "head_neck",
                                                                      inline = TRUE)
@@ -486,7 +488,9 @@ server <- function(input, output, session){
                      "cardiovascular",
                      "limbs",
                      "neurodevelopmental",
-                     "vision_eye"
+                     "vision_eye",
+                     "liver_biliary_system"#,
+                     #"endocrine"
                      )##As more phenos considered they will appear here
   ####################################################
   ##Defining initial behaviour when clicking buttons

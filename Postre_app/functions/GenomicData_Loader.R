@@ -4,7 +4,7 @@
 ## Gene Expression, Enhancer Maps and TAD maps for the different developmental phases
 ## And also an object containing the names of the phases considered in each phenotype
 #####################################################################################
-# setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/SV_app")
+# setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
 
 ###########################################
 ##Info for multiple patient condition
@@ -15,10 +15,7 @@
 pheno_Phases<-list(
   ##Phases are obtained from their own phasesVector
   
-  ##head_neck
-  ##"head_neck"=c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20", "PalateCSMix")
-  ##attempt removing phaseFree
-  #"head_neck"=c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20", "PalateCSMix"),
+  ##Head_neck
   "head_neck"=c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20"),
   
   ##Cardiovascular
@@ -27,16 +24,17 @@ pheno_Phases<-list(
   ##Limb
   "limbs"=c("EmbryonicLimb1", "EmbryonicLimb2"),
   
-  ##Brain (behaviour, neurological, cognitive)
-  ##"behaviour_neurological_cognitive"=c("PfcGw15", "PfcGw18")
-  #Dudas que tenia, al final termino mas generico, nervous system
-  # "nervous_system"=c("PfcGw15", "PfcGw18"),
-  
   ##NEURODEVELOPMENTAL
   "neurodevelopmental"=c("PfcGw15", "PfcGw18"),
   
   ##VISION-EYE
-  "vision_eye"=c("Retina","RPE")
+  "vision_eye"=c("Retina","RPE"),
+  
+  ##Endocrine
+  "endocrine"=c("NormalPituitary","NormalPituitary2"),
+  
+  ##Liver -  Biliary System
+  "liver_biliary_system"=c("AdultLiver")
   
   ##...
 )
@@ -103,7 +101,6 @@ genomic_data_loader<-function(patientPheno){
     
     ################################################################################################################################
     ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
-    #phasesVector<-c("day5", "day7", "day15", "day80")##
     phasesVector<-c("day5", "day7", "day15", "day80")##
     #####
     ## Correct phenotype category to be properly processed afterwards
@@ -226,6 +223,78 @@ genomic_data_loader<-function(patientPheno){
     ##Cargar UCSC_links table relating each dev stage with its corresponding ucsc session
     #colnames: Phenotype	Stage	SessionId	SessionLinkBaseName
     genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/vision_eye/vision_eye_UCSC_links.tab",
+                                    sep="\t",
+                                    header = FALSE,
+                                    stringsAsFactors = FALSE)
+    colnames(genomeBrowser_links)<-c("Phenotype", "Stage", "SessionId", "SessionLinkBaseName")
+    
+    
+  }else if((patientPheno == "Endocrine") || (patientPheno == "endocrine")){
+    ##9 Dic 2024, incorporacion fenotipo
+    
+    ###########################################################
+    ## Loading fpkms for the genes 
+    load(file = "data/specificData_PerPhenotype/endocrine/Master_GeneExpression_Endocrine.RData")
+    
+    ###########################################################
+    ##Load master enhancer map
+    load("data/specificData_PerPhenotype/endocrine/Master_EnhMap_Endocrine.RData")
+    
+    ############################################################
+    ## Load TAD maps data per developmental Stage
+    ##Created in:~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/preparingDataForSoftware/genomicData_PhenotypeSpecific/...
+    load(file ="data/specificData_PerPhenotype/endocrine/Master_RegulatoryDomains_Endocrine.RData")
+    
+    ################################################################################################################################
+    ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
+    phasesVector<-c("NormalPituitary", "NormalPituitary2")
+    
+    #####
+    ## Correct phenotype category to be properly processed afterwards
+    ##Hence the way the software handles it, without, spaces and so on
+    
+    formatedPhenotype<-"endocrine" #Ha de ser igual que el de la columna de tablas gene-pheno relationships
+    
+    ###############################
+    ##Cargar UCSC_links table relating each dev stage with its corresponding ucsc session
+    #colnames: Phenotype	Stage	SessionId	SessionLinkBaseName
+    genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/endocrine/EndocrineDisorders_UCSC_links.tab",
+                                    sep="\t",
+                                    header = FALSE,
+                                    stringsAsFactors = FALSE)
+    colnames(genomeBrowser_links)<-c("Phenotype", "Stage", "SessionId", "SessionLinkBaseName")
+    
+    
+  }else if((patientPheno == "Liver - Biliary System") || (patientPheno == "liver_biliary_system")){
+    ##6 Feb 2025, incorporacion fenotipo
+    
+    ###########################################################
+    ## Loading fpkms for the genes 
+    load(file = "data/specificData_PerPhenotype/liver_biliary_system/Master_GeneExpression_Liver_Biliary_System.RData")
+    
+    ###########################################################
+    ##Load master enhancer map
+    load("data/specificData_PerPhenotype/liver_biliary_system/Master_EnhMap_Liver.RData")
+    
+    ############################################################
+    ## Load TAD maps data per developmental Stage
+    ##Created in:~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/preparingDataForSoftware/genomicData_PhenotypeSpecific/...
+    load(file ="data/specificData_PerPhenotype/liver_biliary_system/Master_RegulatoryDomains_Liver_Biliary_System.RData")
+    
+    ################################################################################################################################
+    ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
+    phasesVector<-c("AdultLiver")
+    
+    #####
+    ## Correct phenotype category to be properly processed afterwards
+    ##Hence the way the software handles it, without, spaces and so on
+    
+    formatedPhenotype<-"liver_biliary_system" #Ha de ser igual que el de la columna de tablas gene-pheno relationships
+    
+    ###############################
+    ##Cargar UCSC_links table relating each dev stage with its corresponding ucsc session
+    #colnames: Phenotype	Stage	SessionId	SessionLinkBaseName
+    genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/liver_biliary_system/Liver_Biliary_System_UCSC_links.tab",
                                     sep="\t",
                                     header = FALSE,
                                     stringsAsFactors = FALSE)

@@ -256,14 +256,14 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
       ##For enhancers acetilation levels
       ##########################################
       ##WT situation
-      average_acetilationEnh_Initial_LEFT<-round2(acetilationEnh_initial_LEFT,digits = 0)
-      average_acetilationEnh_Initial_RIGHT<-round2(acetilationEnh_initial_RIGHT,digits = 0)
-      average_acetilationEnh_Initial_OtherDOMAIN<-round2(acetilationEnh_initial_OtherDOMAIN,digits = 0)
+      average_acetilationEnh_Initial_LEFT<-round2(acetilationEnh_initial_LEFT,digits = 1)
+      average_acetilationEnh_Initial_RIGHT<-round2(acetilationEnh_initial_RIGHT,digits = 1)
+      average_acetilationEnh_Initial_OtherDOMAIN<-round2(acetilationEnh_initial_OtherDOMAIN,digits = 1)
       
       #Rearranged scenario
-      average_acetilationEnh_Kept_LEFT<-round2(acetilationEnh_kept_LEFT,digits = 0)
-      average_acetilationEnh_Kept_RIGHT<-round2(acetilationEnh_kept_RIGHT,digits = 0)
-      average_acetilationEnh_Gained_OtherDOMAIN<-round2(acetilationEnh_gained_OtherDOMAIN,digits = 0)
+      average_acetilationEnh_Kept_LEFT<-round2(acetilationEnh_kept_LEFT,digits = 1)
+      average_acetilationEnh_Kept_RIGHT<-round2(acetilationEnh_kept_RIGHT,digits = 1)
+      average_acetilationEnh_Gained_OtherDOMAIN<-round2(acetilationEnh_gained_OtherDOMAIN,digits = 1)
 
       #######################
       ##Filling the matrix

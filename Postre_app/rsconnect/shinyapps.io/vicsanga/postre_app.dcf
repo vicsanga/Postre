@@ -1,0 +1,10 @@
+name: postre_app
+title:
+username: vicsanga
+account: vicsanga
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7144480
+bundleId:
+url: https://vicsanga.shinyapps.io/postre_app/
+version: 1
