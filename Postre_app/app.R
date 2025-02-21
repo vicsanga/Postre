@@ -102,7 +102,7 @@ ui <-function(req){
                                                                        "Neurodevelopmental" = "neurodevelopmental",
                                                                        "Vision-Eye" = "vision_eye",
                                                                        "Liver - Biliary System" = "liver_biliary_system"#,
-                                                                       # "Endocrine" = "endocrine"
+                                                                       #"Endocrine" = "endocrine"
                                                                        ),
                                                                      selected = "head_neck",
                                                                      inline = TRUE)

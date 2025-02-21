@@ -13,6 +13,10 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   
   targetMatrix<-patientResults$masterSummaryResultsMatrix
   
+  ##Changes implemented Feb 2025,
+  #Legend addition
+  pathoPredicted<-FALSE #Will change to True if one pathogenic event present
+  
   ##Filter here per min pathogenic score, if considered
   
   ##MaxScore we are not going to use it after potentially filtering point
@@ -57,6 +61,57 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   
   col_gof<-"#CAD83A"##app"#b2d235"
   col_top_gof<-"#CAD83A"##app:"#b2d235" 
+  
+  ##############################################################
+  ##ADDING LEGEND, to facilitate comprehension of results table
+  #Incorporated in html in step where whole_html variable  is created
+  ##ADJUST IN THE LEGEND PATHOGENIC THRESHOLD, IF CHANGED 
+  table_legend<-"
+  <br>
+<table>
+  <caption><span style='color: black;'><strong>Predictions table legend:</strong></span></caption>
+  <tbody>
+  <!-- adding empty row to homogenize format of the next rows -->
+  <tr>      
+      <td style='background-color: #FFFFFF; text-align: center; padding: 0px; border-bottom: 15px solid white; width: 50px; height: 0.1px; vertical-align: middle;'>   </td>
+      <td style='padding: 0px; height: 0.1px; vertical-align: middle;'> </td>
+  </tr>
+    <tr>
+      <td style='background-color: #d6d6d6; text-align: center; padding: 5px; border-bottom: 15px solid white; width: 50px; height: 50px; vertical-align: middle;'> - </td>
+      <td style='padding: 5px; height: 50px; vertical-align: middle;'>
+        <strong>NOT Pathogenic.</strong> If a grey rectangle with '-' appears, this indicates that the pathogenic score
+        computed for the associated gene (row) and cell type (column) is below the
+        pathogenic threshold (0.8). Thus, considered as NOT pathogenic.
+      </td>
+    </tr>
+    <tr>
+      <td style='background-color: #ED645F; text-align: center; padding: 5px; border-bottom: 15px solid white; width: 50px; height: 50px; vertical-align: middle;'>
+        <span style='color: black;'>LOF</span>
+      </td>
+      <td style='padding: 5px; height: 50px; vertical-align: middle;'>
+        <strong>LOF - Pathogenic.</strong> If a red rectangle with 'LOF' appears, this indicates that a pathogenic Loss
+        Of Function has been predicted for the associated gene (row) and cell type (column).
+        Click on the rectangle to know more.
+      </td>
+    </tr>
+    <tr>
+      <td style='background-color: #CAD83A; text-align: center; padding: 5px; border-bottom: 15px solid white; width: 50px; height: 50px; vertical-align: middle;'>
+        <span style='color: black;'>GOF</span>
+      </td>
+      <td style='padding: 5px; height: 50px; vertical-align: middle;'>
+        <strong>GOF - Pathogenic.</strong> If a green rectangle with 'GOF' appears, this indicates that a pathogenic
+        Gain Of Function has been predicted for the associated gene (row) and cell type
+        (column). Click on the rectangle to know more.
+      </td>
+    </tr>
+  </tbody>
+</table>
+  <br>
+  
+  "
+  ##END LEGEND CODE ADDITION
+  ###########################
+  
   
   #col_mix<-"#80dfff" ##In case there is a situation (as a result of the thresholds) where both scenarios are likely to occur with a high score
   ##Maybe more realistic for phase free, just in case, implement
@@ -236,6 +291,8 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           ##And geneMechanism is GOF or LOF but not both
           ################################################################################
           
+          pathoPredicted<-TRUE
+          
           ##Get targetMechanism responsible of pathogenic score
           targetMech<-names(bothGeneScore)[bothGeneScore >= minRequiredScore]
           ##We are going to also add the pathogenicScore to the heatmap
@@ -333,9 +390,13 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           }
           
         }else if ( sum(bothGeneScore >= minRequiredScore) == 2 ){
+          
+          ###############################################################
           ##So, for this gene there is evidence for LOF AND GOF
           ##LOF because of loss of cognate enhancers
           ##GOF because of gain of multiple ectopic enhancers
+          ################################################################
+          pathoPredicted<-TRUE
           
           ##We have to split the heatmap cell in 2. To provide 2 links, one for GOF report, the other for LOF report
           
@@ -451,10 +512,13 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
             }
           }
         }else if( sum(bothGeneScore >= minRequiredScore) == 0 ){
+          
+          ##################################
           ##No evidence for GOF or LOF
           ##Standard grey cells
           ##We add a grey cell with no info
           #"--"
+          ##################################
           
           table_content<-paste(table_content,
                                "<td style='background-color:",
@@ -488,7 +552,25 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   
   tail_html<-'</table></div><br>' 
   
-  whole_html<-paste(header_html, 
+  ##METER TAMBIEN EL TEXTO DONDE DICE CLARAMENTE SI ALGUN PATHOGENIC EVENT HA SIDO PREDICHO
+  # browser()
+  ##Adding text prior to table legend giving a generic description of whether any pathogenic event identified or not
+  overview_pathogenicity<-""
+  if(pathoPredicted==TRUE){
+    overview_pathogenicity<-paste0("<h3><strong>This structural variant is predicted to be pathogenic</strong> in relation with ", 
+                                   patientResults$patientInfo$Phenotype,
+                                   " abnormalities. You can find more information below in the predictions table.</h3>")
+  }else{
+    ##implies FALSE
+    overview_pathogenicity<-paste0("<h3><strong>This structural variant is NOT predicted to be pathogenic</strong> in relation with ", 
+                                   patientResults$patientInfo$Phenotype,
+                                   " abnormalities.</h3>")
+  }
+  
+  
+  whole_html<-paste(header_html,
+                    overview_pathogenicity,
+                    table_legend,
                     table_content,
                     tail_html,
                     sep = "",

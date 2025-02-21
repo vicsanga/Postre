@@ -269,17 +269,17 @@ genomic_data_loader<-function(patientPheno){
     ##6 Feb 2025, incorporacion fenotipo
     
     ###########################################################
-    ## Loading fpkms for the genes 
-    load(file = "data/specificData_PerPhenotype/liver_biliary_system/Master_GeneExpression_Liver_Biliary_System.RData")
+    ## Loading fpkms for the genes (MGE from Master Gene Expression abbreviation)
+    load(file = "data/specificData_PerPhenotype/liver_biliary_system/MGE_Liver_Biliary_System.RData")
     
     ###########################################################
     ##Load master enhancer map
     load("data/specificData_PerPhenotype/liver_biliary_system/Master_EnhMap_Liver.RData")
     
     ############################################################
-    ## Load TAD maps data per developmental Stage
+    ## Load TAD maps data per developmental Stage (MRD from Master Regulatory Domains abbreviation)
     ##Created in:~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/preparingDataForSoftware/genomicData_PhenotypeSpecific/...
-    load(file ="data/specificData_PerPhenotype/liver_biliary_system/Master_RegulatoryDomains_Liver_Biliary_System.RData")
+    load(file ="data/specificData_PerPhenotype/liver_biliary_system/MRD_Liver_Biliary_System.RData")
     
     ################################################################################################################################
     ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
