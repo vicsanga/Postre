@@ -30,8 +30,8 @@ pheno_Phases<-list(
   ##VISION-EYE
   "vision_eye"=c("Retina","RPE"),
   
-  ##Endocrine
-  "endocrine"=c("NormalPituitary","NormalPituitary2"),
+  ##Pituitary
+  "pituitary"=c("NormalPituitary","NormalPituitary2"),
   
   ##Liver -  Biliary System
   "liver_biliary_system"=c("AdultLiver")
@@ -229,21 +229,21 @@ genomic_data_loader<-function(patientPheno){
     colnames(genomeBrowser_links)<-c("Phenotype", "Stage", "SessionId", "SessionLinkBaseName")
     
     
-  }else if((patientPheno == "Endocrine") || (patientPheno == "endocrine")){
-    ##9 Dic 2024, incorporacion fenotipo
+  }else if((patientPheno == "Pituitary") || (patientPheno == "pituitary")){
+    ##11 Nov 2025, incorporacion fenotipo
     
     ###########################################################
     ## Loading fpkms for the genes 
-    load(file = "data/specificData_PerPhenotype/endocrine/Master_GeneExpression_Endocrine.RData")
+    load(file = "data/specificData_PerPhenotype/pituitary/Master_GeneExpression_Pituitary.RData")
     
     ###########################################################
     ##Load master enhancer map
-    load("data/specificData_PerPhenotype/endocrine/Master_EnhMap_Endocrine.RData")
+    load("data/specificData_PerPhenotype/pituitary/Master_EnhMap_Pituitary.RData")
     
     ############################################################
     ## Load TAD maps data per developmental Stage
     ##Created in:~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/preparingDataForSoftware/genomicData_PhenotypeSpecific/...
-    load(file ="data/specificData_PerPhenotype/endocrine/Master_RegulatoryDomains_Endocrine.RData")
+    load(file ="data/specificData_PerPhenotype/pituitary/Master_RegulatoryDomains_Pituitary.RData")
     
     ################################################################################################################################
     ##Loading name of the phases, which will be exactly the same, to do the matching, between Expression AND Enhancers AND TAD maps
@@ -253,12 +253,12 @@ genomic_data_loader<-function(patientPheno){
     ## Correct phenotype category to be properly processed afterwards
     ##Hence the way the software handles it, without, spaces and so on
     
-    formatedPhenotype<-"endocrine" #Ha de ser igual que el de la columna de tablas gene-pheno relationships
+    formatedPhenotype<-"pituitary" #Ha de ser igual que el de la columna de tablas gene-pheno relationships
     
     ###############################
     ##Cargar UCSC_links table relating each dev stage with its corresponding ucsc session
     #colnames: Phenotype	Stage	SessionId	SessionLinkBaseName
-    genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/endocrine/EndocrineDisorders_UCSC_links.tab",
+    genomeBrowser_links<-read.delim(file="data/specificData_PerPhenotype/pituitary/PituitaryDisorders_UCSC_links.tab",
                                     sep="\t",
                                     header = FALSE,
                                     stringsAsFactors = FALSE)

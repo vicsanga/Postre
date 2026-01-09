@@ -45,7 +45,7 @@ The Multiple SV Submission box allows the sequential analysis of multiple struct
       <li>Column 3: Chromosome for the breakpoint 2</li>
       <li>Column 4: Genomic coordinates (hg19) for the breakpoint 2. When not base pair resolution, provide a comma separated range, e.g. 85092268,85092269.</li>
       <li>Column 5: Structural Variant Type. Current options: Inversion, Translocation, Deletion or Duplication.</li>
-      <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental, cardiovascular, vision_eye or liver_biliary_system. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
+      <li>Column 6: Comma separated list of phenotypes associated with the structural variant. Current options are: head_neck, limbs, neurodevelopmental, cardiovascular, vision_eye, liver_biliary_system or pituitary. For instance: head_neck,neurodevelopmental,cardiovascular.  </li>
       <li>Column 7: Structural variant unique identifier e.g. (Patient1_SV3)</li>
       </ul> 
       
@@ -123,7 +123,7 @@ The advantage of this approach is to provide other users in your organization ac
 
 <h2 id="Rfunction">Using POSTRE as an R function</h2>
 
-If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to take profit of POSTRE latest version, to update POSTRE R function you will have to repeat the steps 1 and 2 each time a new version is released. <b>Latest version release date: 12/02/2025</b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
+If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to take profit of POSTRE latest version, to update POSTRE R function you will have to repeat the steps 1 and 2 each time a new version is released. <b>Latest version release date: 09/01/2026</b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
 
 
 Steps for using POSTRE as an R function:
@@ -193,6 +193,8 @@ View(res_svs$pathogenicityPrediction_per_SV)
 
 <br><br>
 <h2 id="UpdatesHistory">Updates history</h2>
+
+<b>09/01/2026 Pituitary data addition</b>: Genomic data from Adult Pituitary has been incorporated. For more information check the associated <a href="https://www.medrxiv.org/content/10.1101/2025.06.27.25329768v2" target="_blank">manuscript</a>.
 
 <b>12/02/2025 Liver data addition</b>: Genomic data from Adult Liver has been incorporated.
 

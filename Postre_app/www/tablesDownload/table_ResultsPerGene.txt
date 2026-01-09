@@ -1,6 +1,2 @@
 Gene	Phenotype	N SVs	N SVs Long-Range	N SVs Coding	SV IDs	Long-Range SV IDs	Coding SV IDs
-TFAP2A	head_neck	1	1	0	Patient_Nr1	Patient_Nr1	
-SOX9	head_neck	1	1	0	Patient_Nr2	Patient_Nr2	
-KCNJ2	limbs	1	1	0	Patient_Nr3	Patient_Nr3	
-PAX3	limbs	1	1	0	Patient_Nr4	Patient_Nr4	
-IHH	limbs	1	1	0	Patient_Nr5	Patient_Nr5	
+GPR101	pituitary	27	27	0	F1,F2,F3,S1,S2,S5,S6,S7,S8,S9,S10,S11,S13,S14,S15,S16,S18,S19,S20,S21,S22,II,III,IV,V,VI,VII	F1,F2,F3,S1,S2,S5,S6,S7,S8,S9,S10,S11,S13,S14,S15,S16,S18,S19,S20,S21,S22,II,III,IV,V,VI,VII	
