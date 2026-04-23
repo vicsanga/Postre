@@ -6,7 +6,7 @@ POSTRE: Prediction Of STRuctural variant Effects
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
       <li><a href="#Installation">How to install and run POSTRE?</a></li>
       <li><a href="#Rfunction">Using POSTRE as an R function</a> (alternative to usage with graphical user interface)</li>
-      <li><a href="#UpdatesHistory">Updates history</a></li>
+      <li><a href="#UpdatesHistory">Update history</a></li>
       <li><a href="#Help">Can we help you?</a></li>
 </ul>
 
