@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+  
+  <head>
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+  <meta charset="utf-8">  
+  
+  <title>Cell Type Agnostic Prediction</title>
+  
+    <style>
+html, body{
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 20px;
+    font-family: 'Raleway', serif !important;
+}
+  .ps_file{
+  text-align: justify;
+  }
+      
+    </style>
+    
+    
+  </head>
+  
+  
+  <body>
+    <!--Same information that the one available in the userGuide -->
+    <!-- Copy that information here-->
+    <div class = "ps_file">
+              <h2 id="CellTypeAgnosticPrediction"> <b>Cell Type Agnostic Prediction</b> </h2>
+    <div>
+      
+<p>
+    POSTRE strategy to predict structural variants (<b>SVs</b>) pathogenicity is a <b>cell-type-focused approach</b>. This implies that POSTRE independently evaluates SV pathogenicity for the different cell types and tissues considered relevant to the phenotype of interest <a href="Supplementary_Data_1.html" target="_blank">(details of all cell types used)</a>. For each of those cell types POSTRE considers and requires genomic data, such as, gene expression and enhancer maps. <b>Evaluating an SV's impact on specific cell types is crucial for accurately identifying SV-associated changes in gene expression, especially those driven by enhancer-mediated alterations.</b> 🧬
+</p>
+
+<hr>
+
+<h3>LIMITATION: Why a Cell-Type-Focused Approach Can Miss Things</h3>
+<p>
+    This cell-type-focused strategy, although essential to properly identify changes in gene-enhancer communication, may miss "obvious" pathogenic coding predictions if the relevant cell type for a disease is not included in POSTRE genomic database. For example, POSTRE only considers a gene as a <b>Loss of Function (LOF)</b> candidate in a given cell type if it's actively expressed on it. If a gene is inactive in all of the cell types currently in our database, it will never be identified as a pathogenic LOF candidate, even if it's truncated by an SV and known to be associated with a specific phenotype.
+</p>
+
+<hr>
+
+<h3>The Cell Type Agnostic Prediction</h3>
+<p>
+    To address this limitation and prevent missing these clear coding alterations (in case you have not already evaluated them with the usage of other tools), we've introduced the <b>Cell Type Agnostic Prediction</b> option. This approach simply highlights as pathogenic: alterations in copy number and/or truncations of phenotypically relevant genes (e.g. associated in OMIM with the phenotype of interest) which are dosage sensitive. Thus, ignoring cell-type-specific genomic data.
+</p>
+
+<hr>
+
+<h3> WARNING: A Note on Gene Duplications</h3>
+<p>
+    When using the cell type agnostic prediction, it's important to be cautious with gene duplications. While the deletion of a gene will always lead to  the loss of its expression wherever it gets activated, a duplication might only cause an increase/ectopic gene expression in specific cases, such as when enhancer adoption occurs. For example, as described in <a href="https://doi.org/10.1101/2025.06.27.25329768" target="_blank"> Trivellin et al 2025</a>,  isolated GPR101 duplications will not cause its ectopic expression and trigger X-linked acrogigantism unless enhancers from the neigbhor TAD are included on the duplication. Therefore, pathogenic gain of function predictions in this context should be interpreted with care. ⚠️
+</p>
+      
+    <br>
+        </div>
+    </div>
+  </body>
+</html>

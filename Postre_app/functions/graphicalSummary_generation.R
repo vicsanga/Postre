@@ -86,6 +86,9 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
           gene_mechanism<-phaseIntegratedResults[targetGeneMech,"GeneImpact"]
           SV_landing<-phaseIntegratedResults[targetGeneMech,"SV_landing"]
           
+          #Added 16/02/2026. Tracking if variant is intronic, para la graficacion de intronic enh deletions/duplications
+          isVariantIntronic<-phaseIntegratedResults[targetGeneMech,"intronicVariant"]
+          
           gene_TSS<-patientResults$allAffectedGenes_positionalInfo[gene,"TSS"]
           chr_gene<-patientResults$allAffectedGenes_positionalInfo[gene,"chr"]
           
@@ -96,7 +99,16 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
           #                                 fixed = TRUE))[2]##GOF or LOF or GOF-LOF
           pathoMechanism<-targetMech
           
-          if(phase_score>=minPathogenicScore){
+          # Rounding added in April 2026 for consistency with the (also rounded) score displayed in the summary heatmap
+          # (rounding applied in: functions/Master_Summary_Matrix_IntegratesMainPhaseResults.R).
+          # This avoids edge cases where scores such as 0.7950 are not selected here using
+          # the raw value, but are later displayed as pathogenic after rounding to 0.80.
+          # With this change, scores rounding to >= 0.80 are also selected for report generation,
+          # matching the Yes/No pathogenic call shown to the user.
+          if(round2(phase_score, digits = 2) >= minPathogenicScore){
+          #Former condition, prior to rounding: 
+          #if(phase_score>=minPathogenicScore){
+            
             ###############################################################################
             ###Okey, the gene is worth to plot, so continue with the plotting calculations
             ##And also track it to afterwards generate the gene associated report
@@ -303,8 +315,27 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
             ##  otherDomain_breakp_line_type<-"brings_some"; If some enh from the other TAD put into proximity of the gene
             ##  otherDomain_breakp_line_type<-"brings_none"; If none enh from the other TAD put into proximity of the gene
             
+            
+            ###A fecha marzo 2026 he added some categories more to better handle intronic enh drawing
+            #En concreto en relacion a gene_breakp_line_type 
+            
+            #beforeTSS_removing_allIntronic
+            #beforeTSS_removing_someIntronic
+            #beforeTSS_duplic_allIntronic
+            #beforeTSS_duplic_someIntronic
+            
+            #afterTSS_removing_allIntronic
+            #afterTSS_removing_someIntronic
+            #afterTSS_duplic_allIntronic
+            #afterTSS_duplic_someIntronic
+            
             ###########
             ##Defining the breakpoints line location: gene_breakp_line_type (to locate the breakpoints, on both the gene TAD and the other Domain)
+            
+            #Inicializo la variable con un PendingAssignment value para evitar weird behaviour si no se puede crear en cell type y se tira del valor de cell type previo
+            #Problema detectado con partial enhancer duplications 
+            gene_breakp_line_type<-"PendingAssignment"
+            otherDomain_breakp_line_type<-"PendingAssignment"
             
             ########################
             ##Breakpoint Gene TAD
@@ -315,9 +346,122 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
             
             ###For Duplications missing explanation of the logic followed but similar to previous described. But with particularities of duplications
             
-            ##For long range, exclude from first if duplications due to their particularities
-            ##They are handled on their own if
-            if((gene_mechanism == "LongRange") && (sv_type != "Duplication")){
+            ##Start case handling, added march 2026, first intronic variants due to drawing particularities
+            if((gene_mechanism=="LongRange") && (isVariantIntronic==TRUE)){
+              
+              ##Going to attach here logic for intronic enh modelling type
+              #Aqui da igual que sean dels que dups porque es un caso particular, added on 2025-2026 upgrade
+
+              # browser()##Probar a hacer esto morguen.
+              
+              #Si da error downstream meter una subvariable,
+              #E.g. enlloc de gene_breakp_line_type intronic_gene_breakp_lineType
+              
+              ##AJUSTAR AQUI EL gene_breakp_line type
+              #Que sean
+              #beforeTSS_removing_allIntronic
+              #beforeTSS_removing_someIntronic
+              #beforeTSS_duplic_allIntronic
+              #beforeTSS_duplic_someIntronic
+              
+              #afterTSS_removing_allIntronic
+              #afterTSS_removing_someIntronic
+              #afterTSS_duplic_allIntronic
+              #afterTSS_duplic_someIntronic
+              
+              ##ADD HERE LOGIC TO CAPTURE N ENH IN GENE BODY, N ENH LEFT AND N ENH RIGHT, CAPTURE FROM intronic functions
+              
+              #Y actualizo valores nEnh_initial_left nEnh_initial_right pero para intronic creo subvariables
+              #AJUSTE NUMEROS
+              
+              ## PERO ANTES: ajustar numeros atendiendo a cantidad de enhancers en el gene body
+              #Sacarlos de nEnhLeft o nEnh right segun corresponda
+              #No digo directamente Enh intronicos, ja que algunos pueden solapar exones, por tanto puede confundir
+              #Lo que estamos aqui es ante una variante intronica
+              #recopilando numero enhancers en gene body
+              #El 1 es porque solo 1 TAD map used per prediction asi q siempre cogemos info del primero
+              N_GeneBodyEnh_initial<-patientResults$resultsPerPhase_secondaryInfo[[phase]][[1]]$matrixesGenesEvaluation[gene,"N_GeneBodyEnh"]
+              
+              ##Ahora, segun si el breakpoint esta beforeTSS of afterTSS esos enhancers los descuento
+              #De nEnhancersLeft o nEnhancersRight respectivamente
+              
+              #Remember nENh left are the enhancers towards the left side of the gene TSS
+              #N right towards the righ part of the TSS
+              #After re-adjusting considering intronic enhancers n left and n right correspond to num of enhancers
+              #OUTSIDE OF Gene body. Esto me facilita la vida para grafiacion posterior
+              
+              if(geneBreakP_Position_respectToTSS=="beforeTSS"){
+                #Variante intronica que se encuentra antes del TSS (por tanto gen esta en -strand)
+                nEnh_initial_left<- nEnh_initial_left - N_GeneBodyEnh_initial
+                
+              }else if (geneBreakP_Position_respectToTSS=="afterTSS"){
+                #Variante intronica que se encuentra despues del TSS (por tanto gen esta en +strand)
+                nEnh_initial_right<- nEnh_initial_right - N_GeneBodyEnh_initial
+                
+              }
+              
+              
+              ##Calculo nros post SV
+              ##Voy a identificar ahora la situacion que tenemos en cuanto a cambio de intronic enhancers
+              #El cambio total va ligado a cambio en genebody enh.
+              totalInicial<-N_GeneBodyEnh_initial + nEnh_initial_left + nEnh_initial_right
+              
+              #el gained ha de ser 0 todo pasa en los kept (cambios cognate enhancers, intronic en concreto) 
+              totalFinal<-nEnh_kept_left+nEnh_kept_right ##AQUI NO ESTAN DESGLOSADOS POR GENE BODY todavia, esta todo agregado
+              
+              ##Defining lines and updating numbers
+              if(totalFinal < totalInicial){
+                #LOSING INTRONIC ENHANCERS
+                
+                #Updating numbers
+                n_intronicEnh_removed<-totalInicial-totalFinal
+                N_GeneBodyEnh_Final<-N_GeneBodyEnh_initial - n_intronicEnh_removed
+              
+                if(N_GeneBodyEnh_Final == 0){
+                  #Recall, geneBreakP_Position_respectToTSS tiene el valor beforeTSS or afterTSS
+                  gene_breakp_line_type<-paste0(geneBreakP_Position_respectToTSS,"_removing_allIntronic")
+                  #Con lo previo cubro: #beforeTSS_removing_allIntronic y #afterTSS_removing_allIntronic
+                  
+                }else if(N_GeneBodyEnh_Final > 0){
+                  #Recall, geneBreakP_Position_respectToTSS tiene el valor beforeTSS or afterTSS
+                  gene_breakp_line_type<-paste0(geneBreakP_Position_respectToTSS,"_removing_someIntronic")
+                  #Con lo previo cubro: #beforeTSS_removing_someIntronic y #afterTSS_removing_someIntronic
+                  
+                }
+                
+              }else if(totalFinal > totalInicial){
+                #GAINING INTRONIC ENHANCERS
+                
+                if(sv_type != "Duplication"){
+                  stop("Should be a duplication, with Postre 2026 version")
+                }
+                
+                ##Updating numbers
+                n_intronicEnh_gained<-totalFinal-totalInicial
+                N_GeneBodyEnh_Final<-N_GeneBodyEnh_initial + n_intronicEnh_gained
+                
+                
+                if(N_GeneBodyEnh_Final == 2*N_GeneBodyEnh_initial){
+                  #Recall, geneBreakP_Position_respectToTSS tiene el valor beforeTSS or afterTSS
+                  gene_breakp_line_type<-paste0(geneBreakP_Position_respectToTSS,"_duplic_allIntronic")
+                  #Con lo previo cubro: #beforeTSS_duplic_allIntronic y #afterTSS_duplic_allIntronic
+                  
+                }else if(N_GeneBodyEnh_Final > 0){
+                  #Recall, geneBreakP_Position_respectToTSS tiene el valor beforeTSS or afterTSS
+                  gene_breakp_line_type<-paste0(geneBreakP_Position_respectToTSS,"_duplic_someIntronic")
+                  #Con lo previo cubro: #beforeTSS_duplic_someIntronic y #afterTSS_duplic_someIntronic
+                  
+                }
+                
+              }
+              
+            ##Casos de none (removing or dup NONE) no modelizados porque en este contexto para llegar aqui algun intronic enh se ha perdido o ganado
+              
+            }else if((gene_mechanism == "LongRange") && (sv_type != "Duplication")){
+              ##este else-if en la version previa, prior to adding intronic enh handling, era el primer if. 
+              ##Por ello el de gestion long-range generico, excepto para Duplications
+              ##For long range, exclude from first if duplications due to their particularities
+              ##They are handled on their own, due to neo TADs etc.
               
               ##Check in which situation of the described above we are
               if(geneBreakP_Position_respectToTSS=="afterTSS"){
@@ -350,7 +494,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                 
               }
               
-            }else if(gene_mechanism == "Direct_geneTruncation"){
+            } else if(gene_mechanism == "Direct_geneTruncation"){
               ###############################
               # For DIRECT GENE TRUNCATIONS
               ###############################
@@ -434,7 +578,7 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
               ################################################################################
               ##Duplications have their own kind of particularities so let's treat them a part
               ################################################################################
-            
+
               ##Focusing on duplic that enh can be triggering the disease
               if((gene_mechanism == "LongRange") || ##In this case the gene is not duplicated
                  (gene_mechanism == "LongRange_geneDuplication") ||
@@ -493,6 +637,14 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   ##################################################################
                   ## IMPORTANT PARTICULARITIE. "Kept" tracks cognate enhancers 
                   ## So if nkept > intial is because some of the initial duplicated
+                  
+                  #Nota Feb16, si no equivocado aqui entra el paraguas de enh duplication puro
+                  #Asi como el de NeoTAD
+                  #Importante, tenemos un edge case derivado de duplicacion parcial de enhancer
+                  #Eso lo cuenta como perdido, por tanto podemos tener situaciones de 
+                  #Lof via enhancer loss en duplication, tendria que add al final de este bloque de ifs
+                  #El codigo de long-range para poder modelar el grafico y luego poner una nota en el graphical abstract
+                  
                   
                   if(geneBreakP_Position_respectToTSS=="afterTSS"){
                     ##It implies the breakpoint is after the TSS (bigger position):
@@ -619,8 +771,10 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                 
                 ####################################
                 ##png with maximum resolution 300dpi
-                png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
                 
+                #COMENTADO 17 Feb 2026, quitar al implementar intronic feature
+                png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
+                # x11()
                 ##########################################
                 ###Creating canvas for plotting
                 yAxisLim<-c(-50,30)
@@ -822,6 +976,26 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                                                                           patientResults = patientResults, tagEnhancersLabel = tagEnhancersLabel)
                     
                     
+                  }else if((gene_mechanism=="LongRange") && (isVariantIntronic==TRUE)){
+
+                    ##METER AQUI LA FUNCION QUE DIBUJA EL WT TAD DEL CASO DE INTRONIC ENH DEL/DUP #Me falta pensar en Inv
+                    #Se va a llamar: paintGene_WT_TAD_intronicEnhAlteration
+                    #El codigo va en: source("functions/aux_functions_forGraphicalSummary.R")
+                    
+                    info_drawingGENE_TAD<-paintGene_WT_TAD_intronicEnhAlteration(tad_X_cord = tad_X_cord,
+                                                                                 tad_Y_cord = tad_YCoord_WildTypeLine,
+                                                                                 N_GeneBodyEnh_initial = N_GeneBodyEnh_initial,
+                                                                                 nEnh_initial_left = nEnh_initial_left, 
+                                                                                 nEnh_initial_right = nEnh_initial_right,
+                                                                                 gene = gene,
+                                                                                 gene_breakp_line_type = gene_breakp_line_type,
+                                                                                 situation = situation,
+                                                                                 patientResults = patientResults, 
+                                                                                 tagEnhancersLabel = tagEnhancersLabel,
+                                                                                 phase=phase)
+                    
+                    
+                    
                   }else{
                     info_drawingGENE_TAD<-paintGene_WT_TAD(tad_X_cord = tad_X_cord,
                                                            tad_Y_cord = tad_YCoord_WildTypeLine,
@@ -890,7 +1064,38 @@ graphicalSummary_generation<-function(patientResults, minPathogenicScore){
                   
                 }else if(gene_mechanism == "LongRange"){
                   
-                  if((sv_type=="Inversion") || (sv_type=="Translocation")){
+                  ##Modelo primero el caso de intronic enh dosage changes
+                  ##Pendiente implementacion logica graficacion si inversion toca algun enhancer
+                  if(isVariantIntronic==TRUE){
+                    ##Modelo aqui caso de intronic variants con enh dosage alteration
+                    #Antes que ir directamente al siguiente caso que son Deletions en conjunto
+                    
+                    ##Solo vamos a pintar un TAD, todo ocurre dentro del mismo, tal y como se modela ahora mismo, no cabe opcion a que no sea asi
+                    #Si hay casos raros tipo intronic variant en un gen cuyo cuerpo se extiende entre TAD borders, no tengo claro como saldra aqui, creo q no saldra pq trabajamos en primer nivel con TSS, pensar/mirar/revisar
+                    paintGene_SV_TAD_intronicEnhAlteration(N_GeneBodyEnh_initial = N_GeneBodyEnh_initial ,
+                                                           N_GeneBodyEnh_Final = N_GeneBodyEnh_Final,
+                                                           nEnh_initial_left = nEnh_initial_left, 
+                                                           nEnh_initial_right = nEnh_initial_right,
+                                                           gene = gene,
+                                                           gene_breakp_line_type = gene_breakp_line_type,
+                                                           situation = situation,
+                                                           nEnh_kept_left = nEnh_kept_left, 
+                                                           nEnh_kept_right = nEnh_kept_right,
+                                                           nEnh_gained = nEnh_gained,
+                                                           nEnh_other_domain = nEnh_other_domain,
+                                                           info_drawingGENE_TAD = info_drawingGENE_TAD, 
+                                                           info_drawingSecondaryTAD = info_drawingSecondaryTAD,
+                                                           tad_X_cord = tad_XCoord_OnCenter ,
+                                                           tad_YCoord_Rearrangements = tad_YCoord_Rearrangements,
+                                                           geneBreakP_Position_respectToTSS = geneBreakP_Position_respectToTSS, tagEnhancersLabel = tagEnhancersLabel,
+                                                           sv_type = sv_type
+                    )
+                    
+                    
+                    
+                    
+                    
+                  }else if((sv_type=="Inversion") || (sv_type=="Translocation")){
                     ##It implies a reshuffling of TADs, so no DNA gained or lost
                     
                     #Paint Gene SV re-arranged TAD

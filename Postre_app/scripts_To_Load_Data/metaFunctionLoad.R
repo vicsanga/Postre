@@ -11,6 +11,9 @@ source(file = "functions/deleteImages_Previous_Analyses.R",local=TRUE)
 source(file = "functions/processing_GenomicCoordinates.R",local=TRUE)
 source(file = "functions/getBetweenTAD.R",local=TRUE)
 
+##Required for improving intronic-exonic handling (as of Sept 2025)
+source(file = "functions/intronicExonic_auxFuns.R")
+
 ##############################################
 ##Functions for Multiple Patients Submission
 ##############################################

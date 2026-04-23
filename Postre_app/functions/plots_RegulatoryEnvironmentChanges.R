@@ -30,7 +30,7 @@ plots_regulatoryEnvironmentChanges<-function(patientResults){
     
     pathoMechanism<-targetMech
     
-    ##Probably not interested on doing for phaseFree at least for now
+    ##Probably not interested on doing for CellTypeAgnostic at least for now
     ##But we could make some total addup and predict how many enh is missing the gene at some point in development
     ##FilterOut PhaseFree
     
@@ -84,10 +84,10 @@ plots_regulatoryEnvironmentChanges<-function(patientResults){
     if(((geneImpact == "LongRange") ||
       (geneImpact == "LongRange_geneDuplication") ||
       (geneImpact == "Direct_LongRange_geneDuplication")) &&
-      (targetPhase != "phaseFree") ){
+      (targetPhase != "CellTypeAgnostic") ){
       png(filename = fullOutpPath, width = 12, height = 8, units = "in", res = 300 )
       ## It is only done (for now) if long-range and not PhaseFree conditions
-      ## Becuase in phaseFree no enh info. And if not LongRange enh Info not considered
+      ## Becuase in CellTypeAgnostic no enh info. And if not LongRange enh Info not considered
       ##LongRange: gene intact, 
       ##LongRange_geneDuplication means gene duplicated but pathological mechanism predicted by LongRange effects
       ##Direct_LongRange_geneDuplication, gene expressed duplicated & gaining a lot of enh difficult to predict main cause

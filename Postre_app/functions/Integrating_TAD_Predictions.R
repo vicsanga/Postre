@@ -163,73 +163,80 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
       
       maxScores<-c(maxScores, resultsPhase[[paste(targetMech,"_score", sep="")]])
       
-      if(targetPhase != "phaseFree"){
-        ##Because for this phase we do not take into account enh info as we do not have
-        ##########################################
-        ## Gett matrixesGeneEvaluation for plots
-        #nEnhInitialLeft id column
-        idCol<-paste0("nEnh_ToTheLeft_initial_", targetPhase)
-        nEnh_initial_LEFT<-c(nEnh_initial_LEFT, 
-                             geneEvaluationMatrix_phase[gene,idCol])
-        
-        #nEnhInitialRight id column
-        idCol<-paste0("nEnh_ToTheRight_initial_", targetPhase)
-        nEnh_initial_RIGHT<-c(nEnh_initial_RIGHT, 
-                              geneEvaluationMatrix_phase[gene,idCol])
-        
-        #nEnhInTheOtherDomain
-        idCol<-paste0("nEnhancers_maxAvailableInTheOtherDomain_", targetPhase)
-        nEnh_initial_OtherDOMAIN<-c(nEnh_initial_OtherDOMAIN, 
-                                    geneEvaluationMatrix_phase[gene,idCol])
-        
-        #nEnhKeptLeft id column
-        idCol<-paste0("nEnh_ToTheLeft_kept_", targetPhase)
-        nEnh_kept_LEFT<-c(nEnh_kept_LEFT, 
-                          geneEvaluationMatrix_phase[gene,idCol])
-        
-        #nEnhkeptRight id column
-        idCol<-paste0("nEnh_ToTheRight_kept_", targetPhase)
-        nEnh_kept_RIGHT<-c(nEnh_kept_RIGHT, 
+      # The code that comes after these comment lines
+      # Was located inside an if stament (if(targetPhase != "CellTypeAgnostic"){})
+      # That you can also see below
+      # But, as of 29 April 2025, CellTypeAgnostic re-incorporated
+      # For now dealing with 0s in enhancers in this phase, it will not have any prediction consequence BUT 
+      # avoids errors rising due to data needed downstream (even if it is data_X = NA bec data_X is expected)
+      
+      # if(targetPhase != "CellTypeAgnostic"){}
+      
+      ##########################################
+      ## Gett matrixesGeneEvaluation for plots
+      #nEnhInitialLeft id column
+      idCol<-paste0("nEnh_ToTheLeft_initial_", targetPhase)
+      nEnh_initial_LEFT<-c(nEnh_initial_LEFT, 
                            geneEvaluationMatrix_phase[gene,idCol])
-        
-        #nEnhInTheOtherDomain
-        idCol<-paste0("nEnhancers_gained_", targetPhase)
-        nEnh_gained_OtherDOMAIN<-c(nEnh_gained_OtherDOMAIN, 
-                                   geneEvaluationMatrix_phase[gene,idCol])
-        
-        ###########################################
-        ## For enhancer acetilation levels
-        ###########################################
-        ###Info enhancer Acetilation levels
-        idCol<-paste0("enhancers_acetilation_ToTheLeft_initial_", targetPhase)
-        acetilationEnh_initial_LEFT<-c(acetilationEnh_initial_LEFT, 
-                                       geneEvaluationMatrix_phase[gene,idCol])
-        
-        #acetilation EnhInitialRight id column
-        idCol<-paste0("enhancers_acetilation_ToTheRight_initial_", targetPhase)
-        acetilationEnh_initial_RIGHT<-c(acetilationEnh_initial_RIGHT, 
-                                        geneEvaluationMatrix_phase[gene,idCol])
-        
-        #acetilation EnhInTheOtherDomain
-        idCol<-paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_", targetPhase)
-        acetilationEnh_initial_OtherDOMAIN<-c(acetilationEnh_initial_OtherDOMAIN, 
-                                              geneEvaluationMatrix_phase[gene,idCol])
-        
-        #acetilation EnhKeptLeft id column
-        idCol<-paste0("enhancers_acetilation_ToTheLeft_kept_", targetPhase)
-        acetilationEnh_kept_LEFT<-c(acetilationEnh_kept_LEFT, 
-                                    geneEvaluationMatrix_phase[gene,idCol])
-        
-        #acetilation EnhkeptRight id column
-        idCol<-paste0("enhancers_acetilation_ToTheRight_kept_", targetPhase)
-        acetilationEnh_kept_RIGHT<-c(acetilationEnh_kept_RIGHT, 
+      
+      #nEnhInitialRight id column
+      idCol<-paste0("nEnh_ToTheRight_initial_", targetPhase)
+      nEnh_initial_RIGHT<-c(nEnh_initial_RIGHT, 
+                            geneEvaluationMatrix_phase[gene,idCol])
+      
+      #nEnhInTheOtherDomain
+      idCol<-paste0("nEnhancers_maxAvailableInTheOtherDomain_", targetPhase)
+      nEnh_initial_OtherDOMAIN<-c(nEnh_initial_OtherDOMAIN, 
+                                  geneEvaluationMatrix_phase[gene,idCol])
+      
+      #nEnhKeptLeft id column
+      idCol<-paste0("nEnh_ToTheLeft_kept_", targetPhase)
+      nEnh_kept_LEFT<-c(nEnh_kept_LEFT, 
+                        geneEvaluationMatrix_phase[gene,idCol])
+      
+      #nEnhkeptRight id column
+      idCol<-paste0("nEnh_ToTheRight_kept_", targetPhase)
+      nEnh_kept_RIGHT<-c(nEnh_kept_RIGHT, 
+                         geneEvaluationMatrix_phase[gene,idCol])
+      
+      #nEnhInTheOtherDomain
+      idCol<-paste0("nEnhancers_gained_", targetPhase)
+      nEnh_gained_OtherDOMAIN<-c(nEnh_gained_OtherDOMAIN, 
+                                 geneEvaluationMatrix_phase[gene,idCol])
+      
+      ###########################################
+      ## For enhancer acetilation levels
+      ###########################################
+      ###Info enhancer Acetilation levels
+      idCol<-paste0("enhancers_acetilation_ToTheLeft_initial_", targetPhase)
+      acetilationEnh_initial_LEFT<-c(acetilationEnh_initial_LEFT, 
                                      geneEvaluationMatrix_phase[gene,idCol])
-        
-        #acetilation EnhInTheOtherDomain
-        idCol<-paste0("enhancers_acetilation_gained_", targetPhase)
-        acetilationEnh_gained_OtherDOMAIN<-c(acetilationEnh_gained_OtherDOMAIN, 
-                                             geneEvaluationMatrix_phase[gene,idCol])
-      }
+      
+      #acetilation EnhInitialRight id column
+      idCol<-paste0("enhancers_acetilation_ToTheRight_initial_", targetPhase)
+      acetilationEnh_initial_RIGHT<-c(acetilationEnh_initial_RIGHT, 
+                                      geneEvaluationMatrix_phase[gene,idCol])
+      
+      #acetilation EnhInTheOtherDomain
+      idCol<-paste0("enhancers_maxAcetilationAvailableInTheOtherDomain_", targetPhase)
+      acetilationEnh_initial_OtherDOMAIN<-c(acetilationEnh_initial_OtherDOMAIN, 
+                                            geneEvaluationMatrix_phase[gene,idCol])
+      
+      #acetilation EnhKeptLeft id column
+      idCol<-paste0("enhancers_acetilation_ToTheLeft_kept_", targetPhase)
+      acetilationEnh_kept_LEFT<-c(acetilationEnh_kept_LEFT, 
+                                  geneEvaluationMatrix_phase[gene,idCol])
+      
+      #acetilation EnhkeptRight id column
+      idCol<-paste0("enhancers_acetilation_ToTheRight_kept_", targetPhase)
+      acetilationEnh_kept_RIGHT<-c(acetilationEnh_kept_RIGHT, 
+                                   geneEvaluationMatrix_phase[gene,idCol])
+      
+      #acetilation EnhInTheOtherDomain
+      idCol<-paste0("enhancers_acetilation_gained_", targetPhase)
+      acetilationEnh_gained_OtherDOMAIN<-c(acetilationEnh_gained_OtherDOMAIN, 
+                                           geneEvaluationMatrix_phase[gene,idCol])
+      
       
       ######################################################################################
       ##Type of SV (inter TAD) or intra TAD is independent on the gene, only depend on TADs
@@ -373,6 +380,17 @@ integratingTAD_predictions<-function(resultsPerTADmap, targetPhase){
     }else{
       ##TAD dynamics, for some intraTAD for other InterTAD... unclear
       targetMatrix$SV_landing<-"Uncertain"
+    }
+    
+    
+    ##################################################
+    ## Oct 2025
+    #Adding intronic alteration yes/no tracking
+    genesWithIntronicVariant<-resultsPerTADmap[[tadMap]]$affectedGenes$genesWithIntronicVariant
+    targetMatrix$intronicVariant<-FALSE ##Default
+    
+    if(length(genesWithIntronicVariant)>0){
+      targetMatrix$intronicVariant[targetMatrix$affected_gene %in% genesWithIntronicVariant]<-TRUE
     }
     
     ##Recording results per phase  

@@ -9,8 +9,10 @@ cohortResults_Parser<-function(minScore,all_patientResults, consideredPheno, dis
   source(file = "functions/multiple_SV_Functions/addingInfoToMatrix.R",
          local = TRUE)
   
-  ##Load list, associated phases per Pheno
+  ##Load list of associated phases per Pheno
   source(file = "functions/GenomicData_Loader.R", local = TRUE)
+  pheno_Phases<-retrieve_phenoPhasesList(includesCellTypeAgnosticPred = unique(AllPatientsInfo$includeCellTypeAgnosticPred))
+  
   
   ##To store results
   perPheno_cohortResults<-list()

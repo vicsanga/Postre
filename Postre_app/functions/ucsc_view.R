@@ -15,7 +15,8 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
   
   borderHighlight_extension<-500 ##Extension of the TAD border highlight in bp, if put at single bp probably difficult to see in large zoom out
   
-  breakpointHighlight_extension<-500 
+  ##NOTA, 20 Oct 2025: Concerned with intronic, an intronic perceived as coding altering if region expanded
+  breakpointHighlight_extension<-0 #500 
   
   ##Check for how many domains affected,
   ##If only 1, only 1 link required. If 2 two links
@@ -25,6 +26,9 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
   ##################
   ## To start with the approach let's paint with respect to the first map, for the devStage of interest
   affectedRegions<-patientResults$resultsPerPhase_secondaryInfo[[devStage]][[1]]$affectedRegions  
+  
+  ##Oct 2025 addition To track whether intronic alteration or not
+  genesWithIntronicVariant<-patientResults$resultsPerPhase_secondaryInfo[[devStage]][[1]]$affectedGenes$genesWithIntronicVariant
   
   ##Unique, if everyting happens in the same TAD, only 1 link provided
   ##But in that case we need to provide and paint 2 breakpoints in the same TAD
@@ -284,13 +288,16 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
       }
       
       
-      ########################################################################
+      #####################################################################################################################################
       ### IF WE ARE DEALING WITH TRUNCATION
       ## So, the gene partially altered
       ## PAINT AGAIN THE BREAKPOINT TO AVOID BEING HIDDEN BY THE GENE BLUEISH
-      ########################################################################
+      ## NOTA 20 OCT 2025 HE DE HACER LO MISMO AQUI SI long-range INTRONIC... Y AÑADIR ARRIBA EN NEGRITA, EL TRACK QUE TOCA, COORD ENHANCERS
+      #####################################################################################################################################
       
-      if(patientResults$masterSummaryResultsMatrix[targetGene,"GeneImpact"] == "Direct_geneTruncation"){
+      if((patientResults$masterSummaryResultsMatrix[targetGene,"GeneImpact"] == "Direct_geneTruncation")
+         || (targetGene %in% genesWithIntronicVariant) #Not sure if will pop up the intronic consideration as pathogenic on current setup (oct 25), for sure not for Transloc, as can not be entirely intronic, since one breakp in different chr
+         ){
         ###############################
         ## ADDING BREAKPOINT HIGHLIGHT
         ###############################
@@ -652,98 +659,52 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
     ### IF WE ARE DEALING WITH TRUNCATION
     ## So, the gene partially altered
     ## PAINT AGAIN THE BREAKPOINT TO AVOID BEING HIDDEN BY THE GENE BLUEISH
+    ## ALSO FOR INTRONIC ENHANCER DELETIONS! The enhancer visible even if green color covered by Upper Enhancer Track
     ########################################################################
     
-    if(patientResults$masterSummaryResultsMatrix[targetGene,"GeneImpact"] == "Direct_geneTruncation"){
+    if((patientResults$masterSummaryResultsMatrix[targetGene,"GeneImpact"] == "Direct_geneTruncation")
+       || (targetGene %in% genesWithIntronicVariant)
+       ){
+      
       ###############################
       ## ADDING BREAKPOINT HIGHLIGHT
       ###############################
       
-      ##If we have just 1 row in domainsCoord, it implies
-      ##That everyting occurs in the same TAD,
-      ##Hence in that case, we still have two breakpoints
-      ##So add the highlight for both breakpoints in the same TAD
+      ##Now let's get both breakpointLimits
+      breakpoint_start<-min(as.numeric(unlist(strsplit(x = patientResults$patientInfo$coord_Break1,
+                                                       split = ",", fixed = TRUE))))
       
-      if(nrow(domainsCoord)>1){
-        
-        ##So we have the breakpoints in 2 different tracks, hence we will create 2 tracks in the output html
-        
-        ##Let's retrieve breakpoint ID to get subsequently its coord
-        breakpoint_ID<-unlist(strsplit(x = rownames(domainsCoord)[nDomain], split = "domain_",fixed = TRUE))[2]
-        
-        ##Now let's get both breakpointLimits
-        breakpoint_start<-breakpCoord[paste(breakpoint_ID,"_left_segment",collapse = "",sep = "")
-                                      ,"end"]
-        
-        breakpoint_end<-breakpCoord[paste(breakpoint_ID,"_right_segment",collapse = "",sep = "")
-                                    ,"start"]
-        
-        ##########
-        ## Extending coord to highlight a bigger region and facilitate visualization
-        breakp_HighlightStart<-breakpoint_start - breakpointHighlight_extension
-        breakp_HighlightEnd<-breakpoint_end + breakpointHighlight_extension
-        
-        breakP_region<-paste("hg19.",
-                             chr_browser,"%3A",
-                             breakp_HighlightStart,"-",
-                             breakp_HighlightEnd,
-                             collapse = "",
-                             sep = "")
-        
-        ##RegionColor For the Regions ##BLUE
-        colorBreakp<-paste("%23",##%23 is essential is the conversion somehow to url syntax of #
-                           "ff3300",
-                           sep = "",
-                           collapse = "")
-        
-        ##Insterting breakp highlight on track
-        browser_highlight<-paste(browser_highlight,
-                                 "%7C",
-                                 breakP_region,
-                                 colorBreakp,
-                                 sep="",
-                                 collapse = "")
-      }else{
-        if(nrow(domainsCoord)==1){
-          ##It implies that everything occur in the same TAD , so we need to put both breakpoints highlights in the same track
-          
-          for(breakpoint_ID in c("breakpoint_1","breakpoint_2")){
-            ##Now let's get both breakpointLimits
-            breakpoint_start<-breakpCoord[paste(breakpoint_ID,"_left_segment",collapse = "",sep = "")
-                                          ,"end"]
-            
-            breakpoint_end<-breakpCoord[paste(breakpoint_ID,"_right_segment",collapse = "",sep = "")
-                                        ,"start"]
-            
-            ##########
-            ## Extending coord to highlight a bigger region and facilitate visualization
-            breakp_HighlightStart<-breakpoint_start - breakpointHighlight_extension
-            breakp_HighlightEnd<-breakpoint_end + breakpointHighlight_extension
-            
-            breakP_region<-paste("hg19.",
-                                 chr_browser,"%3A",
-                                 breakp_HighlightStart,"-",
-                                 breakp_HighlightEnd,
-                                 collapse = "",
-                                 sep = "")
-            
-            ##RegionColor For the Regions ##BLUE
-            colorBreakp<-paste("%23",##%23 is essential is the conversion somehow to url syntax of #
-                               "ff3300",
-                               sep = "",
+      breakpoint_end<-max(as.numeric(unlist(strsplit(x = patientResults$patientInfo$coord_Break2,
+                                                     split = ",", fixed = TRUE))))
+      
+      ##########
+      ## Extending coord to highlight a bigger region and facilitate visualization
+      ## I do not think this is necessary for Del Dup
+      ########## 
+      breakp_HighlightStart<-breakpoint_start #- breakpointHighlight_extension
+      breakp_HighlightEnd<-breakpoint_end #+ breakpointHighlight_extension
+      
+      breakP_region<-paste("hg19.",
+                           chr_browser,"%3A",
+                           breakp_HighlightStart,"-",
+                           breakp_HighlightEnd,
+                           collapse = "",
+                           sep = "")
+      
+      ##RegionColor For the Regions ##BLUE
+      colorBreakp<-paste("%23",##%23 is essential is the conversion somehow to url syntax of #
+                         "ff3300",
+                         sep = "",
+                         collapse = "")
+      
+      ##Insterting breakp highlight on track
+      browser_highlight<-paste(browser_highlight,
+                               "%7C",
+                               breakP_region,
+                               colorBreakp,
+                               sep="",
                                collapse = "")
-            
-            ##Insterting breakp highlight on track
-            browser_highlight<-paste(browser_highlight,
-                                     "%7C",
-                                     breakP_region,
-                                     colorBreakp,
-                                     sep="",
-                                     collapse = "")
-            
-          }
-        }
-      }
+      
     }
     
     ##########################################
@@ -796,13 +757,17 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
   ##############################################################
   ### Let's add the color code Legend
   ##############################################################
-
+ 
+  ##If CellTypeAgnostic I'm going to NOT include some data like enh, since no available/used in that condition
+  
   info_colorCode<-paste("<div class='colorCodeSection'>
 	  <div class='cs_colorRegDom'></div>
 	  <div class='cs_colorBreak'></div>
-	  <div class='cs_colorGene'></div>
-	  <div class='cs_colorEnh'></div>
-	  <div class='cs_textRegDom'><p>TADs - Regulatory Domains</p></div>
+	  <div class='cs_colorGene'></div>",
+	  if(devStage != "CellTypeAgnostic"){
+	    "<div class='cs_colorEnh'></div>"
+	  },
+	  "<div class='cs_textRegDom'><p>TADs - Regulatory Domains</p></div>
     <div class='cs_textBreak'><p>",
     if(patientResults$patientInfo$TypeSV=="Deletion"){
         "Deleted Region"
@@ -816,10 +781,12 @@ ucsc_view<-function(patientResults, browserSessionId, targetGene, devStage){
     "</p></div>
 	  <div class='cs_textGene'><p>",
     targetGene,               
-    "</p></div>
-	  <div class='cs_textEnh'><p>Enhancers</p></div>
-  </div>",
-                        sep="")
+    "</p></div>",
+	  if(devStage != "CellTypeAgnostic"){
+	    "<div class='cs_textEnh'><p>Enhancers</p></div>" 
+	  },
+  "</div>",
+   sep="")
   
   ##removing line breaks
   info_colorCode<-gsub("[\r\n]", "", info_colorCode)

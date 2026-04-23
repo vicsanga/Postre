@@ -190,6 +190,117 @@ eval_lof_directEffect_score<-function(matrixPhase,geneTransversalData, phenoScor
   
 }
 
+###############################################################
+## CellTypeAgnostic addition -- cell type AGNOSTIC scoring functions
+## 29 Abril 2025
+###############################################################
+
+eval_lof_indirectEffect_CellTypeAgnostic_score<-function(matrixPhase,geneTransversalData, phenoScore){
+  
+  ###################################
+  ##PHASE FREE PARTICULARITY!!!
+  ## FOR LONG-RANGE, SETTING TO 0, RIGHT NOW, IGNORING THE REST OF THE LOGIC AND INFORMATION FOR NOW
+  finalScore<-0
+  return(list("finalScore"=finalScore,
+              "geneEnhancerScore"=NA,
+              "genePhenoScore"=NA,
+              "geneFeaturesScore"=NA,
+              "dosageSensitivityScore"=NA,
+              "polycombScore"=NA,
+              "geneExpressionScore"=NA
+  ))
+  
+}
+
+
+################################################
+## evaluation Gain Of Function
+eval_Gof_indirectEffect_CellTypeAgnostic_score<-function(matrixPhase,geneTransversalData, phenoScore){
+  
+  ###################################
+  ##PHASE FREE PARTICULARITY!!!
+  ## FOR LONG-RANGE, SETTING TO 0, RIGHT NOW, IGNORING THE REST OF THE LOGIC AND INFORMATION FOR NOW
+  finalScore<-0
+  return(list("finalScore"=finalScore,
+              "geneEnhancerScore"=NA,
+              "genePhenoScore"=NA,
+              "geneFeaturesScore"=NA,
+              "dosageSensitivityScore"=NA,
+              "polycombScore"=NA,
+              "geneExpressionScore"=NA
+  ))
+  
+}
+
+####################################################################################
+## TO evaluate Direct EFFECTS (as gene truncation, or gene deletion) ###############
+####################################################################################
+eval_lof_directEffect_CellTypeAgnostic_score<-function(matrixPhase,geneTransversalData, phenoScore){
+  
+  # ##To evaluate the effect over either Deleted or Truncated genes
+  ##IN THE CONTEXT OF PHASE FREE, SO FOR NOW, IGNORING EXP AND ENH
+  
+  #ScorePolycomb
+  scorePolycomb<-scorePolycomb_compute(matrixPhase = matrixPhase)
+  
+  #ScoreDosageSensitivity LOF
+  scoreDosageSensitive<-scoreDS_LOF_compute(geneTransversalData = geneTransversalData)
+  
+  ##GeneFeatures STANDARD MODE
+  geneFeatures<-scoreGeneFeatures_standardMode(scoreDosageSensitive = scoreDosageSensitive,
+                                               scorePolycomb = scorePolycomb)
+  
+  ##AJUSTE AQUI DONDE IGNORO POLYCOMB (30 ABRIL 2025)
+  # finalScore<-(geneFeatures + phenoScore)/2
+  finalScore<-(scoreDosageSensitive + phenoScore)/2
+  
+  ##Modificacion 2 sept 2025 setting to NA scores unused
+  return(list("finalScore"=finalScore,
+              "geneEnhancerScore"=NA,
+              "genePhenoScore"=phenoScore,
+              "geneFeaturesScore"=NA,#geneFeatures,
+              "dosageSensitivityScore"=scoreDosageSensitive,
+              "polycombScore"=NA,#scorePolycomb,
+              "geneExpressionScore"=NA
+  ))
+  
+}
+####################################################################################
+## TO evaluate Direct EFFECTS derived of GENE DUPLICATION            ###############
+####################################################################################
+##Addition of 3 July 2025
+eval_Gof_directEffect_CellTypeAgnostic_score<-function(matrixPhase,geneTransversalData, phenoScore){
+  
+  # ##To evaluate the effect over gene DUPLICATION 
+  ##IN THE CONTEXT OF PHASE FREE, SO FOR NOW, IGNORING EXP (AND ENH, although that only assessed on indirect effect function)
+  
+  #ScorePolycomb
+  scorePolycomb<-scorePolycomb_compute(matrixPhase = matrixPhase)
+  
+  #ScoreDosageSensitivity LOF
+  scoreDosageSensitive<-scoreDS_GOF_compute(geneTransversalData = geneTransversalData)
+  
+  ##GeneFeatures STANDARD MODE
+  geneFeatures<-scoreGeneFeatures_standardMode(scoreDosageSensitive = scoreDosageSensitive,
+                                               scorePolycomb = scorePolycomb)
+  
+  ##AJUSTE AQUI DONDE IGNORO POLYCOMB (30 ABRIL 2025)
+  # finalScore<-(geneFeatures + phenoScore)/2
+  finalScore<-(scoreDosageSensitive + phenoScore)/2
+  
+  ##Modificacion 2 sept 2025 setting to NA scores unused
+  return(list("finalScore"=finalScore,
+              "geneEnhancerScore"=NA,
+              "genePhenoScore"=phenoScore,
+              "geneFeaturesScore"=NA,#geneFeatures,
+              "dosageSensitivityScore"=scoreDosageSensitive,
+              "polycombScore"=NA,#scorePolycomb,
+              "geneExpressionScore"=NA
+  ))
+  
+}
+
+
 
 
 

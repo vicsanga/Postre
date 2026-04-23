@@ -4074,5 +4074,670 @@ paintGene_SV_Duplication_NEO_TAD<-function(nEnh_initial_left, nEnh_initial_right
   
 }
 
-
-
+##Funcion para pintar intronic enhancers del-dup. Me he basado en codigo funciones
+#paintGene_SV_Deletion_TAD, paintGene_SV_Duplication_OnlyLongRange_Intra_TAD
+#Y de la que vengo: paintGene_WT_TAD_intronicEnhAlteration
+paintGene_SV_TAD_intronicEnhAlteration<-function(N_GeneBodyEnh_initial,
+                                                 N_GeneBodyEnh_Final,
+                                                 nEnh_initial_left, nEnh_initial_right, gene, gene_breakp_line_type, situation,
+                                                 nEnh_kept_left, nEnh_kept_right,nEnh_gained,
+                                                 nEnh_other_domain,
+                                                 info_drawingGENE_TAD, info_drawingSecondaryTAD,
+                                                 tad_X_cord,
+                                                 tad_YCoord_Rearrangements,
+                                                 geneBreakP_Position_respectToTSS, tagEnhancersLabel, sv_type){
+  ########################################################
+  ## Function to paint GENE SV TAD -- PATIENT SV Representation
+  ## FOCUSING on intronic enhancer changes, 16/02/2026
+  ########################################################
+  
+  tad_Y_cord<-tad_YCoord_Rearrangements
+  enh_y_positions<-rep.int(x=tad_Y_cord[1], times = 4)
+  
+  ## Let's mantain color codes by TAD position
+  ## If TAD is on the left blue or whatever we choos 1, if it is on the right orange or whatever we choose 2
+  ## Regardless whether it is the gene or the secondary domain TAD
+  ## In order not to confound the user if > 1 gene is affected
+  ##For central tads... all of them paint in kind of orange... not to confound...consider for future
+  if(situation == "primaryTAD_Central"){
+    colorTAD<-"#9999ff"
+  }## CAN NOT BE OTHER!!
+  
+  
+  ##Painting TAD
+  polygon(tad_X_cord, tad_Y_cord, col = colorTAD, border = "#ffffff")
+  
+  ##Defining some gene features required to plot it
+  #And for other calculations of breakpoint and enhs locations
+  x_space<-c(tad_X_cord[1],tad_X_cord[2])
+  
+  x_space_start<-x_space[1]
+  x_space_end<-x_space[2]
+  
+  ##Gene pos y gene size lo gestiono segun el contexto, y eso lo miro con los breakpoints, 
+  
+  #########################################
+  ## Defining coordinates breakpoint line
+  ## And additional relevant variables
+  #########################################
+  enhNumbersSize<-0.8
+  
+  distanceBreakpFromGene<-0.3 ##Distance breakpoint from the gene, when the breakpoint is between the gene & enh
+  
+  distanceEnhFromGene<-1.5 ##Distance between the enhancers and the gene
+  
+  distanceBreakpFromEnh<-0.3 ##Distance breakpoint from enhancers when the breakpoint located between enh and TAD border
+  
+  sizeEnhRegion<-1##Touching this will not really affect enh size, because created regardless of this
+  
+  distance_Yaxis_geneLabel<-2
+  distance_Yaxis_EnhGene<-2
+  distance_Yaxis_EnhLabel_EnhNumber<-1.3
+  
+  ##############
+  ##I do not need the primary TAD info situation
+  ##Important to have in mind the TAD info situation if it is tad central... we paint two breakpoints there
+  ## SITUATION HAS TO BE: situation == "primaryTAD_Central"
+  ##Can not be other
+  ##Adding code that was contained inside of an if clause related to that
+  
+  ###########################################################################
+  ##   ONE TAD IS GOING TO BE PAINTED, so in the current TAD representation
+  ##   TWO BREAKPOINTS will be displayed
+  ##   It is due to the fact that both ,or none, breakpoint directly touch the TAD
+  ##   This is going to occur for Deletions And Duplications
+  ###########################################################################
+  
+  ##Los enhancers los voy a pintar en el centro del gen,
+  #Lo que cambiare es si el TSS Lo pongo a izquierda o a derecha con un text label
+  #Eso vendra luego
+  
+  ##Y o bien se eliminan/duplican todos o algunos. Situacion NONE no puede ser porque sino no hay enhancer deletion predicted
+  
+  ##Como estoy en el contexto de intronic enh dosage change!!!
+  ##Y represento los intronic enh en la misma pos
+  ##Si la situacion es que se ven afectados todos, ya sea before or after
+  ##El highlight va  a ser el mismo Y LO MISMO aplica para el some deletion
+  
+  #NO he modelado el NONE scenario porque es que no se va a dar aqui, e.g. afterTSS_removing_none afterTSS_duplic_none beforeTSS_removing_none beforeTSS_duplic_none
+  
+  #Si es removing pinto una linea en el centro, da igual que haya cogido a todos los gene body enh o no
+  
+  #Defino de inicio el geneCenter en el TAD center, pq va a ser asi aunque luego ajusto size
+  geneCenter<-tad_X_cord[3]
+  if(grepl(pattern = "removing",x=gene_breakp_line_type, fixed = TRUE)){
+    #Pintamos una linea en el centro del gen. Easy
+    breakPos<-geneCenter
+    geneSize<-(1+1)*0.75#Lo hago smaller ahora
+    
+  }else if(grepl(pattern = "duplic_some",x=gene_breakp_line_type, fixed = TRUE)){
+    
+    #Que pille dos de los 4 enhancers. O cobertura parcial, mirar como cae asi
+    #Voy a meter 2 enh mas por tanto incremento distancia breakp x2, voy a abrir todo simetrico
+    breakPos<-c(geneCenter - 0.3*2,#Ajustado mirando plot
+                geneCenter + 0.3*2)
+    
+    geneSize<-(1+1)*1.25#Lo hago + grande ahora
+    
+  } else if(grepl(pattern = "duplic_all",x=gene_breakp_line_type, fixed = TRUE)){
+    
+    #Con esto en teoria pillaba el cluster entero de enhancers
+    breakPos<-c(geneCenter - 1.32,#para q cuadre con black boxes, segun he probado bajo
+                geneCenter + 1.32)
+    
+    geneSize<-(1+1)*1.7#Lo hago + grande ahora
+    
+  }
+  
+  
+  ##GenePos depends on geneSize, edit february 2026
+  #Valores finales van adaptados a geneSize que definido segun contexto, evaluado en ifs previos
+  #gene position at the center -0.5 (since we provide the left coord over which the gene is painted)
+  genePos<-(x_space_start + (x_space_end-x_space_start)/2)-(geneSize/2)##En las otras funciones aqui tengo simplemente 0.5 asumiendo geneSize de 1
+  
+  geneCenter<-genePos + geneSize/2
+  gene_X_cord<-c(genePos, genePos+geneSize, genePos+geneSize, genePos)
+  gene_Y_cord<-c(tad_Y_cord[1]-1,tad_Y_cord[1]-1,tad_Y_cord[1]+1,tad_Y_cord[1]+1)
+  
+  
+  #########################
+  ##Painting breakpoint/s
+  #########################
+  nIterations<-0##labels only painted on the last iteration
+  for(targetBreakpoint in breakPos){
+    #print(targetBreakpoint)
+    nIterations<-nIterations + 1
+    
+    ##Defining Breakpoint position
+    breakp_x_coord<-c(targetBreakpoint, targetBreakpoint)##Tad central point for gene broken
+    breakp_y_coord<-c(tad_Y_cord[1]-7-1, tad_Y_cord[3]+3)#Alargo por debajo bp lines porque  con lo de gene body se come mucha linea
+    
+    ############################
+    ##Painting Breakpoint LINES
+    breakpointColor<-"brown3"
+    lines(x=breakp_x_coord,
+          y=breakp_y_coord,
+          col=breakpointColor,
+          lwd=2,
+          lty=3)
+    
+    #################################
+    ## Painting breakpoint Labels
+    if(nIterations==length(breakPos)){
+      ##So we are on the last iteration, let's paint the LABELS
+      ############################
+      ##Painting breakpoint labels
+      #############################
+      #If they are >1 & super close, paint just "Breakpoints", in the middle of the breakpoints space
+      if(length(breakPos)>1){
+        if(abs(breakPos[2]-breakPos[1])<5){
+          
+          ##Using min() because smaller coord can be on any pos
+          breakLabelPosition<-(min(breakPos)+abs(breakPos[2]-breakPos[1])/2)  ##Midpoint breakpoint lines
+          
+          #Breakpoint label
+          ##Boxed labels: xpad,ypad arguments, used to expand the box beyond the text
+          boxed.labels(x=breakLabelPosition,  y=breakp_y_coord[1] - 1,labels = "Breakpoints", cex=0.8, border = NA, bg ="white", 
+                       xpad=1,
+                       ypad=2, ##To allow the text to breathe
+                       col=breakpointColor
+          )
+          
+        }else{
+          ##Paint both labels
+          for(targetBreakpoint in breakPos){
+            ##Defining Breakpoint position
+            breakp_y_coord<-c(tad_Y_cord[1]-7, tad_Y_cord[3]+3)
+            
+            boxed.labels(x=targetBreakpoint,  y=breakp_y_coord[1] - 1,labels = "Breakpoint", cex=0.8, border = NA, bg ="white", 
+                         xpad=1,
+                         ypad=2, ##To allow the text to breathe
+                         col=breakpointColor
+            )
+          }
+        }
+      }else if(length(breakPos)==1){
+        
+        #No se va a dar en WT, pero lo dejo porque en el re-arranged si
+        ## JUST ONE BREAKPOINT PAINTED. 
+        #Breakpoint label
+        ##Boxed labels: xpad,ypad arguments, used to expand the box beyond the text
+        boxed.labels(x=targetBreakpoint,  y=breakp_y_coord[1] - 1,labels = "Breakpoint", cex=0.8, border = NA, bg ="white", 
+                     xpad=1,
+                     ypad=2, ##To allow the text to breathe
+                     col=breakpointColor
+        )
+        
+      }
+    }
+    
+  }
+  
+  #TAD label
+  # text(x=tad_X_cord[3], y=tad_Y_cord[1]+10, label="TAD", cex = 1.5)
+  boxed.labels(x=tad_X_cord[3],  y=tad_Y_cord[1]+10,labels = "TAD", cex=1.5,
+               border = NA, bg =NA, xpad=1, ypad = 2 )
+  
+  ###Adding black line below TAD
+  lines(x = c(tad_X_cord[1]-3,tad_X_cord[2]+3),
+        y=c(tad_Y_cord[1],tad_Y_cord[1]), 
+        col="black", lwd=2, lty=1)
+  
+  
+  ###################
+  #Adding gene body
+  polygon(gene_X_cord, gene_Y_cord, col = "#0e3d61")
+  
+  ##Quiero que la mayoria del gene body este vacio para ubicar los enhancer por encima,
+  #Para lograr el efecto voy a meter un white box
+  
+  #Mantengo el tamanyo de area azul del gen, por ello resto y sumo lo mismo 0.25 desde sus extremos
+  whiteBoxCoveringGeneBody<-gene_X_cord##Intento tapar la mayoria de la caja del gen
+  boxHalfSize<-0.25
+  whiteBoxCoveringGeneBody[1]<-whiteBoxCoveringGeneBody[1]+boxHalfSize
+  whiteBoxCoveringGeneBody[4]<-whiteBoxCoveringGeneBody[4]+boxHalfSize
+  whiteBoxCoveringGeneBody[2]<-whiteBoxCoveringGeneBody[2]-boxHalfSize
+  whiteBoxCoveringGeneBody[3]<-whiteBoxCoveringGeneBody[3]-boxHalfSize
+  
+  polygon(whiteBoxCoveringGeneBody, gene_Y_cord, col = "#FFFFFF")
+  
+  #gene Label addition
+  #Antes de meterlo. ##Caja blanca detrás de la etiqueta del gen
+  ##para tapar visualmente las breakpoint lines en esa zona, que genera efecto raro a veces
+  labelBox_X_cord <- c(gene_X_cord[1],# - 0.35,
+                       gene_X_cord[2],# + 0.35,
+                       gene_X_cord[3],# + 0.35,
+                       gene_X_cord[4]# - 0.35
+  )
+  #ajustado via exploracion grafica
+  labelBox_Y_cord <- c(tad_Y_cord[1] - distance_Yaxis_geneLabel - 0.75,
+                       tad_Y_cord[1] - distance_Yaxis_geneLabel - 0.75,
+                       tad_Y_cord[1] - distance_Yaxis_geneLabel + 0.7,
+                       tad_Y_cord[1] - distance_Yaxis_geneLabel + 0.7)
+  
+  polygon(labelBox_X_cord, labelBox_Y_cord,
+          col = "white", border = NA)
+  
+  ##I want it to overlay the breakpoint line
+  # https://stackoverflow.com/questions/45366243/text-labels-with-background-colour-in-r
+  boxed.labels(x=tad_X_cord[3],  y=tad_Y_cord[1]-distance_Yaxis_geneLabel,
+               labels = gene, cex=0.8, border = NA, bg ="white", 
+               xpad=1,
+               ypad=1##To allow the text to breathe
+  )
+  # text(x=tad_X_cord[3], y=tad_Y_cord[1]-2, label=gene, cex = 0.8)
+  
+  ##En este caso voy a pintar que los enhancers apuntan al TSS
+  #Ya que de lo contrario no tengo claro a donde apuntar los gene body enhancers
+  #El sitio a donde apuntan los enhancers lo voy a determinar ahora 
+  
+  #####################################################
+  ##Adding enhancers
+  #####################################################
+  
+  #Recalculo posicion TSS, ya que el gene size en patient SV variable
+  # (y se tiene que recalcular dinamicamente ya que depende del gene SV size, no lo puedo heredar del WT plot)
+  
+  if(grepl(pattern="beforeTSS", x = gene_breakp_line_type, fixed = TRUE)){
+    
+    #En este caso, en el grafico el TSS se va a pintar a la derecha
+    #Ya que sino no podemos estar ante un intronic alteration si el breakp esta beforeTSS
+    TSS_PaintingPosition<-max(gene_X_cord)
+    TTS_PaintingPosition<-min(gene_X_cord)
+    
+  }else if (grepl(pattern="afterTSS", x = gene_breakp_line_type, fixed = TRUE)){
+    
+    #En este caso, en el grafico el TSS se va a pintar a la izquierda
+    #Ya que sino no podemos estar ante un intronic alteration si el breakp esta afterTSS
+    TSS_PaintingPosition<-min(gene_X_cord)
+    TTS_PaintingPosition<-max(gene_X_cord)
+    
+  }
+  
+  
+  ##STARTING PAINTING ENHANCERS, FOR THE LEFT AND RIGHT (intergenic are going to stay the same, things happening on the intronic region)
+  
+  ##############################
+  ####To the Right side gene Position
+  if(nEnh_initial_right>0){
+    ##So there is at least 1 enh
+    #Change to addapt to expanded gene body Feb 2026
+    enhXpos<-max(gene_X_cord)+distanceEnhFromGene##left margin of the enh cluster
+    enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
+    
+    draw.ellipse(x=enh_x_positions,
+                 y=enh_y_positions,a=0.1,col="#b2d235")
+    
+    #enhancers Label
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
+    boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene,
+                 labels = tagEnhancersLabel, cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    #Nr of enhancers
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-4, label=paste0("n=",nEnh_initial_right), cex=enhNumbersSize)
+    boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene
+                 -distance_Yaxis_EnhLabel_EnhNumber,
+                 labels = paste0("n=",nEnh_initial_right), cex=enhNumbersSize, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    ##enhancers horizontal line over them
+    lines(x = c(enh_x_positions[1]-0.1,
+                enh_x_positions[length(enh_x_positions)]+0.1),
+          y = c(enh_y_positions[1] + 2 +1,enh_y_positions[1] + 2+1),
+          lwd=1.5)
+    
+    curvedarrow(from = c(enhXpos+0.5,enh_y_positions[1]+2+1), to = c(TSS_PaintingPosition
+                                                                     ,enh_y_positions[1]+2+1),
+                arr.pos = 0, arr.type="T", arr.col = "black")##before angle=40
+  }
+  
+  #############################
+  ####To the Left side gene Position
+  if(nEnh_initial_left>0){
+    #Feb 2026 edit
+    enhXpos<-min(gene_X_cord)-distanceEnhFromGene##left margin of the enh cluster
+    enhXpos<-enhXpos-1#Lo desplazo un punto a la izquierda para que cuadren otras cosas
+    enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.6, enhXpos+0.9)
+    
+    draw.ellipse(x=enh_x_positions,
+                 y=enh_y_positions,a=0.1,col="#b2d235")
+    
+    #enhancers Label
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
+    boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene,
+                 labels = tagEnhancersLabel, cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Nr of enhancers
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-4, label=paste0("n=",nEnh_initial_left), cex=enhNumbersSize)
+    boxed.labels(x=enhXpos + 0.4, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene
+                 -distance_Yaxis_EnhLabel_EnhNumber,
+                 labels = paste0("n=",nEnh_initial_left), cex=enhNumbersSize, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    ##enhancers horizontal line over them
+    lines(x = c(enh_x_positions[1]-0.1,
+                enh_x_positions[length(enh_x_positions)]+0.1),
+          y = c(enh_y_positions[1]+2+1,enh_y_positions[1]+2+1),
+          lwd=1.5)
+    
+    ##arr type in T shape and in 0 pos to be placed at the beginning and hence hidden
+    #we will color afterwards a triangle over the gene, to deal with an external function bug
+    curvedarrow(from = c(enhXpos+0.5,enh_y_positions[1]+2+1), to = c(TSS_PaintingPosition 
+                                                                     ,enh_y_positions[1]+2+1),
+                arr.pos = 0, arr.type="T", curve = -1, arr.col = "black" )
+    
+  }
+  
+  ##ADDING GENE BODY ENHANCERS DRAWING
+  
+  #Here distinguish between:
+  #Case1: Same number (does not make sense but leaving modeling to capture weird behaviour)
+  
+  #Case2: Removing some intronic enhancers
+  #Case3: Removing ALL intronic enhancers ##Nothing to paint, so easiest. DONE
+  
+  #Case 4: Duplicating some intronic enhancers
+  #Case 5: Duplicating all intronic enhancers
+  
+  #Defino una funcion con codigo para pintar el arco de conexion enhancer-TSS por no repetir el codigo inutilmente
+  
+  paintingEnhToTssArc<-function(TSS_PaintingPosition, TTS_PaintingPosition, enh_y_positions, geneCenter){
+    
+    #Para pintar el arco, el start-end se invierte segun si es + o - strand, sino en un caso el arco se pinta por debajo del ejeX
+    if(TSS_PaintingPosition < TTS_PaintingPosition){
+      curvedarrow(from = c(TSS_PaintingPosition,enh_y_positions[1]+2+1),
+                  to = c(geneCenter,enh_y_positions[1]+2+1),
+                  arr.pos = 0, arr.type="T", curve = -1, arr.col = "black")
+      
+    }else{
+      #TSS>TTS due to gene in - strand
+      
+      ##arr type in T shape and in 0 pos to be placed at the beginning and hence hidden
+      #we will color afterwards a triangle over the gene, to deal with an external function bug
+      curvedarrow(from = c(geneCenter,enh_y_positions[1]+2+1), 
+                  to = c(TSS_PaintingPosition,enh_y_positions[1]+2+1),
+                  arr.pos = 0, arr.type="T", curve = -1, arr.col = "black")
+    }
+  }
+  
+  
+  ##Implementing cases
+  
+  if(N_GeneBodyEnh_Final == N_GeneBodyEnh_initial){
+    
+    ###############################
+    #Case1: Same number (does not make sense but leaving modeling to capture weird behaviour)
+    stop("ERROR: Does not make sense if the code reaches this point. Implies no changes in intragenic enhancers dosage in a context where should occur")    
+    
+  }else  if((N_GeneBodyEnh_Final > 0) && (N_GeneBodyEnh_Final < N_GeneBodyEnh_initial)){
+    ###############################
+    #Case2: Removing some intronic enhancers
+    
+    ##Pintamos dos enhancers
+    
+    #Feb 2026 edit
+    enhXpos<-geneCenter-0.2##left margin of the enh cluster
+    enh_x_positions<-c(enhXpos,enhXpos+0.4)
+    
+    draw.ellipse(x=enh_x_positions,
+                 y=enh_y_positions,a=0.1,col="#b2d235")
+    
+    #enhancers Label
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
+    
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene+0.5,
+                 labels = "enhancers",#Check if fits
+                 cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Lo spliteo en 2 pq veo que me da mejor resultado
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene-0.7,
+                 labels = "in gene body",#Check if fits
+                 cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Nr of enhancers
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene
+                 -distance_Yaxis_EnhLabel_EnhNumber-0.5,#Extra 0.5 to fit enh in gene body
+                 labels = paste0("n=",N_GeneBodyEnh_Final), cex=enhNumbersSize, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    ##enhancers horizontal line over them
+    lines(x = c(enh_x_positions[1]-0.1,
+                enh_x_positions[length(enh_x_positions)]+0.1),
+          y = c(enh_y_positions[1]+2+1,enh_y_positions[1]+2+1),#El +1 pa clavar TSS
+          lwd=1.5)
+    
+    #Painting curved arrow
+    paintingEnhToTssArc(TSS_PaintingPosition = TSS_PaintingPosition,
+                        TTS_PaintingPosition = TTS_PaintingPosition,
+                        enh_y_positions = enh_y_positions,
+                        geneCenter = geneCenter)
+    
+    
+  }else if(N_GeneBodyEnh_Final==0){
+    #########################################
+    #Case3: Removing ALL intronic enhancers ##Nothing to paint, so easiest. DONE
+    ####Nada que hacer aqui:
+    ##lorem ipsum
+    
+  }else if(N_GeneBodyEnh_Final < 2*N_GeneBodyEnh_initial){
+    ##############################################
+    #Case 4: Duplicating some intronic enhancers
+    ##Pintamos seis enhancers
+    #Feb 2026 edit
+    enhXpos<-geneCenter-0.75##left margin of the enh cluster
+    #Los arrepreto un poco si hace falta para que entren todos
+    enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.3*2, enhXpos+0.3*3, 
+                       enhXpos+0.3*4, enhXpos+0.3*5)
+    
+    draw.ellipse(x=enh_x_positions,
+                 y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
+    
+    #enhancers Label
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
+    
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene+0.5,
+                 labels = "enhancers",#Check if fits
+                 cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Lo spliteo en 2 pq veo que me da mejor resultado
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene-0.7,
+                 labels = "in gene body",#Check if fits
+                 cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Nr of enhancers
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene
+                 -distance_Yaxis_EnhLabel_EnhNumber-0.5,#Extra 0.5 to fit enh in gene body
+                 labels = paste0("n=",N_GeneBodyEnh_Final), cex=enhNumbersSize, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    ##enhancers horizontal line over them
+    lines(x = c(enh_x_positions[1]-0.1,
+                enh_x_positions[length(enh_x_positions)]+0.1),
+          y = c(enh_y_positions[1]+2+1,enh_y_positions[1]+2+1),#El +1 pa clavar TSS
+          lwd=1.5)
+    
+    #Painting curved arrow
+    paintingEnhToTssArc(TSS_PaintingPosition = TSS_PaintingPosition,
+                        TTS_PaintingPosition = TTS_PaintingPosition,
+                        enh_y_positions = enh_y_positions,
+                        geneCenter = geneCenter)
+    
+  }else if(N_GeneBodyEnh_Final == 2*N_GeneBodyEnh_initial){
+    ##############################################
+    #Case 5: Duplicating all intronic enhancers
+    ##Pintamos 8 enhancers
+    #Feb 2026 edit
+    enhXpos<-geneCenter-1.03##left margin of the enh cluster, adjusted looking at the plot
+    
+    enh_x_positions<-c(enhXpos,enhXpos+0.3,enhXpos+0.3*2,enhXpos+0.3*3, 
+                       enhXpos+0.3*4, enhXpos+0.3*5, enhXpos+0.3*6, enhXpos+0.3*7 )
+    
+    draw.ellipse(x=enh_x_positions,
+                 y=rep.int(x = enh_y_positions[1],times = length(enh_x_positions)),a=0.1,col="#b2d235")
+    
+    #enhancers Label
+    #text(x=enhXpos + 0.4, y=enh_y_positions[1]-3, label=tagEnhancersLabel, cex = 0.8)
+    
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene+0.5,
+                 labels = "enhancers",#Check if fits
+                 cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Lo spliteo en 2 pq veo que me da mejor resultado
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene-0.7,
+                 labels = "in gene body",#Check if fits
+                 cex=0.8, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    #Nr of enhancers
+    boxed.labels(x=geneCenter, y=enh_y_positions[1]-distance_Yaxis_geneLabel
+                 -distance_Yaxis_EnhGene
+                 -distance_Yaxis_EnhLabel_EnhNumber-0.5,#Extra 0.5 to fit enh in gene body
+                 labels = paste0("n=",N_GeneBodyEnh_Final), cex=enhNumbersSize, 
+                 border = NA, bg ="white", 
+                 xpad=1,
+                 ypad=1 #To allow the text to breath
+    )
+    
+    ##enhancers horizontal line over them
+    lines(x = c(enh_x_positions[1]-0.1,
+                enh_x_positions[length(enh_x_positions)]+0.1),
+          y = c(enh_y_positions[1]+2+1,enh_y_positions[1]+2+1),#El +1 pa clavar TSS
+          lwd=1.5)
+    
+    #Painting curved arrow
+    paintingEnhToTssArc(TSS_PaintingPosition = TSS_PaintingPosition,
+                        TTS_PaintingPosition = TTS_PaintingPosition,
+                        enh_y_positions = enh_y_positions,
+                        geneCenter = geneCenter)
+  }
+  
+  ##################################################################################
+  ##Adding Triangle Shape over gene TSS, if it has any enh, to represent the arrow end
+  ##For sure there are gene body enh given the context
+  ##################################################################################
+  if((N_GeneBodyEnh_Final>0) || (nEnh_initial_left>0) || (nEnh_initial_right>0)){
+    triangle_X_Coord<-c(TSS_PaintingPosition-0.3, TSS_PaintingPosition, TSS_PaintingPosition+0.3)
+    heightOrizontalLineEnh<-enh_y_positions[1]+2
+    triangle_Y_Coord<-c(heightOrizontalLineEnh+0.3, heightOrizontalLineEnh-0.2, heightOrizontalLineEnh+0.3)
+    polygon(triangle_X_Coord, triangle_Y_Coord+1, col = "black", border = "black")
+  }
+  
+  # ##OMITING ADDING TSS AND TTS LABELS FOR NOW
+  # ##ADDING TSS and TTS labels
+  # #gene Label
+  # ##I want it to overlay the breakpoint line
+  # # https://stackoverflow.com/questions/45366243/text-labels-with-background-colour-in-r
+  # boxed.labels(x=TSS_PaintingPosition,  y=tad_Y_cord[1]-distance_Yaxis_geneLabel,
+  #              labels = "TSS", cex=0.7, border = NA, bg ="white", 
+  #              xpad=0.5,
+  #              ypad=0.5##To allow the text to breathe
+  # )
+  # 
+  # boxed.labels(x=TTS_PaintingPosition,  y=tad_Y_cord[1]-distance_Yaxis_geneLabel,
+  #              labels = "TTS", cex=0.7, border = NA, bg ="white", 
+  #              xpad=0.5,
+  #              ypad=0.5##To allow the text to breathe
+  # )
+  
+  ##PAINTING TSS arrow as in standard representations
+  #And I will not put the TSS-TTS tags. the arrow instead
+  #Vertical line
+  lines(x = c(TSS_PaintingPosition,
+              TSS_PaintingPosition),
+        y = c(max(gene_Y_cord),max(gene_Y_cord)+1),#El +1 pa clavar TSS
+        lwd=1.5)
+  
+  #For horizontal line extension and arrow head, 
+  # two alternatives regarding on whether TSS at the righ or left side of the gene
+  sizeTssLine<-0.5
+  if(TSS_PaintingPosition < TTS_PaintingPosition){
+    #Arrow points to the right
+    lines(x = c(TSS_PaintingPosition,
+                TSS_PaintingPosition+sizeTssLine),
+          y = c(max(gene_Y_cord)+1,max(gene_Y_cord)+1),#El +1 pa clavar TSS
+          lwd=1.5)
+    
+    triangle_X_Coord<-c(TSS_PaintingPosition+sizeTssLine,TSS_PaintingPosition+sizeTssLine/2, TSS_PaintingPosition+sizeTssLine/2)
+    
+  }else{
+    #Arrow points to the left since TSS > TTS (negative strand transcription)
+    lines(x = c(TSS_PaintingPosition-sizeTssLine,
+                TSS_PaintingPosition),
+          y = c(max(gene_Y_cord)+1,max(gene_Y_cord)+1),#El +1 pa clavar TSS
+          lwd=1.5)
+    
+    triangle_X_Coord<-c(TSS_PaintingPosition-sizeTssLine,TSS_PaintingPosition-sizeTssLine/2, TSS_PaintingPosition-sizeTssLine/2)
+    
+  }
+  
+  ##Ultimas lineas para pintar triangulo TSS, same code regardless of orientation
+  heightOrizontalLineEnh<-max(gene_Y_cord)+1
+  triangle_Y_Coord<-c(heightOrizontalLineEnh,heightOrizontalLineEnh-0.4, heightOrizontalLineEnh+0.4)
+  polygon(triangle_X_Coord, triangle_Y_Coord, col = "black", border = "black")
+  
+  
+  ##################################################
+  ## Assembling relevant info, pero esta creo que ya no se usa downstream, no es como la WT que si que influye sobre grafico patient scenario
+  ##################################################
+  info_drawing<-list("geneCenter"=geneCenter, ##geneCenterPosition is important to know row orientation of enhancer arrow secondary TAD
+                     "geneTAD_breakP"=breakPos,
+                     "genePos"=genePos
+  )
+  
+  return(info_drawing)
+  
+}

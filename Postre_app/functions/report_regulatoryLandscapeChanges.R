@@ -25,6 +25,9 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
   targetRow_resultsPhase<-paste(targetGene,"--",targetMech, sep="")##In case interest on parsing resultsPhase
   pathomechanism_ImpactOverGene<-patientResults$resultsPerPhase[[targetPhase]][[targetPhase]][targetRow_resultsPhase,]$GeneImpact
 
+  #To track wether variant is intronic and customize a bit the text output
+  isVariantIntronic<-patientResults$resultsPerPhase[[targetPhase]][[targetPhase]][targetRow_resultsPhase,]$intronicVariant
+  
   
   sv_type<-patientResults$patientInfo$TypeSV
 
@@ -37,6 +40,16 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
   
   text_lof1<-"To be a strong candidate for 'Loss of Function' through a long-range pathological mechanism, the gene should lose enhancer activity. To estimate enhancer activity we have considered the overall H3K27ac levels associated to the enhancers."
   
+  text_longRange_generic <- paste0(
+    targetGene,
+    " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression."
+  )
+  
+  text_longRange_intronic <- paste0(
+    targetGene,
+    " exonic sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression. ",
+    "More specifically, the Structural Variant is predicted to alter the number of enhancers located within the intronic regions of ", targetGene, "."
+  )
   
   ######################################################
   ##Adding images. 
@@ -130,6 +143,11 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
   #pathomechanism_ImpactOverGene ##long-range or direct
 
   textExplanation<-""
+  if((pathomechanism_ImpactOverGene == "LongRange") && isTRUE(isVariantIntronic)){
+    text_longRange_intro <- text_longRange_intronic
+  }else{
+    text_longRange_intro <- text_longRange_generic
+  }
   
   if((pathoMechanism=="LOF")&&(pathomechanism_ImpactOverGene=="LongRange")){
     
@@ -137,17 +155,32 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
     ## Text for LOF && Long-range ##
     #######################################
     
-    ##Para LOF long-range solo tenemos en cuenta los enhancers cognate, por tanto si se pierde acetilacion
-    ##Se pierden enhancers en numero. En GOF long-range que se tiene en cuenta tanto los cognate como los ectopicos
+    #Tal i como se clarifica en el graphical abstract
+    ##Para LOF long-range solo tenemos en cuenta los enhancers cognate
+    ##En GOF long-range que se tiene en cuenta tanto los cognate como los ectopicos
     ##Si que puede pasar que pierdas en numero pero ganes en actividad, por tanto ahi lo tendremo en cuenta para que el output textual no sea confuso
     
+    #Este recordatorio se da tambien en el texto de esta seccion excepto para intronic variants que no lo veo necesario
+    #Porque en el caso de intronic es esperable que no se evaluen enh ectopicos (de otros tads etc)
+    #Para gestionar este contexto alternativo adding the next variable (que se incluira en el report y cuyo contenido varia segun si variante intronica o no)
+    
+    text_graphicalAbstract_LOF <- ""
+    if(isFALSE(isVariantIntronic)){
+      ##La variante NO es intronica por tanto proporcionamos recordatorio dado en el graphical abstract
+      text_graphicalAbstract_LOF <- paste(
+        "As noted in the Graphical Abstract section, only changes in the cognate enhancers of the candidate gene are considered when evaluating Loss of Function. Ectopic enhancers might appear within the candidate gene regulatory domain depending on the genetic rearrangement. However, such ectopic enhancers are only considered when evaluating Gain Of Function.",
+        "<br><br>",
+        sep = ""
+      )
+    }
+    
+    ##Generacion de la explicacion textual
     textExplanation<-paste(textExplanation,
                            "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
                            "<br><br>", 
-                           targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
+                           text_longRange_intro,
                            "<br><br>", 
-                           "As noted in the Graphical Abstract section, only changes in the cognate enhancers of the candidate gene are considered when evaluating Loss of Function. Ectopic enhancers might appear within the candidate gene regulatory domain depending on the genetic rearrangement. However, such ectopic enhancers are only considered when evaluating Gain Of Function.",
-                           "<br><br>",
+                           text_graphicalAbstract_LOF,
                            targetGene," initially had ",
                            nEnh_Initial," enhancers  on its regulatory domain, ",
                            "and it lost ", round2(x = (nEnh_Initial - nEnh_Final),digits = 0),
@@ -186,7 +219,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
       textExplanation<-paste(textExplanation,
                              "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
                              "<br><br>", 
-                             targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
+                             text_longRange_intro,
                              "<br><br>",
                              targetGene,
                              " initially had ",
@@ -232,7 +265,7 @@ report_regulatoryLandscapeChanges<-function(reportUnit, patientResults){
       textExplanation<-paste(textExplanation,
                              "<b style='font-size:20px;'>Control vs Patient rearranged locus comparison </b>",
                              "<br><br>", 
-                             targetGene, " sequence is not affected by the Structural Variant. However, there are potential long-range regulatory changes that could affect its expression.", 
+                             text_longRange_intro, 
                              "<br><br>",
                              "Despite there is not a gain in the number of enhancers around ",
                              targetGene,

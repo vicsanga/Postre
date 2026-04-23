@@ -2,10 +2,10 @@
 ## Report Gene Susceptibility to Condition [LOF|GOF]
 #######################################################
 report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
-
+  
   ###I need to know whether the considered gene is selected by means of a 
   ## LOF && GOF mechanism || LONG-RANGE--DIRECT EFFECT
-
+  
   targetGene<-unlist(strsplit(x = reportUnit, split = "_", fixed = TRUE))[1]
   targetMech<-unlist(strsplit(x = reportUnit, split = "_", fixed = TRUE))[2]
   targetPhase<-unlist(strsplit(x = reportUnit, split = "_", fixed = TRUE))[3]
@@ -37,8 +37,8 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
   ##get file names in graphical summaries
   fileNames<-list.files(path = "www/graphicalSummaries/")
   
-  ##If working on phaseFree, not considered Expression Data
-  if(targetPhase != "phaseFree"){
+  ##If working on CellTypeAgnostic, not considered Expression Data
+  if(targetPhase != "CellTypeAgnostic"){
     ##Check if expPlot exists before adding
     expPlotName<-paste(reportUnit,"_", patientResults$job_UniCode, "_expressionLevelPlot.png", sep="")
     if(expPlotName %in% fileNames){
@@ -63,16 +63,13 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
     hiPlotName<-paste(targetGene,"_", patientResults$job_UniCode, "_HI_plot.png", sep="")
     if(hiPlotName %in% fileNames){
       
-      if(targetPhase != "phaseFree"){
-        geneSuscept<-paste(geneSuscept,
-                           "<div class='dosageSensitivePlot'>",
-                           paste0("<img class='hiPlotImg geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
-                                  ">"),
-                           "</div>",
-                           sep="") 
-      }else{
-        ##So PHASE FREE
-      }
+      geneSuscept<-paste(geneSuscept,
+                         "<div class='dosageSensitivePlot'>",
+                         paste0("<img class='hiPlotImg geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
+                                ">"),
+                         "</div>",
+                         sep="") 
+      
     } 
   }else if(targetMech=="GOF"){
     ##Check if TS plot exists before adding
@@ -80,40 +77,40 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
     hiPlotName<-paste(targetGene,"_", patientResults$job_UniCode, "_TS_plot.png", sep="")
     if(hiPlotName %in% fileNames){
       
-      if(targetPhase != "phaseFree"){
-        geneSuscept<-paste(geneSuscept,
-                           "<div class='dosageSensitivePlot'>",
-                           paste0("<img class='hiPlotImg geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
-                                  ">"),
-                           "</div>",
-                           sep="") 
-      }else{
-        ##So PHASE FREE
-      }
+      geneSuscept<-paste(geneSuscept,
+                         "<div class='dosageSensitivePlot'>",
+                         paste0("<img class='hiPlotImg geneSusceptImgs' src='graphicalSummaries/", hiPlotName, "'",
+                                ">"),
+                         "</div>",
+                         sep="") 
+      
     }
   }
   
-
+  
   
   ################################  
   ##Adding Polycomb GOF image
   ##id='polycGene_Image'
   
-  ##Check if there is polycomb score plot for the target gene
-  polycPlotName<-paste(targetGene,"_", patientResults$job_UniCode, "_polyCscore_plot.png", sep="")
-  
-  if(polycPlotName %in% fileNames){
+  ##At 2/09/2025 not considering polycomb score for CellTypeAgnostic
+  ##If working on CellTypeAgnostic, not including polyC plot then
+  if(targetPhase != "CellTypeAgnostic"){
+    ##Check if there is polycomb score plot for the target gene
+    polycPlotName<-paste(targetGene,"_", patientResults$job_UniCode, "_polyCscore_plot.png", sep="")
     
-    geneSuscept<-paste(geneSuscept,
-                       "<div class='polyCombPlot'>",
-                       paste0("<img class='polyCplotImg geneSusceptImgs' src='graphicalSummaries/", polycPlotName, "'",
-                              ">"),
-                       "</div>",
-                       sep="") 
+    if(polycPlotName %in% fileNames){
+      
+      geneSuscept<-paste(geneSuscept,
+                         "<div class='polyCombPlot'>",
+                         paste0("<img class='polyCplotImg geneSusceptImgs' src='graphicalSummaries/", polycPlotName, "'",
+                                ">"),
+                         "</div>",
+                         sep="") 
+    }
+    
+    
   }
-  
-  
-  
   
   #####################################
   ## Adding Explanation 
@@ -125,7 +122,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
   
   textExplanation<-"<br><br>"
   
-  if((pathoMechanism=="LOF") && (targetPhase!="phaseFree")){
+  if((pathoMechanism=="LOF") && (targetPhase!="CellTypeAgnostic")){
     ##Be sure the gene is on the TAD map we are assessing, so screen them
     
     for(nPhase in 1:length(patientResults$resultsPerPhase_secondaryInfo[[targetPhase]])){
@@ -204,10 +201,10 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            "Furthermore, we also find relevant to study whether the candidate gene is a polycomb one (genes covered by broad domains of H3K27me3 when inactive and with tissue specific expression patterns), since these genes tend to regulate cellular identity and altering their expression can lead to strong phenotypic alterations. Check our manuscript to know more about how these metrics have been obtained. ",
                            "<br><br>",
                            sep="")
-
     
     
-  }else if((pathoMechanism=="GOF") && (targetPhase!="phaseFree")){
+    
+  }else if((pathoMechanism=="GOF") && (targetPhase!="CellTypeAgnostic")){
     ##Be sure the gene is on the TAD map we are assessing, so screen them
     
     for(nPhase in 1:length(patientResults$resultsPerPhase_secondaryInfo[[targetPhase]])){
@@ -221,7 +218,7 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                                            paste("FPKM_",
                                                  targetPhase,
                                                  sep="")]
-
+        
         targetHI_score<-evaluationMatrix[targetGene,
                                          c("cell_TriploSense_score")] ##-1 when no score assigned
         
@@ -286,9 +283,58 @@ report_geneSusceptibilityToCondition<-function(reportUnit, patientResults){
                            sep="")
     
     
-  }else if((pathoMechanism=="LOF") && (targetPhase=="phaseFree")){
+  }else if( ((pathoMechanism=="LOF") || (pathoMechanism=="GOF")) && (targetPhase == "CellTypeAgnostic")){
     
-  }else if((pathoMechanism=="GOF") && (targetPhase=="phaseFree")){
+    ##At 02/09/2025 Same Report for LOF than for GOF in the context of gene susceptibility
+    #But for LOF we give HI score and for GOF TS score
+    
+    ##First gathering gene info
+    ##Be sure the gene is on the TAD map we are assessing (legacy code from when multiple TADs assessed), so screen them
+    for(nPhase in 1:length(patientResults$resultsPerPhase_secondaryInfo[[targetPhase]])){
+      
+      evaluationMatrix<-patientResults$resultsPerPhase_secondaryInfo[[targetPhase]][[nPhase]]$matrixesGenesEvaluation
+      
+      if(targetGene %in% rownames(evaluationMatrix)){
+        ##So the gene appears in the currently used TAD map
+        ##Hence we have the info we need from it
+        
+        if(pathoMechanism=="LOF"){
+          #Get HI score
+          targetHI_score<-evaluationMatrix[targetGene,
+                                           c("nature_HI_score",
+                                             "huang_HI_score","clinGene_HI_score","cell_HI_score")] ##-1 when no score assigned
+        }else if(pathoMechanism=="GOF"){
+          targetHI_score<-evaluationMatrix[targetGene,
+                                           c("cell_TriploSense_score")] ##-1 when no score assigned
+        }
+        
+        targetHI_score<-max(targetHI_score)##if it is -1, it is because no HI score assigned
+        
+        break
+      }
+    }
+    
+    #########################################################################################
+    ##Adding Haploinsufficiency score info (if there is)
+    ##If there is not we will talk about the gene expression pattern if tissue specific
+    ##########################################################################################
+    
+    if(targetHI_score>-1){
+      
+      ##So an HI score provided
+      textExplanation<-paste(textExplanation,
+                             "The Dosage Sensitivity Score (DS) obtained for ",
+                             targetGene,
+                             " is : ",
+                             round2(targetHI_score, digits=2),
+                             ". This score must be interpreted on a 0-1 scale (1 means that for the candidate gene, deviations from the normal dosage (i.e. number of copies), or expression levels, are likely detrimental. 0 means that these deviations are not detrimental).",
+                             " Haploinsufficiency (HI) and Triplosensitivity (TS) metrics are currently used to evaluate dosage sensitivty. Briefly, HI scores are considered for Loss of Function and TS scores for Gain of Function. Check our manuscript to know more about how these metrics have been obtained.",
+                             "<br><br>",
+                             sep="") 
+    }
+    
+    
+    
     
   }
   

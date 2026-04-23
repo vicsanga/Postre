@@ -163,6 +163,21 @@ ui <-function(req){
 <button class="collapsibleAdvancedFeatures" id="buttonSingleSubmAdvancedFeatures">Advanced Parameters [+]</button>
 <div class="contentAdvancedFeatures">
 
+<!-- Include cell type agnostic prediction-->
+<div id="cellTypeAgnostic_singleSubm" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="cellTypeAgnostic_singleSubm-label">
+  <label class="control-label" id="cellTypeAgnostic_singleSubm-label" for="cellTypeAgnostic_singleSubm">Include cell type agnostic prediction <a href="CellTypeAgnosticPrediction_Expl.html" target="_blank"> (click here for +info) </a></label>
+                                                                 <div class="shiny-options-group">
+                                                                 <label class="radio-inline">
+                                                                 <input type="radio" name="cellTypeAgnostic_singleSubm" value="no" checked="checked"/>
+                                                                 <span>No (default)</span>
+                                                                 </label>
+                                                                 <label class="radio-inline">
+                                                                 <input type="radio" name="cellTypeAgnostic_singleSubm" value="yes"/>
+                                                                 <span>Yes</span>
+                                                                 </label>
+                                                                 </div>
+                                                                 </div>
+  <hr>                           
   <!-- Selecting Running Mode -->
   <div class="form-group shiny-input-container">
   <label class="control-label" id="runMode_single-label" for="runMode_single">Running mode</label>
@@ -321,6 +336,21 @@ for (i = 0; i < coll.length; i++) {
 <button class="collapsibleAdvancedFeaturesMultiple" id="buttonMultipleSubmAdvancedFeatures">Advanced Parameters [+]</button>
 <div class="contentAdvancedFeatures">
 
+<!-- Include cell type agnostic prediction-->
+  <div id="cellTypeAgnostic_multipleSubm" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="cellTypeAgnostic_multipleSubm-label">
+    <label class="control-label" id="cellTypeAgnostic_multipleSubm-label" for="cellTypeAgnostic_multipleSubm">Include cell type agnostic prediction <a href="CellTypeAgnosticPrediction_Expl.html" target="_blank"> (click here for +info) </a></label>
+      <div class="shiny-options-group">
+        <label class="radio-inline">
+          <input type="radio" name="cellTypeAgnostic_multipleSubm" value="no" checked="checked"/>
+            <span>No (default)</span>
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="cellTypeAgnostic_multipleSubm" value="yes"/>
+                <span>Yes</span>
+                </label>
+                </div>
+                </div>
+  <hr> 
   <!-- Selecting Running Mode -->
   <div class="form-group shiny-input-container">
     <label class="control-label" id="runMode_Multiple-label" for="runMode_Multiple">Running mode</label>
@@ -484,6 +514,7 @@ server <- function(input, output, session){
   ##Variable used in downstream computations
   ##When doing multiple patient and pheno analysis, considered pheno
   ##If not here,  not do prediction
+  #NOTE: Do not use - on pheno internally used names, only _
   consideredPheno<-c("head_neck",
                      "cardiovascular",
                      "limbs",
@@ -721,6 +752,9 @@ server <- function(input, output, session){
     ##Adding Consideration gene-Pheno to output
     patientData$genePhenoConsideration<-as.character(input$phenoConsideration_singleSubm)
     
+    ##Adding whether CellTypeAgnostic Prediction is included or NOT
+    patientData$includeCellTypeAgnosticPred<-as.character(input$cellTypeAgnostic_singleSubm)
+    
     ##Dealing with referenceGenome
     # patientData$refGenome<-as.character(input$refGenome_SingleSV_Subm)
     patientData$refGenome<-"hg19"
@@ -811,7 +845,7 @@ server <- function(input, output, session){
         }
        
         ##If there is an error the following instruction will not be terminated
-        # browser()
+        
         patientResults_singlePhenoPrediction<-masterWrapperSinglePrediction(patientInfo = patientData , minScore = minScore, 
                                                                             highScore = highScore, runMode = runMode_single,
                                                                             user_tadMapInfo = user_tadMapInfo,
@@ -883,6 +917,9 @@ server <- function(input, output, session){
     
     ##Adding Consideration gene-Pheno to output
     patientData$genePhenoConsideration<-"yes"
+    
+    ##Regarding submission from UserGuide No Cell Type agnostic consideration for any of them
+    patientData$includeCellTypeAgnosticPred<-"no"
     
     patientData$userTADmap<-"no" ##Default option, used for UCSC warning when yes, upload TAD coord
     user_tadMapInfo<-list() ##It will be kept empty when no user provided TAD
@@ -989,6 +1026,8 @@ server <- function(input, output, session){
       
       ##Adding Consideration gene-Pheno to output
       patientInfo$genePhenoConsideration<-"yes"
+      
+      patientInfo$includeCellTypeAgnosticPred<-"no"
       
       patientInfo$userTADmap<-"no" ##Default option, used for UCSC warning when yes, upload TAD coord
       user_tadMapInfo<-list() ##It will be kept empty when no user provided TAD
@@ -1311,6 +1350,9 @@ server <- function(input, output, session){
       
       ##Adding Consideration gene-Pheno to output
       multiSV_uploadedFile_AllPatientsInfo$genePhenoConsideration<-as.character(input$phenoConsideration_multipleSubm)
+      
+      ##Adding Consideration on whether include CellTypeAgnostic prediction or not
+      multiSV_uploadedFile_AllPatientsInfo$includeCellTypeAgnosticPred<-as.character(input$cellTypeAgnostic_multipleSubm)
       
       ##Dealing with referenceGenome IF NOT HG19, LIFTOVER to it. We will do it on each patient screen
       # multiSV_uploadedFile_AllPatientsInfo$refGenome<-as.character(input$refGenome_MultiSV_Subm)

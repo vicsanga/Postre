@@ -461,8 +461,8 @@ A tutorial video showing how to perform and interpret results for a Multiple SV 
     #       if(nrow(targetMatrix)>0){
     #         ##So there is information in the matrix, hence add it
     #         
-    #         if("phaseFree" %in% colnames(targetMatrix)){
-    #           colnames(targetMatrix)[colnames(targetMatrix)=="phaseFree"]<-"Cell Type Independent"  
+    #         if("CellTypeAgnostic" %in% colnames(targetMatrix)){
+    #           colnames(targetMatrix)[colnames(targetMatrix)=="CellTypeAgnostic"]<-"Cell Type Agnostic"  
     #         }
     #         
     #         ##Renaming "patient" by "SV_ID" and "patients" by "SV_IDs"

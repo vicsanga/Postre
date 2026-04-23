@@ -135,6 +135,21 @@ evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhan
   ##ADD affected_gene name column (easier to handle afterwards gene name for other analysis)
   resultMatrix$affected_gene<-affectedGenes
   
+  ## (Oct 2025) Add intronic (yes/no column), to facilitate downstream notes and data handling for these cases
+  resultMatrix$intronicVariant<-FALSE
+  genesWithIntronicVariant<-unique(info_affectedGenes$genesWithIntronicVariant)
+  if(length(genesWithIntronicVariant)>0){
+    resultMatrix[genesWithIntronicVariant,"intronicVariant"]<-TRUE
+  }
+  
+  ##Feb 2026, adding N_GeneBodyEnh column
+  #To track N enhancers predicted and located in the gene body (some might also overlap exons)
+  #Reason why I prefer this to IntronicEnh
+  #Only filled with numbers for genes with an intronic variant detected
+  #BY DEFAULT value of NA
+  #La matriz es por fase asi que da igual poner o no the phase name
+  resultMatrix$N_GeneBodyEnh<-NA#La diferencia de acetilacion ganada o perdida se puede sacar con kept-gained
+  
   ##########################################################
   ## Filling the results Matrix
   
@@ -202,6 +217,7 @@ evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhan
     ##Defining also hierarchy to handle different scenarios
     #Hence if a gene is broken, it will not be considered as deleted or duplicated
     #THIS IS IMPORTANT
+    
     if(gene %in% brokenGenes){
       ##if it is crossing the breakpoint segment limits
       ##we consider it as broken
@@ -227,11 +243,12 @@ evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhan
       resultMatrix[gene,"RegulatoryMechanism"]<-"LongRange" 
     }
     
+    
     ##########################
     ## GENE FPKMs Retrieval
     ##########################
-    if((gene %in% Master_GeneExpression$gene_name) && (phase !="phaseFree")){
-      ##Because we do not have expression data for phaseFree
+    if((gene %in% Master_GeneExpression$gene_name) && (phase !="CellTypeAgnostic")){
+      ##Because we do not have expression data for CellTypeAgnostic
       
       fpkms_list<-list()
       
@@ -378,6 +395,23 @@ evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhan
       acetilationEnhInitiallyToThe_Right<-sum(subs_enh$acetilation[subs_enh$start > geneTSS])
       acetilationEnhInitiallyToThe_Left<-sum(subs_enh$acetilation[subs_enh$start < geneTSS])
       
+      ## Tracking intronic enh number, Only for genes carrying intronic variant
+      # IN case intronic enh del/dup pathogenicity predicted, this will be necessary for report
+      
+      if(gene %in% genesWithIntronicVariant){
+          targetGeneStart<-info_affectedGenes$genesPosition[gene,"start"]
+          targetGeneEnd<-info_affectedGenes$genesPosition[gene,"end"]
+          
+          subs_GeneBody_enh<-subset(subs_enh,start>=targetGeneStart & end<=targetGeneEnd)
+          
+          #Si no hay enhancers el valor de nrow da 0 (comprobado, por ver que no sale error)
+          n_GeneBododyEnh<-nrow(subs_GeneBody_enh)
+          
+          #Adding info to results matrix
+          #This enhancers are also included in the number of enh to the left or right, depending on gene orientation
+          resultMatrix[gene,"N_GeneBodyEnh"]<-n_GeneBododyEnh
+      }
+
       ###########################################
       ####Adding numbers to the results matrix
       
@@ -524,15 +558,56 @@ evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhan
     resultMatrix[genesInDomain,"InitialDomain_ID"]<-domainID
     
   }
+  ####################################################
+  ## HANDLING NAs in TypeDomainInitial
+  ####################################################
+  
+  ####At this point, for those genes that have an NA on their TypeDomainInitial
+  #There might be different reasons. 
+  #One, of them, "MAIN ONE".  The one previously considered is that their regulatory domain (e.g. TAD) or between TAD (if they are between TADs) is intact
+  ## And they are associated to the SV because their TAD (or regulatory domain) has been entirely duplicated or deleted (if a TAD is completely inverted or translocated, not expected pathogenicity)
+  
+  #Just found a second reason, regarding intronic variant handling. TREATING IT HERE
+  #Which is related with the following issue: 
+  ##Gene-Domain assignment is based on gene TSS position (at least, up until March 2026 version)
+  ##For genes (their TSS) located in affected TADs, and without change on its exonic sequence, gene-enh landscape changes evaluated
+  ##For those cases nEnh around the gene are calculated and set (for cases where nEnh not computed, e.g. gene deletion, default value is NA)
+  
+  ##Just found and edge case, related with intronic upgrade, where genes body crosses tad boundary, intronic variant flagged (triggers long-range consideration) and not easy to model long-range effect
+  #This can occur for cases where the gene body extends beyond a TAD boundary, e.g. the gene TSS is in TAD1 and gene TTS is in TAD2
+  #and the SV breakpoint falls in the intron of the gene located in TAD2
+  #For this cases, the InitialDomain_ID will also be NA, SAME APPLIES for genes strictly located inside of a whole duplicated/deleted TAD (but for those genes they are flagged as del/dup and no long-range evaluated)
+  #In this context IT is unclear to which enhancer landscape assign the gene, and we are going to set all enhancer values to 0
+  #As a result, no changes in enhancer landscape will be detected and gene-enhancer score will be 0
+  #AND we will set a sentinel value resultMatrix[genesToFlag, "TypeDomainInitial"]<-"UNCLEAR_geneToRegulatoryDomain_Assignment"
+  #To flag and be aware if this problem is occuring and improve its handling in the future
+
+  ##Pescar genes con is.na(InitialDomain_ID) & RegulatoryMechanism=="LongRange"
+  #Estos son casos como el descrito, si se detectan aplicar el tratamiento
+  #Puede que se nos siga escapando algun caso pero ya veremos su error, si aparece, en el futuro
+
+  genesToFlag<-resultMatrix[((resultMatrix$RegulatoryMechanism == "LongRange") & is.na(resultMatrix$InitialDomain_ID)), ]$affected_gene
+  
+  if(length(genesToFlag)>0){
+    genesToFlag<-unique(genesToFlag)##To ensure no repetitions
+    #There are genes to flag
+    #For this genes add the sentinel AND fake values to avoid errors due to enh numbers with NAs and dowsntream functions expecting integers
+    columnsToAdd_FakeValues<-colnames(resultMatrix)[grepl("[eE]nh", colnames(resultMatrix))]
+    resultMatrix[genesToFlag, columnsToAdd_FakeValues]<-0
+    ##Adding SENTINEL value in TypeDomainInitial
+    resultMatrix[genesToFlag, "TypeDomainInitial"]<-"UNCLEAR_geneToRegulatoryDomain_Assignment"
+  }
+  
   
   ############################################################################################################################################################################
+  ## Covering, in principle, whole TAD deleted/duplicated
+  ## The MAIN ONE case highlighted above
   ## Now, for those genes that have an NA on their TypeDomainInitial
   ## It means that their regulatory domain (e.g. TAD) or between TAD if they are between TADs is intact
   ## And they are associated to the SV because their TAD (or regulatory domain) has been entirely duplicated or deleted (if a TAD is completely inverted or translocated, not expected pathogenicity)
   ############################################################################################################################################################################
   resultMatrix$TypeDomainInitial[is.na(resultMatrix$TypeDomainInitial)]<-"regulatoryDomain_intact"
-  
-  
+
   ##Type domain initial...not sure if necessary
   
   ##Not used for now, I think, so just comment it
@@ -610,17 +685,33 @@ evaluatingGenesSituation<-function(info_affectedGenes,info_affectedRegions,enhan
     }else if(length(unique(info_affectedRegions$domainsAffected$domainId))==1){
       ##So, it is an inversion strictyly occurring intra TAD, so unless gene or enh broken, no relevant change
       ##For now, that's our current view
+
+      #Antes de aplicar la funcion calculatingEnh. Comentar lo siguiente:
+      #Los kept enhancers son todos excepto si alguno esta roto
+      #No trabajo estrictamente con los segmentos (o refino almenos su consideracion) ya que al ser intra Tad si un breakpoint esta dentro del enhancer y el otro fuera, 
+      #el que esta fuera incluira al enhancer de manera integra en uno de los segmentos ya sea hacia la parte izquierda o derecha del TAD y por tanto se volvera a colar como Kept
+      
+      targetEnhKept<-unique(rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
+                                  enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
+                                  enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
+                                  enhancersInfo$enhancersInSegment$breakpoint_2_right_segment))
+      
+      #Refinement
+      #filteringEnhKept if enh broken to avoid missing some if only 1 bp falling inside (if the two fall inside no prob)
+      enhToRemove<-unique(rbind(enhancersInfo$brokenEnhancers$domain_breakpoint_1,
+                                enhancersInfo$brokenEnhancers$domain_breakpoint_2))
+      
+      if(!is.null(enhToRemove)){
+        #There are broken enhancers, ensure all of them removed
+        targetEnhKept$enhId<-rownames(targetEnhKept)
+        targetEnhKept<-targetEnhKept[!(targetEnhKept$enhId %in% rownames(enhToRemove)),]
+        targetEnhKept$enhId<-NULL
+      }
+      
       
       ##With only one calculation enough
       resultMatrix<-calculatingEnh(targetGenes = info_affectedGenes$genesInDomain$domain_breakpoint_1,##domain is the same, so does not matter which we choose
-                                   keptEnh = unique(rbind(enhancersInfo$enhancersInSegment$breakpoint_1_left_segment,
-                                                          enhancersInfo$enhancersInSegment$breakpoint_1_right_segment,
-                                                          enhancersInfo$enhancersInSegment$breakpoint_2_left_segment,
-                                                          enhancersInfo$enhancersInSegment$breakpoint_2_right_segment)),#Here we do not take all into account all enh in the domain
-                                   ##because maybe some enh is broken
-                                   #And by looking at the enh per segment, if a enh is broken it will not be counted
-                                   #Because we associate an enh to a segment if it entirely falls inside
-                                   #And hence it will not be considered
+                                   keptEnh = targetEnhKept,
                                    gainedEnh = NULL,
                                    matrixRes = resultMatrix,
                                    enhOrigin = phase,

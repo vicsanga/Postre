@@ -3,7 +3,12 @@
 ## Function to load the specific genomic data for the phenotype of interest
 ## Gene Expression, Enhancer Maps and TAD maps for the different developmental phases
 ## And also an object containing the names of the phases considered in each phenotype
+##A lso adding CellTypeAgnostic Prediction / CellTypeAgnostic, depending on input parameter.
 #####################################################################################
+
+#El CellTypeAgnostic addition se gestiona en dos puntos, despues de crear la lista "pheno_Phases", se añade a todos los elementos si es necesario
+#Y al final de la ejecución de genomic_data_loader via phasesVector<-c(phasesVector,"CellTypeAgnostic")
+
 # setwd("~/Dropbox/Cantabria/PhD_Project/ScriptsPhd/ScriptsParaUsoLocal/Postre/Postre_app")
 
 ###########################################
@@ -12,38 +17,54 @@
 ##Important object, pheno-phasesTable
 ##########################################
 
-pheno_Phases<-list(
-  ##Phases are obtained from their own phasesVector
+## pheno_Phases list used in functions/multiple_SV_Functions/cohortResults_Parser.R
+
+## pheno_Phases list used in functions/multiple_SV_Functions/cohortResults_Parser.R
+
+retrieve_phenoPhasesList<-function(includesCellTypeAgnosticPred){
+  #includesCellTypeAgnosticPred##yes or no, handled at the end of the function
   
-  ##Head_neck
-  "head_neck"=c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20"),
+  pheno_Phases<-list(
+    ##Phases are obtained from their own phasesVector
+    
+    ##Head_neck
+    "head_neck"=c("NeuralCrestEarly", "NeuralCrestLate", "PalateCS20"),
+    
+    ##Cardiovascular
+    "cardiovascular"=c("day5", "day7", "day15", "day80"),
+    
+    ##Limb
+    "limbs"=c("EmbryonicLimb1", "EmbryonicLimb2"),
+    
+    ##NEURODEVELOPMENTAL
+    "neurodevelopmental"=c("PfcGw15", "PfcGw18"),
+    
+    ##VISION-EYE
+    "vision_eye"=c("Retina","RPE"),
+    
+    ##Pituitary
+    "pituitary"=c("NormalPituitary","NormalPituitary2"),
+    
+    ##Liver -  Biliary System
+    "liver_biliary_system"=c("AdultLiver")
+    
+    ##...
+  )
   
-  ##Cardiovascular
-  "cardiovascular"=c("day5", "day7", "day15", "day80"),
+  ##If cell type agnostic prediction has been chosen add here CellTypeAgnostic to each phasesVector
+  if(includesCellTypeAgnosticPred=="yes"){
+    ##Adding to each vector of the list "CellTypeAgnostic" to trigger cell type agnostic prediction handling
+    pheno_Phases <- lapply(pheno_Phases, function(x) c(x, "CellTypeAgnostic"))
+  }
   
-  ##Limb
-  "limbs"=c("EmbryonicLimb1", "EmbryonicLimb2"),
-  
-  ##NEURODEVELOPMENTAL
-  "neurodevelopmental"=c("PfcGw15", "PfcGw18"),
-  
-  ##VISION-EYE
-  "vision_eye"=c("Retina","RPE"),
-  
-  ##Pituitary
-  "pituitary"=c("NormalPituitary","NormalPituitary2"),
-  
-  ##Liver -  Biliary System
-  "liver_biliary_system"=c("AdultLiver")
-  
-  ##...
-)
+  return(pheno_Phases)
+}
 
 
 
 ################
 ###FUNCTION
-genomic_data_loader<-function(patientPheno){
+genomic_data_loader<-function(patientPheno, includeCellTypeAgnostic){
   
   ##patientPheno value is given by App input, either through the single or multiple condition
   if((patientPheno == "Head & Neck") || (patientPheno == "head_neck")){
@@ -230,6 +251,7 @@ genomic_data_loader<-function(patientPheno){
     
     
   }else if((patientPheno == "Pituitary") || (patientPheno == "pituitary")){
+    
     ##11 Nov 2025, incorporacion fenotipo
     
     ###########################################################
@@ -263,7 +285,7 @@ genomic_data_loader<-function(patientPheno){
                                     header = FALSE,
                                     stringsAsFactors = FALSE)
     colnames(genomeBrowser_links)<-c("Phenotype", "Stage", "SessionId", "SessionLinkBaseName")
-    
+  
     
   }else if((patientPheno == "Liver - Biliary System") || (patientPheno == "liver_biliary_system")){
     ##6 Feb 2025, incorporacion fenotipo
@@ -299,6 +321,27 @@ genomic_data_loader<-function(patientPheno){
                                     header = FALSE,
                                     stringsAsFactors = FALSE)
     colnames(genomeBrowser_links)<-c("Phenotype", "Stage", "SessionId", "SessionLinkBaseName")
+    
+    
+  }
+  
+  #Focusing here on includeCellTypeAgnostic to adding or not CellTypeAgnostic
+  if(includeCellTypeAgnostic=="yes"){
+    phasesVector<-c(phasesVector,"CellTypeAgnostic") 
+    
+    ##Also, rename in MRD the phaseFree stage by CellTypeAgnostic (faster to do here this rename) than on the objects generation scripts
+    #Will be deprecated upon new regenartion of MRD objects
+    
+    if("phaseFree" %in% names(Master_regulatoryDomains_list$TADs)){
+      
+      posListTads<-which(names(Master_regulatoryDomains_list$TADs)=="phaseFree")
+      names(Master_regulatoryDomains_list$TADs)[posListTads]<-"CellTypeAgnostic"
+      
+      #In case not equally sorted
+      posListBtwnTads<-which(names(Master_regulatoryDomains_list$betweenTADs)=="phaseFree")
+      names(Master_regulatoryDomains_list$betweenTADs)[posListBtwnTads]<-"CellTypeAgnostic"
+      
+    }
     
     
   }

@@ -51,7 +51,7 @@ plots_geneSusceptibility<-function(patientResults){
     ##As a matter of  simplicity redoing plot for GOF and LOF if happens in same phase, 
     ##If affects performance notoriously, avoid redoing plot for gof and lof, and doing just once
     
-    if(targetPhase!="phaseFree"){
+    if(targetPhase!="CellTypeAgnostic"){
       ##So we have an expression value
       targetExpression<-patientResults$resultsPerPhase_secondaryInfo[[targetPhase]][[1]]$matrixesGenesEvaluation[targetGene,
                                                                                                                  paste("FPKM_",

@@ -129,10 +129,10 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
     
     ##Do not want to rename right now, in case we rerename afterwards..
     ##And this one is quite used in the app internal working to distinguish in ranking between using all genomic data or not
-    if(nameCol=="phaseFree"){
+    if(nameCol=="CellTypeAgnostic"){
       table_content<-paste(table_content,
                            "<th>",
-                           "Cell Type Independent",
+                           "Cell Type Agnostic",
                            "</th>",
                            sep = "",
                            collapse = "")
@@ -309,9 +309,13 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
           relevant_Gene_Phase<-c(relevant_Gene_Phase,
                                  relevantMatch)
           
-          ##Adapting variables names for JavaScript
-          ##Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
-          JS_relevantMatch<-gsub("-","", relevantMatch) 
+          ##Adapting variables names for JavaScript (and to allow html dinamism)
+          ##JS_relevantMatch has to be the same one that JS_reportUnit used below as id of the report to proper display
+          ##Added phenotype part on 5 sept 2025 to avoid problems with repeated celltypes among phenotypes (e.g. Cell T agnostic)
+          ##Reason why also added downstream: JS_reportUnit<-paste0(reportUnit,"_",patientResults$patientInfo$Phenotype)
+          JS_relevantMatch<-paste0(relevantMatch,"_",patientResults$patientInfo$Phenotype)
+          ##NOW: Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
+          JS_relevantMatch<-gsub("-","", JS_relevantMatch) 
           JS_relevant_Gene_Phase<-gsub("-","", relevant_Gene_Phase) 
           
           
@@ -582,8 +586,8 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##Required Function
   ##Keep comparing with table_html generation function 
   heatm_targetMatrix<-targetMatrix
-  if("phaseFree" %in% colnames(heatm_targetMatrix)){
-    colnames(heatm_targetMatrix)[colnames(heatm_targetMatrix)=="phaseFree"]<-"Cell Type Independent"  
+  if("CellTypeAgnostic" %in% colnames(heatm_targetMatrix)){
+    colnames(heatm_targetMatrix)[colnames(heatm_targetMatrix)=="CellTypeAgnostic"]<-"Cell Type Agnostic"  
   }
   
   if("affected_gene" %in% colnames(heatm_targetMatrix)){
@@ -723,10 +727,14 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
   ##for each gene above minScore create section with link to jump from table
   for(reportUnit in patientResults$genesConditions_ToReport){ ##relevant_Gene_Phase
     ##remember reportUnit is FUNDAMENTAL are the ids used to build JS functions
+    
     ##As previously pointed
     ##Adapting variables names for JavaScript
-    ##Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
-    JS_reportUnit<-gsub("-","", reportUnit) 
+    #First, adding the phentoype, as of 5 sept 2025
+    ##Not adding directly to reportUnit otherwise image loading rising errors
+    JS_reportUnit<-paste0(reportUnit,"_",patientResults$patientInfo$Phenotype)
+    ##Now: Removing (-) hypens, if exist. This can afect javascript performance (var names do not accept hypens). Problems found for genes with hypens such as NKX3-2
+    JS_reportUnit<-gsub("-","", JS_reportUnit) 
     
     ##div reportEntity, for single gene-phase specific
     ##Link will direct the user here
@@ -742,6 +750,8 @@ heatmap_summaryResults<-function(patientResults, minRequiredScore, highScore){
                            "()'",
                            "><b>Report ",
                            reportUnit,
+                           " ",
+                           patientResults$patientInfo$Phenotype,##Adding too the phenotype
                            "</b>",
                            "</button></h1>",
                            sep="")

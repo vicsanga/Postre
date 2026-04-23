@@ -13,7 +13,7 @@
 ## Generating POSTRE_multiSV function
 ########################################
 
-POSTRE_multiSV<-function(SVs=NULL, pathTo_Postre_app_Folder=NULL, userTADmap=NULL, runMode="Standard", genePhenoMatch="Yes"){
+POSTRE_multiSV<-function(SVs=NULL, pathTo_Postre_app_Folder=NULL, userTADmap=NULL, runMode="Standard", genePhenoMatch="Yes", returnExtraStats="No"){
 
 if(is.null(SVs)){
     
@@ -189,6 +189,8 @@ Contains the ids of the SVs which rised an error (if they occur) during their in
   SVs$refGenome<-"hg19"
   SVs$userTADmap<-"no" ##Default option, used for UCSC warning when yes to upload TAD coord
   
+  SVs$includeCellTypeAgnosticPred<-"no" ##KEPT like this until feature implemented
+  
   #For user TAD map, in principle is set to FALSE to track whether processing done
   userTadProcessed<-FALSE
   user_tadMapInfo<-list()##It will be kept empty unless user provides its own TADmap
@@ -331,6 +333,61 @@ Contains the ids of the SVs which rised an error (if they occur) during their in
   
   outpInfo$geneStats_recurrencyAndPathomech<-cohort_results$geneRecurrencyInfo
   outpInfo$errors<-cohort_results$error_General_Info
+  
+  ##Addition April 2026, tracking frequency gof-lof per gene (special interest for testing purposes)
+  if(returnExtraStats=="Yes"){
+    ##Matrix that will store the pathomech frequency (#LongRange LOF, #LongRange GOF, #Direct/Coding LOF #Direct/Coding GOF)
+    infoFreqMechanisms<-NULL
+    
+    ##Parsing, and combining pheno data
+    #Considered pheno are all possible phenos currently handled by POSTRE
+    #Check if among SVs currently analysed info for target pheno, if yes, retrieve matrix of interest
+    for(targetPheno in consideredPheno){
+      if(targetPheno %in% names(cohort_results)){
+        currentMatrix<-cohort_results[[targetPheno]]$anyMechanism
+        
+        ##Check content not empty (could be if all associated cases predicted NOT pathogenic)
+        if(nrow(currentMatrix)>0){
+          #current matrix is NOT empty
+          rownames(currentMatrix)<-paste0(currentMatrix$affected_gene,"_",targetPheno)
+          
+          if(is.null(infoFreqMechanisms)){
+            ##Adding first content
+            infoFreqMechanisms<-currentMatrix
+          }else{
+            ##Appending content
+            infoFreqMechanisms<-rbind.data.frame(infoFreqMechanisms, currentMatrix)
+          }
+          
+        }
+      }
+    }
+    
+    ##Doing some final column name formatting for consistency with outpInfo$geneStats_recurrencyAndPathomech
+    if(!is.null(infoFreqMechanisms)){
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="DirectEffectLOF"]<-"N Coding LOF"
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="DirectEffectGOF"]<-"N Coding GOF"
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="LongRangeLOF"]<-"N Long-Range LOF"
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="LongRangeGOF"]<-"N Long-Range GOF"
+     
+     ##"Gene", "N SVs" "SVid", for co
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="affected_gene"]<-"Gene"
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="Num_Patients"]<-"N SVs"
+     colnames(infoFreqMechanisms)[colnames(infoFreqMechanisms)=="patients"]<-"SVid"
+    }
+    
+    
+    
+    
+    #Assembling extraStatsInfo and appending to output
+    extraStats<-list(
+      "infoFreqMechanisms"=infoFreqMechanisms
+    )
+    
+    outpInfo$extraStats<-extraStats
+    
+  }
+
   
   ##Defining again as working directory the one that the user was using before executing the function
   setwd(user_workingDirectory)

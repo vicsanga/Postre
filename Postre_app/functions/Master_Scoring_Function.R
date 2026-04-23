@@ -13,7 +13,7 @@ master_scoring_function<-function(patientInfo,runMode, user_tadMapInfo, MultiDat
   ########################################################################################
   # source("functions/GenomicData_Loader.R")
   
-  genomic_data<-genomic_data_loader(patientPheno = patientInfo$Phenotype)
+  genomic_data<-genomic_data_loader(patientPheno = patientInfo$Phenotype, includeCellTypeAgnostic = patientInfo$includeCellTypeAgnosticPred)
 
   Master_GeneExpression<-genomic_data$Master_GeneExpression #The one I need to activate when everything fine
   MasterEnh_map<-genomic_data$MasterEnh_map
@@ -59,7 +59,7 @@ master_scoring_function<-function(patientInfo,runMode, user_tadMapInfo, MultiDat
   resultsPerPhase<-list()##To store MAIN results per phase
   resultsPerPhase_secondaryInfo<-list()##To store additional information such as evaluationMatrixes per TAD map per Phase
   for(phase in phasesVector){
-    # print(phase) ##Line commented 11/09/2022
+    #print(phase) ##Line commented 11/09/2022
     resultsPerTADmap<-list()
     # browser()
     ##Only 1 tadmap per phase, so remove for loop

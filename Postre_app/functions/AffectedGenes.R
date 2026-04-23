@@ -4,12 +4,13 @@
 ## Atending to both the domains, and the breakpoint segments
 ###################################################################################
 affectedGenes<-function(regionsAltered, gtf, onlyProteinCoding, patientInfo){
+  
   ##regionsAltered for info_affectedRegions object
   domainsData<-regionsAltered$domainsAffected
   segmentsData<-regionsAltered$segmentsBreakP
   uncertaintyData<-regionsAltered$uncertaintyRegions
   
-  ##Filtering gtf info
+  ##Filtering gtf info (info redundante, via NM)
   if(onlyProteinCoding == TRUE){
     gtf<-subset(gtf, geneType=="protein_coding") 
   }
@@ -61,41 +62,79 @@ affectedGenes<-function(regionsAltered, gtf, onlyProteinCoding, patientInfo){
     genesInSegment[[segment]]<-gtf[isAGeneInside,"geneSymbol"]
   }
   
-  #############################################################
-  ## ¿Any gene has its coding sequence broken by the breakpoint?
-  ## LeftSegment---BREAKPOINT---RigthSegment
-  ## A gene is considered to be broken if the end of any of the left segments
-  ## or the start of any of the right segments falls in the gene region (between its start or end)
-  ## brokenGenes
+  ###########################################################################
+  ## ¿Any gene has its sequence broken/altered/disrupted by the breakpoint? (brokenGenes)
+  ## NOTE: whole gene deletions-duplications handled later on in this same script
+  ## This part has been rewritten Sept2025 to handle better strictly intronic alterations
   
+  ##To track and propagate genes with intronic variant I'm using the variable:
+  #Defining also at this level to avoid errors downstream in case this is never assessed, therefore variable never created
+  genes_carryingSV_butNotExonicAlteration<-character()##Will be filled if instances observed
+  
+  #isGeneContainingBreakpoint() code in functions/intronicExonic_auxFuns.R
+  #Getting Genes containing breakpoints (if any)
+  genesContainingBreakpoint_1<-isGeneContainingBreakpoint(gtf = gtf, chrBreakP = patientInfo$chr_Break1, 
+                                                          coordBreakP = patientInfo$coord_Break1)
+  
+  genesContainingBreakpoint_2<-isGeneContainingBreakpoint(gtf = gtf, chrBreakP = patientInfo$chr_Break2, 
+                                                          coordBreakP = patientInfo$coord_Break2)
+  
+  ##Content of variable: genesContainingBreakpoint_  if genes do not contain BP = character(0). Perfect, good format.
+  
+  ## All genes (if any) containing a breakpoint inside of its sequence are TOP candidates for broken/disrupted
   ##Broken genes considered in general (not discriminating by domain), if we have any, then handling in which it is
-  brokenGenes<-character()
+  ## BUT!! if there is a gene in both groups it has to be evaluated whether SV strictly occuring inside of the same intron 
+  ## (as this significantly reduces probabilty of pathogenicity AND alters downstream prediction logic)
+  brokenGenes<-unique(c(genesContainingBreakpoint_1, genesContainingBreakpoint_2))
   
-  ##For left segments we get the end
-  for(segment in rownames(segmentsData)){
+  ##Checking the existance of strictly intragenic variants
+  genesWith_strictlyIntragenicVariant<-intersect(genesContainingBreakpoint_1, genesContainingBreakpoint_2)
+  
+  if(length(genesWith_strictlyIntragenicVariant)>0){
+    ##Assessing possibility of strictly intronic alterations
     
-    targetSegment_Chr<-segmentsData[segment,"chr"]
-    targetSegment_Start<-segmentsData[segment,"start"]
-    targetSegment_End<-segmentsData[segment,"end"]
+    #This refers to strictly intronic alterations
+    genes_carryingSV_butNotExonicAlteration<-character()
     
-    if(grepl("left",segment, fixed = TRUE)){
-      puntoRotura<-targetSegment_End
-    }else{
-      ##it means it is the right segment so we take the start
-      puntoRotura<-targetSegment_Start
+    for(gene in genesWith_strictlyIntragenicVariant){
+      #There can be multiple if genes overlapping considering both strands
+      
+      #isVariantAlteringExonicSequence() code in functions/intronicExonic_auxFuns.R
+      #Returns TRUE OR FALSE
+      isGeneExonicSequenceAltered<-isVariantAlteringExonicSequence(gtf = gtf, targetGene = gene,
+                                                                   
+                                                                   #Coord BreakPoint1
+                                                                   chrBreakP_1 = patientInfo$chr_Break1, 
+                                                                   coordBreakP_1 = patientInfo$coord_Break1,
+                                                                   
+                                                                   #Coord BreakPoint2
+                                                                   chrBreakP_2 = patientInfo$chr_Break2, 
+                                                                   coordBreakP_2 = patientInfo$coord_Break2)
+      
+      if(isGeneExonicSequenceAltered==FALSE){
+        ##Genes with strictly intronic variants fall here
+        genes_carryingSV_butNotExonicAlteration<-c(genes_carryingSV_butNotExonicAlteration,gene)
+      }
+      
     }
     
-    gtf$isChr<-gtf$chr==targetSegment_Chr
-    gtf$isBreakBeforeEnd<-puntoRotura<=gtf$end ##gtf$end is the end of the gene, the 3' coord from the reference strand (evethough it can be the TSS, but it is the bigger pos)
-    gtf$isBreakAfterStart<-puntoRotura>=gtf$start
+    #Excluding from brokenGenes, if any, genes_carryingSV_butNotExonicAlteration
+    if(length(genes_carryingSV_butNotExonicAlteration)>0){
+      genes_carryingSV_butNotExonicAlteration<-unique(genes_carryingSV_butNotExonicAlteration)
+      brokenGenes<-brokenGenes[!(brokenGenes %in% genes_carryingSV_butNotExonicAlteration)]
+    }
     
-    ##
-    logicalInfoGenes<-gtf[,c("isChr","isBreakBeforeEnd","isBreakAfterStart")]
-    isAGeneBroken<-rowSums(logicalInfoGenes)==3##if ==3 fullfits all the requirements
-    brokenGenes<-c(brokenGenes, gtf$geneSymbol[isAGeneBroken])
   }
-  brokenGenes<-unique(brokenGenes)##there can be repeated genes if we have a single coordinate or two super close for the breakpoint, in this case the broken gene will appear two times, so we do the unique
   
+  #REMOVE STARTING FROM HERE WHEN AFFECTED GENES FUNCTION IMPROVAL TERMINATED
+  ##CHECK CON EDGE CASES
+  # browser()
+  # brokenGenes
+  # genesWith_strictlyIntragenicVariant
+  # #If intronic eval assessed
+  # isGeneExonicSequenceAltered
+  # genes_carryingSV_butNotExonicAlteration
+  ########REMOVE UP TO HERE
   
   ##############################################
   ## Looked for genes entirely contained in the 
@@ -217,18 +256,24 @@ affectedGenes<-function(regionsAltered, gtf, onlyProteinCoding, patientInfo){
   
   ####Retrieve in an object the genes Position por all the possibly affected genes
   #allGENES<-unique(c(genesInDomain$domain_breakpoint_1, genesInDomain$domain_breakpoint_2,brokenGenes, genesInUncertainty))
-  allGENES<-unique(c(genesInDomain$domain_breakpoint_1, genesInDomain$domain_breakpoint_2,brokenGenes, genesInUncertainty, deletedGenes, duplicatedGenes))
+  allGENES<-unique(c(genesInDomain$domain_breakpoint_1, genesInDomain$domain_breakpoint_2,brokenGenes, genesInUncertainty, deletedGenes, duplicatedGenes,genes_carryingSV_butNotExonicAlteration))
   
   genesPosition<-gtf[allGENES,c("chr","start","end","TSS","strand","geneSymbol","geneType")]
   
   
   ##rearreglar luego el objeto de salida
   ##If we retrieve the info for a gene, but it is not assigned to any domain, its because it is affected due to deletion or duplication ocurring between domains
+  
+  ##Voy a propagar las strictly intronic alterations para facilitar explicacion report downstream
+  # genes_carryingSV_butNotExonicAlteration
+  
   info_affectedGenes<-list("genesInDomain"=genesInDomain, 
                            "genesInSegment"=genesInSegment, 
                            "brokenGenes"=brokenGenes,
                            "deletedGenes"=deletedGenes,
                            "duplicatedGenes"=duplicatedGenes,
+                           #Added on Oct 2025
+                           "genesWithIntronicVariant"=genes_carryingSV_butNotExonicAlteration,
                            "genesInUncertainty"=genesInUncertainty,
                            "genesPosition"=genesPosition)
   return(info_affectedGenes)

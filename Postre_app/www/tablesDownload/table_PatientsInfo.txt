@@ -1,35 +1,5 @@
-chr_Break1	coord_Break1	chr_Break2	coord_Break2	TypeSV	Phenotype	SV_ID	runMode	genePhenoConsideration	refGenome	userTADmap
-chrX	136068349	chrX	136131892	Duplication	pituitary	F1A	Standard	yes	hg19	no
-chrX	136111060	chrX	136388326	Duplication	pituitary	F2A	Standard	yes	hg19	no
-chrX	136028815	chrX	136536734	Duplication	pituitary	F3A	Standard	yes	hg19	no
-chrX	136104659	chrX	136470844	Duplication	pituitary	F4A	Standard	yes	hg19	no
-chrX	135954223	chrX	136191468	Duplication	pituitary	F5A	Standard	yes	hg19	no
-chrX	135702382	chrX	136147166	Duplication	pituitary	F6A	Standard	yes	hg19	no
-chrX	135954223	chrX	136224319	Duplication	pituitary	F7A	Standard	yes	hg19	no
-chrX	135601312	chrX	136170916	Duplication	pituitary	F1	Standard	yes	hg19	no
-chrX	135533224	chrX	136118269	Duplication	pituitary	F2	Standard	yes	hg19	no
-chrX	135592293	chrX	136121710	Duplication	pituitary	F3	Standard	yes	hg19	no
-chrX	135619986	chrX	136173873	Duplication	pituitary	S1	Standard	yes	hg19	no
-chrX	135616901	chrX	136250647	Duplication	pituitary	S2	Standard	yes	hg19	no
-chrX	135627637	chrX	136219238	Duplication	pituitary	S5	Standard	yes	hg19	no
-chrX	135615580	chrX	136220614	Duplication	pituitary	S6	Standard	yes	hg19	no
-chrX	135598653	chrX	136293076	Duplication	pituitary	S7	Standard	yes	hg19	no
-chrX	135580313	chrX	136267244	Duplication	pituitary	S8	Standard	yes	hg19	no
-chrX	135601440	chrX	136191137	Duplication	pituitary	S9	Standard	yes	hg19	no
-chrX	135601430	chrX	136192229	Duplication	pituitary	S10	Standard	yes	hg19	no
-chrX	135602028	chrX	136259908	Duplication	pituitary	S11	Standard	yes	hg19	no
-chrX	135549274	chrX	136126345	Duplication	pituitary	S13	Standard	yes	hg19	no
-chrX	135622296	chrX	136191776	Duplication	pituitary	S14	Standard	yes	hg19	no
-chrX	135596446	chrX	136254970	Duplication	pituitary	S15	Standard	yes	hg19	no
-chrX	135533330	chrX	136123779	Duplication	pituitary	S16	Standard	yes	hg19	no
-chrX	135603324	chrX	136244940	Duplication	pituitary	S18	Standard	yes	hg19	no
-chrX	135602976	chrX	136200661	Duplication	pituitary	S19	Standard	yes	hg19	no
-chrX	135575594	chrX	136336458	Duplication	pituitary	S20	Standard	yes	hg19	no
-chrX	135589958	chrX	136206619	Duplication	pituitary	S21	Standard	yes	hg19	no
-chrX	135625218	chrX	136327754	Duplication	pituitary	S22	Standard	yes	hg19	no
-chrX	135631918	chrX	136138344	Duplication	pituitary	II	Standard	yes	hg19	no
-chrX	135605028	chrX	136221008	Duplication	pituitary	III	Standard	yes	hg19	no
-chrX	135601432	chrX	136176374	Duplication	pituitary	IV	Standard	yes	hg19	no
-chrX	135599808	chrX	136291833	Duplication	pituitary	V	Standard	yes	hg19	no
-chrX	135587056	chrX	136302873	Duplication	pituitary	VI	Standard	yes	hg19	no
-chrX	135605143	chrX	136187364	Duplication	pituitary	VII	Standard	yes	hg19	no
+chr_Break1	coord_Break1	chr_Break2	coord_Break2	TypeSV	Phenotype	SV_ID	runMode	genePhenoConsideration	includeCellTypeAgnosticPred	refGenome	userTADmap
+chr12	2552579	chr12	2552663	Deletion	cardiovascular	Gnomad_1_benign_intronic_PreviouslyPredictedPathoViaTruncation	Standard	yes	no	hg19	no
+chr6	102207730	chr6	102208341	Deletion	neurodevelopmental	Gnomad_2_benign_intronic_PreviouslyPredictedPathoViaTruncation	Standard	yes	no	hg19	no
+chr15	30084616	chr15	30086837	Deletion	cardiovascular	Gnomad_3_benign_intronic_PreviouslyPredictedPathoViaTruncation	Standard	yes	no	hg19	no
+chr9	9594352	chr9	9598888	Deletion	neurodevelopmental	Gnomad_4_benign_intronic_PreviouslyPredictedPathoViaTruncation	Standard	yes	no	hg19	no
