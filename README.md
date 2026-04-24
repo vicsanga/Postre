@@ -195,7 +195,7 @@ View(res_svs$pathogenicityPrediction_per_SV)
 <h2 id="UpdatesHistory">Update history</h2>
 
 <ul>
-<li><b>23/04/2026 Refinement of intronic variant handling</b>: Before this update, any variant located within the gene body (between the gene TSS and gene TTS) was treated as a potentially truncating variant for the gene containing the variant. This rule also applied to strictly intronic variants, many of which may have no functional effect.
+<li><b>23/04/2026 Refinement of intronic variant handling</b>: Before this update, any variant located within the gene body (between the gene TSS and gene TTS) was treated as a potentially truncating variant for the gene containing it. This rule also applied to strictly intronic variants, many of which may have no functional effect.
 
 To reduce this potential source of false positives, this rule has now been refined. In the new version, only variants overlapping or disrupting the coding sequence of a gene are marked as potentially truncating. This refinement also makes it possible to identify intronic variants with long-range (enhancer-mediated) effects on the gene containing the variant.
 
