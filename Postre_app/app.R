@@ -163,8 +163,8 @@ ui <-function(req){
 <button class="collapsibleAdvancedFeatures" id="buttonSingleSubmAdvancedFeatures">Advanced Parameters [+]</button>
 <div class="contentAdvancedFeatures">
 
-<!-- Include cell type agnostic prediction-->
-<div id="cellTypeAgnostic_singleSubm" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="cellTypeAgnostic_singleSubm-label">
+<!-- Include cell type agnostic prediction (WORK IN PROGRESS, reason to hide it on html)-->
+<div id="cellTypeAgnostic_singleSubm" style="display: none;" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="cellTypeAgnostic_singleSubm-label">
   <label class="control-label" id="cellTypeAgnostic_singleSubm-label" for="cellTypeAgnostic_singleSubm">Include cell type agnostic prediction <a href="CellTypeAgnosticPrediction_Expl.html" target="_blank"> (click here for +info) </a></label>
                                                                  <div class="shiny-options-group">
                                                                  <label class="radio-inline">
@@ -336,8 +336,8 @@ for (i = 0; i < coll.length; i++) {
 <button class="collapsibleAdvancedFeaturesMultiple" id="buttonMultipleSubmAdvancedFeatures">Advanced Parameters [+]</button>
 <div class="contentAdvancedFeatures">
 
-<!-- Include cell type agnostic prediction-->
-  <div id="cellTypeAgnostic_multipleSubm" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="cellTypeAgnostic_multipleSubm-label">
+<!-- Include cell type agnostic prediction (WORK IN PROGRESS, reason to hide it on html)-->
+  <div id="cellTypeAgnostic_multipleSubm" style="display: none;" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline" role="radiogroup" aria-labelledby="cellTypeAgnostic_multipleSubm-label">
     <label class="control-label" id="cellTypeAgnostic_multipleSubm-label" for="cellTypeAgnostic_multipleSubm">Include cell type agnostic prediction <a href="CellTypeAgnosticPrediction_Expl.html" target="_blank"> (click here for +info) </a></label>
       <div class="shiny-options-group">
         <label class="radio-inline">
