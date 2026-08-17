@@ -21,7 +21,7 @@ POSTRE is a software developed to <b style='color:#1D3354;'>predict the pathogen
 
 Check the infographic displayed below to see a representation of POSTRE functionality. <b>Click the image to expand it.</b>
 
-![Postre Diagram](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/infografia.png?raw=true)
+![Postre Diagram](Postre_app/www/infografia.png)
 
 <h2 id="UsingPOSTRE">How to use POSTRE?</h2>
 POSTRE can be used to analyse Single or Multiple SVs.
@@ -30,7 +30,7 @@ POSTRE can be used to analyse Single or Multiple SVs.
 Watch POSTRE performance with a real patient in the following <a href="https://youtu.be/EmZYSQwfJm0" target="_blank">YouTube video</a>. Reproduce it in Full Screen and High Quality (1080p) for optimal visualization. For this patient, with BOFS syndrome carrying an inversion <a href="https://pubmed.ncbi.nlm.nih.gov/30982769/" target="_blank">(Laugsch et al., 2019)</a>, POSTRE successfully predicts the loss of TFAP2A expression in neural crest cells through an enhancer disconnection mechanism.
 <br><br>
 
-[![Postre BOFS analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/BofsHeatmap.png?raw=true)](https://youtu.be/EmZYSQwfJm0 "Postre BOFS analysis")
+[![Postre BOFS analysis](Postre_app/www/BofsHeatmap.png)](https://youtu.be/EmZYSQwfJm0 "Postre BOFS analysis")
 
 <br><br>
 
@@ -57,7 +57,7 @@ Upon the analysis of multiple SVs two main tables are provided. The first one (R
 <br><br>
 A tutorial video showing how to perform and interpret results for a Multiple SV Submission analysis is provided in the following video.
 
-[![Postre MultiSV analysis](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/Multiple_SV.png?raw=true)](https://youtu.be/UBYoa79hJko "Postre MultiSV analysis")
+[![Postre MultiSV analysis](Postre_app/www/Multiple_SV.png)](https://youtu.be/UBYoa79hJko "Postre MultiSV analysis")
 
 <br><br>
 <h2 id="Installation">How to install and run POSTRE?</h2>
@@ -107,8 +107,8 @@ The above instruction installs and loads all the required libraries for POSTRE. 
 If you are not sure about how to do it, you can find me initializing POSTRE from R in the video below!
 <br><br>
 
-[![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/Image_Github_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
-      
+[![POSTRE running](Postre_app/www/Image_Github_HowToRunPostre.png)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
+
 <br><br>
 
 <h2 id="Rfunction">Using POSTRE as an R function</h2>
