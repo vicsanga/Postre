@@ -4,7 +4,7 @@ POSTRE: Prediction Of STRuctural variant Effects
 <ul>
       <li><a href="#ExplanationPOSTRE">What is POSTRE?</a></li>
       <li><a href="#UsingPOSTRE">How to use POSTRE?</a></li>
-      <li><a href="#Installation">How to install and run POSTRE?</a></li>
+      <li><a href="#Installation">How to install and run POSTRE?</a> (<b>New: online version available</b>)</li>
       <li><a href="#Rfunction">Using POSTRE as an R function</a> (alternative to usage with graphical user interface)</li>
       <li><a href="#UpdatesHistory">Update history</a></li>
       <li><a href="#Help">Can we help you?</a></li>
@@ -35,7 +35,7 @@ Watch POSTRE performance with a real patient in the following <a href="https://y
 <br><br>
 
 <h4 id="multiSVanalyses">Analysing Multiple SVs</h4>
-The Multiple SV Submission box allows the sequential analysis of multiple structural variants (results can be downloaded as txt tables). The SVs may come from just one or multiple patients. The SVs information has to be uploaded in a specific format. The file format consists on 1 line and 7 columns per structural variant. Each structural variant must contain only two breakpoints. The information associated with each column is provided below:
+The Multiple SV Submission box allows the sequential analysis of multiple structural variants (results can be downloaded as txt tables). The SVs may come from just one or multiple patients. The SVs information has to be uploaded in a specific format. The file format consists of 1 line and 7 columns per structural variant. Each structural variant must contain only two breakpoints. The information associated with each column is provided below:
       <br><br>
       <i>Note: For the case of structural variants happening strictly in one chromosome (deletions, inversions, duplications) the breakpoint 1 is the one associated with a smaller genomic coordinate, and the breakpoint 2 the one associated with a larger genomic coordinate. For translocations, it does not matter.</i>
       <br><br>
@@ -62,68 +62,58 @@ A tutorial video showing how to perform and interpret results for a Multiple SV 
 <br><br>
 <h2 id="Installation">How to install and run POSTRE?</h2>
 
-<b>Even though you may not have computational skills, do not be afraid!. POSTRE installation is very easy.</b> On top of that, once POSTRE is installed, running and using it is as simple as any other desktop application. Thanks to its user friendly graphical interface.
+POSTRE can be used either <b>online</b> or by <b>installing and running it on your own computer</b>.
 
-POSTRE is built with <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
+<h3>Option 1. Run POSTRE online</h3>
+
+An online version of POSTRE is available at: <a href="https://postre-tool.org/" target="_blank">https://postre-tool.org/</a>
+
+The online version supports <b>Single SV submissions</b>. For <b>Multiple SV submissions</b>, POSTRE needs to be installed and run on your own computer.
+
+The online version is primarily intended for users who have difficulties installing or running POSTRE on their own computer. If you can run POSTRE locally without any issues, we kindly encourage you to use the local version to help minimize the risk of overloading the server resources.
+
+<br><br>
+
+<h3>Option 2. Install and run POSTRE on your own computer</h3>
+
+<b>Even though you may not have computational skills, do not be afraid! POSTRE installation is very easy.</b> On top of that, once POSTRE is installed, running and using it is as simple as any other desktop application, thanks to its user-friendly graphical interface.
+
+POSTRE is built with the <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.
 Thus, to run POSTRE you only require R (version >=3.5.0).
 
-<h3>1. Installing R </h3>
+<h4>2.1 Installing R </h4>
 
-To run Postre R version >=3.5.0 is required.
+To run POSTRE, R version >=3.5.0 is required.
 
-There is plenty of available information in the internet about how to install R depending on the OS (Windows, Mac, Linux etc.). Usually upon R installation people also install R-Studio, which is an integrated development environment to write R code. As a result, most tutorials explain how to install both R and R-Studio. But, to run Postre R-Studio is not necessary.  If you need help for R download, different tutorials are provided here: 
+There is plenty of information available on the internet about how to install R depending on the OS (Windows, Mac, Linux etc.). Usually upon R installation people also install RStudio, which is an integrated development environment to write R code. As a result, most tutorials explain how to install both R and RStudio. However, RStudio is not necessary to run POSTRE. If you need help installing R, different tutorials are provided here: 
 <br><br>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=NZxSA80lF1I" target="_blank">Windows Youtube Tutorial </a></li>
 <li><a href="https://www.youtube.com/watch?v=LanBozXJjOk" target="_blank">Mac Youtube Tutorial </a></li>
 <li><a href="https://www.youtube.com/watch?v=iN0UZ43G6GE"target="_blank">Ubuntu Youtube Tutorial </a></li>
-<li><a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Web Tutorial for installing R and R-Studio in Windows, Mac or Linux <a/></li>
+<li><a href="https://www.earthdatascience.org/courses/earth-analytics/document-your-science/setup-r-rstudio/">Web Tutorial for installing R and RStudio in Windows, Mac or Linux </a></li>
 </ul>
 
-<h3 id="POSTRElatestVersion">2. Running POSTRE Latest Version</h3>     
-Once R  is installed, just execute the following instruction in an R console to run POSTRE latest version:
+<h4 id="POSTRElatestVersion">2.2 Running POSTRE Latest Version</h4>     
+Once R is installed, just execute the following instruction in an R console to run the latest version of POSTRE:
 <br><br>
 
 ```R
 source("https://raw.githubusercontent.com/vicsanga/Postre/main/Postre_wrapper.R")
 ```
 
-The above instruction installs and loads all the required libraries for POSTRE. If some libraries are missing R may ask for permission to install them, confirm it. The first time that you run POSTRE this action will probably take more time.
+The above instruction installs and loads all the required libraries for POSTRE. If some libraries are missing, R may ask for permission to install them; please allow their installation. The first time that you run POSTRE this action will probably take more time.
 
-If you are not sure about how to do it. You can find me initializing POSTRE from R in the video below!
+If you are not sure about how to do it, you can find me initializing POSTRE from R in the video below!
 <br><br>
 
 [![POSTRE running](https://github.com/vicsanga/Postre/blob/main/Postre_app/www/Image_Github_HowToRunPostre.png?raw=true)](https://youtu.be/Aba3fbivwtM "POSTRE Running")
       
-<br>
-      
-<h3>Alternative option, POSTRE online </h3>     
-POSTRE can also be uploaded to a server (e.g. shinyapps.io), by a user with R installed, and accessed online as a normal web app by other users. 
-
-A detailed explanation on how to do that is provided in <a href="https://shiny.rstudio.com/articles/shinyapps.html" target="_blank">Shiny web page</a>.
-
-Recapitulating, you have to:
-<ol>
-<li>Install the rsconnect R package</li>
-<li>Create an account at shinyapps.io</li>
-<li>Use the tokens generated by shinyapps.io to configure your rsconnect package.</li>
-<li>Deploy apps with rsconnect::deployApp. Regarding this step, download and uncompress POSTRE Github repository.
-POSTRE required information for the upload to shinyapps.io is located in Postre_app folder. Thus, this is the folder that has to bee synchronized with rsconnect. e.g:
-
-```R
-rsconnect::deployApp('/pathInYourDeviceTo/Postre/Postre_app/', account = 'nameOfYourAccount')
-```
-</li>
-</ol>    
-
-
-The advantage of this approach is to provide other users in your organization access to the tool without having R installed. However, the person in charge of uploading POSTRE to the server will have to check for new versions or releases of the tool, and re-upload them to the server when available. Contrarily, if POSTRE is executed from an R terminal, with the source() command given above, in <a href="#POSTRElatestVersion">step 2</a>, the latest version of POSTRE will always be executed. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
-
 <br><br>
 
 <h2 id="Rfunction">Using POSTRE as an R function</h2>
 
-If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to take profit of POSTRE latest version, to update POSTRE R function you will have to repeat the steps 1 and 2 each time a new version is released. <b>To check for the latest version release date go to <a href="#UpdatesHistory">Update history</a></b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
+If you want to use POSTRE as an R function, and not through its graphical user interface, you can do that by following the steps provided below. Importantly, if you want to use the latest version of POSTRE as an R function, you will have to repeat steps 1 and 2 each time a new version is released. <b>To check for the latest version release date go to <a href="#UpdatesHistory">Update history</a></b>. If you want to be notified when new major releases of the tool are available, please, send a mail to postre.radaiglesiaslab@gmail.com to be added to the notifications mail list. 
 
 
 Steps for using POSTRE as an R function:
@@ -152,7 +142,7 @@ source(file = "/home/victor/Downloads/Postre-main/Postre_app/POSTRE_multiSV.R")
    
    <li><b>geneStats_recurrencyAndPathomech</b>: This table contains an aggregation of the pathogenic predictions per gene, phenotype and pathogenic mechanism (coding, long-range).</li>   
    
-   <li><b>errors</b>: Contains the ids of the SVs which rised an error (if they occur) during their interpretation.</li>   
+   <li><b>errors</b>: Contains the ids of the SVs which produced an error (if they occur) during their interpretation.</li>   
    </ul>
 </li>
 <br>
@@ -195,6 +185,8 @@ View(res_svs$pathogenicityPrediction_per_SV)
 <h2 id="UpdatesHistory">Update history</h2>
 
 <ul>
+<li><b>17/08/2026 Online version of POSTRE released</b>: An online version of POSTRE is now available at <a href="https://postre-tool.org/" target="_blank">https://postre-tool.org/</a>. The online version supports Single SV submissions. For Multiple SV submissions, POSTRE needs to be installed and run on the user's own computer. The online version is primarily intended for users who have difficulties installing or running POSTRE locally.</li>
+
 <li><b>23/04/2026 Refinement of intronic variant handling</b>: Before this update, any variant located within the gene body (between the gene TSS and gene TTS) was treated as a potentially truncating variant for the gene containing it. This rule also applied to strictly intronic variants, many of which may have no functional effect.
 
 To reduce this potential source of false positives, this rule has now been refined. In the new version, only variants overlapping or disrupting the coding sequence of a gene are marked as potentially truncating. This refinement also makes it possible to identify intronic variants with long-range (enhancer-mediated) effects on the gene containing the variant.
