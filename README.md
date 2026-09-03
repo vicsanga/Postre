@@ -66,7 +66,7 @@ POSTRE can be used either <b>online</b> or by <b>installing and running it on yo
 
 <h3>Option 1. Run POSTRE online</h3>
 
-An online version of POSTRE is available at: <a href="https://postre-tool.org" target="_blank">postre-tool.org</a>
+An online version of POSTRE is available at: <a href="https://postre-tool.csic.es/" target="_blank">postre-tool.csic.es</a>
 
 The online version supports <b>Single SV submissions</b>. For <b>Multiple SV submissions</b>, POSTRE needs to be installed and run on your own computer.
 
@@ -185,7 +185,7 @@ View(res_svs$pathogenicityPrediction_per_SV)
 <h2 id="UpdatesHistory">Update history</h2>
 
 <ul>
-<li><b>17/08/2026 Online version of POSTRE released</b>: An online version of POSTRE is now available at <a href="https://postre-tool.org" target="_blank">postre-tool.org</a>. The online version supports Single SV submissions. For Multiple SV submissions, POSTRE needs to be installed and run on the user's own computer. The online version is primarily intended for users who have difficulties installing or running POSTRE locally.</li>
+<li><b>17/08/2026 Online version of POSTRE released</b>: An online version of POSTRE is now available at <a href="https://postre-tool.csic.es/" target="_blank">postre-tool.csic.es</a>. The online version supports Single SV submissions. For Multiple SV submissions, POSTRE needs to be installed and run on the user's own computer. The online version is primarily intended for users who have difficulties installing or running POSTRE locally.</li>
 
 <li><b>23/04/2026 Refinement of intronic variant handling</b>: Before this update, any variant located within the gene body (between the gene TSS and gene TTS) was treated as a potentially truncating variant for the gene containing it. This rule also applied to strictly intronic variants, many of which may have no functional effect.
 
